@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, AzyotterActivity!</string>
+    <string name="app_name">Azyotter</string>
+    <string name="view_data">Nothing</string>
+    <string name="id">ID : </string>
+    <string name="use_user_stream">UserStreamを使う</string>
+    <string name="edit_account">アカウント設定</string>
+    <string name="remove_account">認証取り消し</string>
+    <string name="edit_profile">プロフィール編集</string>
+    <string name="login">ログイン</string>
+    <string name="waiting_for_you_to_authorize">Azyotterが認証されるのを待っています…\nブラウザでTwitterにログインし、Azyotterを認証してください。</string>
+    <string name="getting_token">トークンを取得しています…</string>
+    <string name="get_token_failed">トークンの取得に失敗しました。数日経っても直らない場合は作者に連絡してください。</string>
+    <string name="error">エラー</string>
+    <string name="accounts">アカウント</string>
+    <string name="registered_accounts">アカウント</string>
+    <string name="add_account">アカウント追加</string>
+    <string name="update_status">Tweet</string>
+    <string name="tweeting">投稿中…</string>
+    <string name="tweet_failed">投稿失敗</string>
+    <string name="select_account_to_use">使用するアカウント</string>
+
+</resources>

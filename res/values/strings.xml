@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, AzyotterActivity!</string>
+    <string name="app_name">Azyotter</string>
+    <string name="view_data">Nothing</string>
+    <string name="id">ID : </string>
+    <string name="use_user_stream">Use UserStream</string>
+    <string name="edit_account">Edit Account</string>
+    <string name="remove_account">Remove</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="login">Login</string>
+    <string name="waiting_for_you_to_authorize">Waiting for you to authorize…</string>
+    <string name="getting_token">Getting token…</string>
+    <string name="get_token_failed">Get token failed. A few days later, if you cannot get token, please contact the author.</string>
+    <string name="error">Error</string>
+    <string name="accounts">Accounts</string>
+    <string name="registered_accounts">Registered accounts</string>
+    <string name="add_account">Add account</string>
+    <string name="update_status">Tweet</string>
+    <string name="tweeting">Tweeting…</string>
+    <string name="tweet_failed">Tweet failed</string>
+    <string name="select_account_to_use">Select account to use</string>
+
+</resources>

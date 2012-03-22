@@ -1,0 +1,4 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_edit_account_edit_profile" android:title="@string/edit_profile"></item>
+    <item android:id="@+id/menu_edit_account_remove_account" android:title="@string/remove_account"></item>
+</menu>

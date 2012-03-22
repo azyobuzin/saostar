@@ -1,0 +1,28 @@
+package net.azyobuzi.azyotter.saostar;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+public class ContextAccess {
+	private static Context context;
+	public static void setContext(Context ctx) {
+		context = ctx;
+	}
+
+	public static FileInputStream openFileInput(String fileName) throws FileNotFoundException {
+		return context.openFileInput(fileName);
+	}
+
+	public static FileOutputStream openFileOutput(String fileName, int mode) throws FileNotFoundException {
+		return context.openFileOutput(fileName, mode);
+	}
+	
+	public static SharedPreferences getDefaultSharedPreferences() {
+		return PreferenceManager.getDefaultSharedPreferences(context);
+	}
+}
