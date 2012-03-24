@@ -8,10 +8,13 @@ import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.StringUtil;
 import net.azyobuzi.azyotter.saostar.configuration.Account;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
+import net.azyobuzi.azyotter.saostar.configuration.Tab;
+import net.azyobuzi.azyotter.saostar.configuration.Tabs;
 import net.azyobuzi.azyotter.saostar.services.UpdateStatusService;
 import net.azyobuzi.azyotter.saostar.system.Action;
+import net.azyobuzi.azyotter.saostar.system.Action1;
+import net.azyobuzi.azyotter.saostar.system.Action2;
 import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,8 +43,14 @@ public class AzyotterActivity extends Activity {
 
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.addTab(actionBar.newTab().setText("Test0").setTabListener(new TimelineTabListener()));
-        actionBar.addTab(actionBar.newTab().setText("Test1").setTabListener(new TimelineTabListener()));
+        Tabs.getAllTabs().forEach(new Action2<Tab, Integer>() {
+			@Override
+			public void invoke(Tab arg0, Integer arg1) {
+				addedTabHandler.invoke(arg0);
+			}
+        });
+        Tabs.addedHandler.add(addedTabHandler);
+        Tabs.removedHandler.add(removedTabHandler);
 
         Accounts.selectedAccountChangedHandler.add(selectedAccountChangedHandler);
         selectedAccountChangedHandler.invoke();
@@ -96,6 +105,32 @@ public class AzyotterActivity extends Activity {
 		}
 	};
 
+	private final Action1<Tab> addedTabHandler = new Action1<Tab>() {
+		@Override
+		public void invoke(Tab arg) {
+			ActionBar actionBar = getActionBar();
+			actionBar.addTab(
+				actionBar.newTab()
+					.setText(arg.getName())
+					.setTabListener(new TimelineTabListener(arg))
+					.setTag(arg)
+			);
+		}
+	};
+
+	private final Action1<Tab> removedTabHandler = new Action1<Tab>() {
+		@Override
+		public void invoke(Tab arg) {
+			ActionBar actionBar = getActionBar();
+			for (int i = 0; i < actionBar.getTabCount(); i++) {
+				if (actionBar.getTabAt(i).getTag() == arg) {
+					actionBar.removeTabAt(i);
+					return;
+				}
+			}
+		}
+	};
+
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -114,20 +149,24 @@ public class AzyotterActivity extends Activity {
 	}
 
     private class TimelineTabListener implements TabListener {
-    	private TimelineTabFragment mFragment = new TimelineTabFragment();
+    	public TimelineTabListener(Tab tab) {
+    		mFragment = new TimelineTabFragment(tab);
+    	}
+
+    	private TimelineTabFragment mFragment;
 
 		@Override
-		public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
+		public void onTabReselected(ActionBar.Tab arg0, FragmentTransaction arg1) {
 
 		}
 
 		@Override
-		public void onTabSelected(Tab arg0, FragmentTransaction arg1) {
+		public void onTabSelected(ActionBar.Tab arg0, FragmentTransaction arg1) {
 			arg1.add(R.id.fragment_content, mFragment, null);
 		}
 
 		@Override
-		public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+		public void onTabUnselected(ActionBar.Tab arg0, FragmentTransaction arg1) {
 			arg1.remove(mFragment);
 		}
     }

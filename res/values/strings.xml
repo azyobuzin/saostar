@@ -17,6 +17,7 @@
     <string name="accounts">Accounts</string>
     <string name="registered_accounts">Registered accounts</string>
     <string name="add_account">Add account</string>
+    <string name="whats_happening">What\'s Happening?</string>
     <string name="update_status">Tweet</string>
     <string name="tweeting">Tweeting…</string>
     <string name="tweet_failed">Tweet failed</string>

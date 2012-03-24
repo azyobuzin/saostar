@@ -1,7 +1,5 @@
 package net.azyobuzi.azyotter.saostar.timeline_data;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -28,7 +26,7 @@ public class UserInfo {
 	public int listedCount;
 	public boolean isProtected;
 	public boolean isVerified;
-	public URL profileImageUrl;
+	public String profileImageUrl;
 
 	public final ArrayList<Action1<UserInfo>> mergedHandler = new ArrayList<Action1<UserInfo>>();
 
@@ -48,10 +46,10 @@ public class UserInfo {
 		re.listedCount = source.getListedCount();
 		re.isProtected = source.isProtected();
 		re.isVerified = source.isVerified();
-		re.profileImageUrl = source.getProfileImageUrlHttps();
-		
+		re.profileImageUrl = source.getProfileImageUrlHttps().toString();
+
 		re.refreshAccount();
-		
+
 		return re;
 	}
 
@@ -59,12 +57,10 @@ public class UserInfo {
 		UserInfo re = new UserInfo();
 		re.id = source.getFromUserId();
 		re.screenName = source.getFromUser();
-		try {
-			re.profileImageUrl = new URL(source.getProfileImageUrl());
-		} catch (MalformedURLException e) { }
-		
+		re.profileImageUrl = source.getProfileImageUrl();
+
 		re.refreshAccount();
-		
+
 		return re;
 	}
 
@@ -83,15 +79,15 @@ public class UserInfo {
 		listedCount = source.getListedCount();
 		isProtected = source.isProtected();
 		isVerified = source.isVerified();
-		profileImageUrl = source.getProfileImageUrlHttps();
-		
+		profileImageUrl = source.getProfileImageUrlHttps().toString();
+
 		refreshAccount();
 
 		for (Action1<UserInfo> handler : mergedHandler) {
 			handler.invoke(this);
 		}
 	}
-	
+
 	private void refreshAccount() {
 		Accounts.getAllAccounts()
 			.where(new Func2<Account, Integer, Boolean>() {

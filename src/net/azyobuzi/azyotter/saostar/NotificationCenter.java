@@ -31,7 +31,7 @@ public class NotificationCenter {
 		if (ex == null) {
 			mng.cancel(UPDATE_STATUS);
 		} else {
-			Intent retryIntent = new Intent("TODO")
+			Intent retryIntent = new Intent("TODO") //TODO
 				.putExtra("text", status.getStatus())
 				.putExtra("inReplyToStatusId", status.getInReplyToStatusId());
 

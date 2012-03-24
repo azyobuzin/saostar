@@ -65,7 +65,8 @@ public class TimelineItem {
 		}
 		re.from = UserCollection.addOrMerge(source.getUser());
 		re.inReplyToStatusId = source.getInReplyToStatusId();
-		re.retweeted = TimelineItemCollection.addOrMerge(source.getRetweetedStatus(), false);
+		if (source.isRetweet())
+			re.retweeted = TimelineItemCollection.addOrMerge(source.getRetweetedStatus(), false);
 		re.entities = new TweetEntities(source);
 		re.isHomeTweet = isHomeTweet;
 		return re;

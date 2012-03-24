@@ -21,7 +21,9 @@ public class UserCollection {
 				re.merge(source);
 				return re;
 			} else {
-				return dic.put(source.getId(), UserInfo.create(source));
+				UserInfo re = UserInfo.create(source);
+				dic.put(source.getId(), re);
+				return re;
 			}
 		}
 	}

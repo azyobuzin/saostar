@@ -3,17 +3,32 @@ package net.azyobuzi.azyotter.saostar.linq;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.commons.jexl2.Expression;
-import org.apache.commons.jexl2.JexlContext;
-import org.apache.commons.jexl2.MapContext;
-
-import net.azyobuzi.azyotter.saostar.JexlHelper;
 import net.azyobuzi.azyotter.saostar.system.Action2;
-import net.azyobuzi.azyotter.saostar.system.Func;
 import net.azyobuzi.azyotter.saostar.system.Func2;
 
 public abstract class Enumerable<T> {
+	public static <T> Enumerable<T> empty() {
+		return new Enumerable<T>() {
+			@Override
+			public Enumerator<T> getEnumerator() {
+				return new Enumerator<T>() {
+					@Override
+					public boolean moveNext() {
+						return false;
+					}
+
+					@Override
+					public T getCurrent() {
+						return null;
+					}
+				};
+			}
+		};
+	}
+	
 	public static <T> Enumerable<T> from(final Enumerator<T> enumerator) {
+		if (enumerator == null) return empty();
+		
 		return new Enumerable<T>() {
 			@Override
 			public Enumerator<T> getEnumerator() {
@@ -23,6 +38,8 @@ public abstract class Enumerable<T> {
 	}
 
 	public static <T> Enumerable<T> from(final Iterable<T> source) {
+		if (source == null) return empty();
+		
 		return new Enumerable<T>() {
 			@Override
 			public Enumerator<T> getEnumerator() {
@@ -50,6 +67,8 @@ public abstract class Enumerable<T> {
 	}
 
 	public static <T> Enumerable<T> from(final T[] source) {
+		if (source == null) return empty();
+		
 		return new Enumerable<T>() {
 			@Override
 			public Enumerator<T> getEnumerator() {
@@ -88,21 +107,6 @@ public abstract class Enumerable<T> {
 		}
 	}
 
-	public void forEach(String expression, Func<JexlContext> contextGenerator) {
-		Expression expr = JexlHelper.createExpression(expression);
-
-		Enumerator<T> enumerator = getEnumerator();
-		int index = 0;
-		while (enumerator.moveNext()) {
-			JexlContext context = null;
-			if (contextGenerator != null) context = contextGenerator.invoke();
-			if (context == null) context = new MapContext();
-			context.set("item", enumerator.getCurrent());
-			context.set("index", index++);
-			expr.evaluate(context);
-		}
-	}
-
 	public ArrayList<T> toArrayList() {
 		final ArrayList<T> re = new ArrayList<T>();
 		forEach(new Action2<T, Integer>() {
@@ -137,35 +141,6 @@ public abstract class Enumerable<T> {
 		});
 	}
 
-	public Enumerable<Object> select(final String expression, final Func<JexlContext> contextGenerator) {
-		return from(new Enumerator<Object>() {
-			private Enumerator<T> source = getEnumerator();
-			private Object current;
-			private int index = 0;
-			private Expression expr = JexlHelper.createExpression(expression);
-
-			@Override
-			public boolean moveNext() {
-				if (source.moveNext()) {
-					JexlContext context = null;
-					if (contextGenerator != null) context = contextGenerator.invoke();
-					if (context == null) context = new MapContext();
-					context.set("item", source.getCurrent());
-					context.set("index", index++);
-					current = expr.evaluate(context);
-					return true;
-				} else {
-					return false;
-				}
-			}
-
-			@Override
-			public Object getCurrent() {
-				return current;
-			}
-		});
-	}
-
 	public Enumerable<T> where(final Func2<T, Integer, Boolean> predicate) {
 		return from(new Enumerator<T>() {
 			private Enumerator<T> source = getEnumerator();
@@ -176,40 +151,6 @@ public abstract class Enumerable<T> {
 			public boolean moveNext() {
 				if (source.moveNext()) {
 					boolean result = predicate.invoke(source.getCurrent(), index++);
-					if (result) {
-						current = source.getCurrent();
-						return true;
-					} else {
-						return moveNext();
-					}
-				} else {
-					return false;
-				}
-			}
-
-			@Override
-			public T getCurrent() {
-				return current;
-			}
-		});
-	}
-
-	public Enumerable<T> where(final String expression, final Func<JexlContext> contextGenerator) {
-		return from(new Enumerator<T>() {
-			private Enumerator<T> source = getEnumerator();
-			private T current;
-			private int index = 0;
-			private Expression expr = JexlHelper.createExpression(expression);
-
-			@Override
-			public boolean moveNext() {
-				if (source.moveNext()) {
-					JexlContext context = null;
-					if (contextGenerator != null) context = contextGenerator.invoke();
-					if (context == null) context = new MapContext();
-					context.set("item", source.getCurrent());
-					context.set("index", index++);
-					boolean result = (Boolean)expr.evaluate(context);
 					if (result) {
 						current = source.getCurrent();
 						return true;
@@ -285,14 +226,14 @@ public abstract class Enumerable<T> {
 			}
 		});
 	}
-	
+
 	public T elementAtOrDefault(int index, T defaultValue) {
 		int i = 0;
 		Enumerator<T> source = getEnumerator();
 		while (source.moveNext()) {
 			if (i++ == index) return source.getCurrent();
 		}
-		
+
 		return defaultValue;
 	}
 }

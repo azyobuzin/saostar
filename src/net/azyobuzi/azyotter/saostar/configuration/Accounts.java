@@ -12,6 +12,7 @@ import net.azyobuzi.azyotter.saostar.linq.Enumerable;
 import net.azyobuzi.azyotter.saostar.system.Action;
 import net.azyobuzi.azyotter.saostar.system.Action2;
 import net.azyobuzi.azyotter.saostar.system.Func2;
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineReceiverCollection;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -47,6 +48,7 @@ public class Accounts {
 				re.oauthTokenSecret = elm.getElementsByTagName("oauth_token_secret").item(0).getTextContent();
 				re.setUseUserStream(Boolean.valueOf(elm.getElementsByTagName("use_user_stream").item(0).getTextContent()));
 				list.add(re);
+				TimelineReceiverCollection.addAccount(re);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -94,6 +96,8 @@ public class Accounts {
 					}
 
 					save();
+
+					TimelineReceiverCollection.addAccount(newAccount);
 				}
 			}
 		});
@@ -108,6 +112,8 @@ public class Accounts {
 			@Override
 			public void run() {
 				synchronized (lockObj) {
+					TimelineReceiverCollection.removeAccount(account);
+
 					list.remove(account);
 
 					for (Action handler : accountsChangedHandler) {

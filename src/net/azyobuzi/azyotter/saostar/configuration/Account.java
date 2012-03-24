@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import twitter4j.auth.AccessToken;
 
-import net.azyobuzi.azyotter.saostar.system.Action1;
+import net.azyobuzi.azyotter.saostar.system.Action;
 
 public class Account {
 	public long id;
@@ -21,12 +21,12 @@ public class Account {
 	public void setUseUserStream(boolean value) {
 		useUserStream = value;
 
-		for (Action1<Account> handler : useUserStreamChangedHandler) {
-			handler.invoke(this);
+		for (Action handler : useUserStreamChangedHandler) {
+			handler.invoke();
 		}
 	}
 
-	public final ArrayList<Action1<Account>> useUserStreamChangedHandler = new ArrayList<Action1<Account>>();
+	public final ArrayList<Action> useUserStreamChangedHandler = new ArrayList<Action>();
 	
 	public AccessToken toAccessToken() {
 		return new AccessToken(oauthToken, oauthTokenSecret);

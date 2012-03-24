@@ -1,15 +1,178 @@
 package net.azyobuzi.azyotter.saostar.activities;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.TreeSet;
+
+import org.apache.commons.jexl2.MapContext;
+
+import jp.sharakova.android.urlimageview.UrlImageView;
+
+import net.azyobuzi.azyotter.saostar.R;
+import net.azyobuzi.azyotter.saostar.configuration.Tab;
+import net.azyobuzi.azyotter.saostar.configuration.Tabs;
+import net.azyobuzi.azyotter.saostar.system.Action1;
+import net.azyobuzi.azyotter.saostar.system.Func2;
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection;
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class TimelineTabFragment extends ListFragment {
+	public TimelineTabFragment() {
+		//画面回転用
+	}
+	
+	public TimelineTabFragment(Tab tab) {
+		this.tab = tab;
+	}
+
+	private Tab tab;
+	private TimelineItemAdapter adapter = new TimelineItemAdapter();
+
+	private Handler h = new Handler();
+
+	private final TreeSet<TimelineItem> items = new TreeSet<TimelineItem>(new Comparator<TimelineItem>() {
+		@Override
+		public int compare(TimelineItem arg0, TimelineItem arg1) {
+			return -(arg0.createdAt.compareTo(arg1.createdAt));
+		}
+	});
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	return new ListView(getActivity());
+    }
+    
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState);
+    	
+    	if (tab == null && savedInstanceState != null) {
+    		tab = Tabs.get(savedInstanceState.getInt("tabIndex"));
+    	}
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+    	super.onSaveInstanceState(outState);
+    	outState.putInt("tabIndex", Tabs.indexOf(tab));
+    }
+
+    @Override
+    public void onStart() {
+    	super.onStart();
+
+    	setListAdapter(adapter);
+
+    	generateTimelineAsync();
+    	TimelineItemCollection.addedHandler.add(addedItemHandler);
+    	TimelineItemCollection.removedHandler.add(removedItemHandler);
+    }
+
+    @Override
+    public void onDestroy() {
+    	TimelineItemCollection.addedHandler.remove(addedItemHandler);
+    	TimelineItemCollection.removedHandler.remove(removedItemHandler);
+
+    	super.onDestroy();
+    }
+
+    private void generateTimelineAsync() {
+    	new Thread(new Runnable() {
+			@Override
+			public void run() {
+				final ArrayList<TimelineItem> addItems = TimelineItemCollection.getEnumerable()
+					.where(new Func2<TimelineItem, Integer, Boolean>() {
+						@Override
+						public Boolean invoke(TimelineItem arg0, Integer arg1) {
+							MapContext ctx = new MapContext();
+							ctx.set("item", arg0);
+							ctx.set("util", tab.getFilterUtil());
+							return (Boolean)tab.getFilterExpression().evaluate(ctx);
+						}
+					})
+					.toArrayList();
+
+				h.post(new Runnable() {
+					@Override
+					public void run() {
+						items.addAll(addItems);
+						adapter.notifyDataSetChanged();
+					}
+				});
+			}
+    	}).start();
+    }
+
+    private final Action1<TimelineItem> addedItemHandler = new Action1<TimelineItem>() {
+		@Override
+		public void invoke(final TimelineItem arg) {
+			MapContext ctx = new MapContext();
+			ctx.set("item", arg);
+			ctx.set("util", tab.getFilterUtil());
+			if ((Boolean)tab.getFilterExpression().evaluate(ctx)) {
+				h.post(new Runnable() {
+					@Override
+					public void run() {
+						items.add(arg);
+						adapter.notifyDataSetChanged();
+					}
+				});
+			}
+		}
+    };
+
+    private final Action1<TimelineItem> removedItemHandler = new Action1<TimelineItem>() {
+		@Override
+		public void invoke(TimelineItem arg) {
+			items.remove(arg);
+		}
+    };
+
+
+    private class TimelineItemAdapter extends BaseAdapter {
+		@Override
+		public int getCount() {
+			return items.size();
+		}
+
+		@Override
+		public Object getItem(int arg0) {
+			return items.toArray()[arg0];
+		}
+
+		@Override
+		public long getItemId(int arg0) {
+			return arg0;
+		}
+
+		@Override
+		public View getView(int arg0, View arg1, ViewGroup arg2) {
+			TimelineItem item = (TimelineItem)getItem(arg0);
+			View re = getActivity().getLayoutInflater().inflate(R.layout.timeline_item, null);
+
+			((UrlImageView)re.findViewById(R.id.iv_timeline_item_profile_image))
+				.setImageUrl(item.from.profileImageUrl);
+
+			((TextView)re.findViewById(R.id.tv_timeline_item_name)).setText(
+				item.from.screenName + "/" + item.from.name
+			);
+
+			((TextView)re.findViewById(R.id.tv_timeline_item_text)).setText(item.displayText);
+
+			((TextView)re.findViewById(R.id.tv_timeline_item_date_source)).setText(
+				item.createdAt.toLocaleString() + " / via " + item.sourceName
+			);
+
+			return re;
+		}
     }
 }

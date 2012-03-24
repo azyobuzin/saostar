@@ -1,8 +1,10 @@
 package net.azyobuzi.azyotter.saostar.timeline_data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.azyobuzi.azyotter.saostar.linq.Enumerable;
+import net.azyobuzi.azyotter.saostar.system.Action1;
 
 public class TimelineItemCollection {
 	private static final HashMap<TimelineItemId, TimelineItem> dic = new HashMap<TimelineItemId, TimelineItem>();
@@ -14,6 +16,24 @@ public class TimelineItemCollection {
 		}
 	}
 
+	public static final ArrayList<Action1<TimelineItem>> addedHandler = new ArrayList<Action1<TimelineItem>>();
+
+	private static TimelineItem raiseAdded(TimelineItem item) {
+		for (Action1<TimelineItem> handler : addedHandler) {
+			handler.invoke(item);
+		}
+		return item;
+	}
+
+	public static final ArrayList<Action1<TimelineItem>> removedHandler = new ArrayList<Action1<TimelineItem>>();
+
+	private static TimelineItem raiseRemoved(TimelineItem item) {
+		for (Action1<TimelineItem> handler : removedHandler) {
+			handler.invoke(item);
+		}
+		return item;
+	}
+
 	public static TimelineItem addOrMerge(twitter4j.Status source, boolean isHomeTweet) {
 		synchronized (lockObj) {
 			TimelineItemId key = new TimelineItemId(TimelineItemId.TYPE_TWEET, source.getId());
@@ -22,7 +42,9 @@ public class TimelineItemCollection {
 				re.merge(source, isHomeTweet);
 				return re;
 			} else {
-				return dic.put(key, TimelineItem.create(source, isHomeTweet));
+				TimelineItem re = TimelineItem.create(source, isHomeTweet);
+				dic.put(key, re);
+				return raiseAdded(re);
 			}
 		}
 	}
@@ -41,7 +63,7 @@ public class TimelineItemCollection {
 
 	public static void removeTweet(long id) {
 		synchronized (lockObj) {
-			dic.remove(new TimelineItemId(TimelineItemId.TYPE_TWEET, id));
+			raiseRemoved(dic.remove(new TimelineItemId(TimelineItemId.TYPE_TWEET, id)));
 		}
 	}
 
@@ -53,7 +75,9 @@ public class TimelineItemCollection {
 				re.merge(source);
 				return re;
 			} else {
-				return dic.put(key, TimelineItem.create(source));
+				TimelineItem re = TimelineItem.create(source);
+				dic.put(key, re);
+				return raiseAdded(re);
 			}
 		}
 	}
@@ -66,7 +90,7 @@ public class TimelineItemCollection {
 
 	public static void removeDirectMessage(long id) {
 		synchronized (lockObj) {
-			dic.remove(new TimelineItemId(TimelineItemId.TYPE_DIRECT_MESSAGE, id));
+			raiseRemoved(dic.remove(new TimelineItemId(TimelineItemId.TYPE_DIRECT_MESSAGE, id)));
 		}
 	}
 }

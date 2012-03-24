@@ -22,6 +22,7 @@
             android:layout_height="48dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true" />
+
         <EditText
             android:id="@+id/txt_main_tweet"
             android:layout_width="fill_parent"
@@ -29,6 +30,7 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/btn_main_update_status"
             android:layout_toRightOf="@+id/iv_main_selected_account"
+            android:hint="@string/whats_happening"
             android:inputType="textMultiLine"
             android:minHeight="48dp" />
 
