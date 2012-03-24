@@ -29,7 +29,7 @@ public class TimelineTabFragment extends ListFragment {
 	public TimelineTabFragment() {
 		//画面回転用
 	}
-	
+
 	public TimelineTabFragment(Tab tab) {
 		this.tab = tab;
 	}
@@ -50,16 +50,16 @@ public class TimelineTabFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	return new ListView(getActivity());
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState);
-    	
+
     	if (tab == null && savedInstanceState != null) {
     		tab = Tabs.get(savedInstanceState.getInt("tabIndex"));
     	}
     }
-    
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
     	super.onSaveInstanceState(outState);
@@ -157,22 +157,34 @@ public class TimelineTabFragment extends ListFragment {
 		@Override
 		public View getView(int arg0, View arg1, ViewGroup arg2) {
 			TimelineItem item = (TimelineItem)getItem(arg0);
-			View re = getActivity().getLayoutInflater().inflate(R.layout.timeline_item, null);
+			View re = arg1 == null
+				? getActivity().getLayoutInflater().inflate(R.layout.timeline_item, null)
+				: arg1;
 
-			((UrlImageView)re.findViewById(R.id.iv_timeline_item_profile_image))
-				.setImageUrl(item.from.profileImageUrl);
+			TimelineItemAdapterViewHolder viewHolder = (TimelineItemAdapterViewHolder)re.getTag();
 
-			((TextView)re.findViewById(R.id.tv_timeline_item_name)).setText(
-				item.from.screenName + "/" + item.from.name
-			);
+			if (viewHolder == null) {
+				viewHolder = new TimelineItemAdapterViewHolder();
+				viewHolder.profileImage = (UrlImageView)re.findViewById(R.id.iv_timeline_item_profile_image);
+				viewHolder.name = (TextView)re.findViewById(R.id.tv_timeline_item_name);
+				viewHolder.text = (TextView)re.findViewById(R.id.tv_timeline_item_text);
+				viewHolder.dateAndSource = (TextView)re.findViewById(R.id.tv_timeline_item_date_source);
+				re.setTag(viewHolder);
+			}
 
-			((TextView)re.findViewById(R.id.tv_timeline_item_text)).setText(item.displayText);
-
-			((TextView)re.findViewById(R.id.tv_timeline_item_date_source)).setText(
-				item.createdAt.toLocaleString() + " / via " + item.sourceName
-			);
+			viewHolder.profileImage.setImageUrl(item.from.profileImageUrl);
+			viewHolder.name.setText(item.from.screenName + "/" + item.from.name);
+			viewHolder.text.setText(item.displayText);
+			viewHolder.dateAndSource.setText(item.createdAt.toLocaleString() + " / via " + item.sourceName);
 
 			return re;
 		}
+    }
+
+    private static class TimelineItemAdapterViewHolder {
+    	UrlImageView profileImage;
+    	TextView name;
+    	TextView text;
+    	TextView dateAndSource;
     }
 }
