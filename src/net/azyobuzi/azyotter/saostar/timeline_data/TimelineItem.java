@@ -110,7 +110,7 @@ public class TimelineItem {
 
 				@Override
 				public Integer invoke(URLEntity arg0, Integer arg1) {
-					sb.append(source.getText().substring(index, arg0.getStart() - 1));
+					sb.append(source.getText().substring(index, arg0.getStart()));
 					sb.append(arg0.getDisplayURL());
 					index = arg0.getEnd();
 					return index;
