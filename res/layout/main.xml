@@ -16,8 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <jp.sharakova.android.urlimageview.UrlImageView
-            android:id="@+id/iv_main_selected_account"
+        <net.azyobuzi.azyotter.saostar.widget.AccountSelector
+            android:id="@+id/as_main"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentTop="true"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/btn_main_update_status"
-            android:layout_toRightOf="@+id/iv_main_selected_account"
+            android:layout_toRightOf="@+id/as_main"
             android:hint="@string/whats_happening"
             android:inputType="textMultiLine"
             android:minHeight="48dp" />

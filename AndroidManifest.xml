@@ -20,7 +20,6 @@
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -35,6 +34,24 @@
         </activity>
         <activity android:name=".activities.AccountsActivity" android:launchMode="singleTask"></activity>
         <service android:name=".services.UpdateStatusService"></service>
+        <activity android:name=".activities.UpdateStatusActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.TwitterUriHookActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="twitter.com" />
+                <data android:scheme="https" android:host="twitter.com" />
+                <data android:scheme="http" android:host="www.twitter.com" />
+                <data android:scheme="https" android:host="www.twitter.com" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

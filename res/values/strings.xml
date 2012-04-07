@@ -22,5 +22,7 @@
     <string name="tweeting">Tweeting…</string>
     <string name="tweet_failed">Tweet failed</string>
     <string name="select_account_to_use">Select account to use</string>
+    <string name="reply_to">Reply to</string>
+    <string name="colon">:</string>
 
 </resources>

@@ -26,7 +26,7 @@ public class AccountsActivity extends ListActivity {
         ActionBar actionBar = getActionBar();
         actionBar.setSubtitle(R.string.registered_accounts);
 
-        getListView().setPadding(15, 0, 15, 0);
+        getListView().setPadding(30, 0, 30, 0);
 
         setListAdapter(adapter);
 

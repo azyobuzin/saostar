@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class TimelineTabFragment extends ListFragment {
@@ -48,7 +47,7 @@ public class TimelineTabFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	return new ListView(getActivity());
+    	return inflater.inflate(R.layout.empty_list, null);
     }
 
     @Override
@@ -173,7 +172,7 @@ public class TimelineTabFragment extends ListFragment {
 			}
 
 			viewHolder.profileImage.setImageUrl(item.from.profileImageUrl);
-			viewHolder.name.setText(item.from.screenName + "/" + item.from.name);
+			viewHolder.name.setText(item.from.screenName + " / " + item.from.name);
 			viewHolder.text.setText(item.displayText);
 			viewHolder.dateAndSource.setText(item.createdAt.toLocaleString() + " / via " + item.sourceName);
 
@@ -182,9 +181,9 @@ public class TimelineTabFragment extends ListFragment {
     }
 
     private static class TimelineItemAdapterViewHolder {
-    	UrlImageView profileImage;
-    	TextView name;
-    	TextView text;
-    	TextView dateAndSource;
+    	public UrlImageView profileImage;
+    	public TextView name;
+    	public TextView text;
+    	public TextView dateAndSource;
     }
 }

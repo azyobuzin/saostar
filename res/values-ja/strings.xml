@@ -18,9 +18,11 @@
     <string name="registered_accounts">アカウント</string>
     <string name="add_account">アカウント追加</string>
     <string name="whats_happening">What\'s Happening?</string>
-    <string name="update_status">Tweet</string>
+    <string name="update_status">ツイート</string>
     <string name="tweeting">投稿中…</string>
     <string name="tweet_failed">投稿失敗</string>
     <string name="select_account_to_use">使用するアカウント</string>
+    <string name="reply_to">返信</string>
+    <string name="colon">:</string>
 
 </resources>
