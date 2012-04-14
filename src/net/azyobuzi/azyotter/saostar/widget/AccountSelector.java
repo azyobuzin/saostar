@@ -36,7 +36,7 @@ public class AccountSelector extends CustomizedUrlImageView {
 				final ArrayList<Account> accounts = Accounts.getAllAccounts().toArrayList();
 				CharSequence[] screenNames = new CharSequence[accounts.size()];
 				for (int i = 0; i < accounts.size(); i++) {
-					screenNames[i] = accounts.get(i).screenName;
+					screenNames[i] = accounts.get(i).getScreenName();
 				}
 
 				new AlertDialog.Builder(context)
@@ -59,7 +59,9 @@ public class AccountSelector extends CustomizedUrlImageView {
 	private final Action selectedAccountChangedHandler = new Action() {
 		@Override
 		public void invoke() {
-			setImageUrl("https://api.twitter.com/1/users/profile_image/" + Accounts.getSelectedAccount().screenName + ".json");
+			Account a = Accounts.getSelectedAccount();
+			if (a != null)
+				setImageUrl("https://api.twitter.com/1/users/profile_image/" + Accounts.getSelectedAccount().getScreenName() + ".json");
 		}
 	};
 

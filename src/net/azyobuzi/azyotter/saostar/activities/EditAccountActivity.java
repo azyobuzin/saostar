@@ -31,11 +31,11 @@ public class EditAccountActivity extends Activity {
         account = Accounts.get(id);
 
         ((UrlImageView)findViewById(R.id.iv_edit_account_profile_image)).setImageUrl(
-        	"https://api.twitter.com/1/users/profile_image/" + account.screenName + ".json"
+        	"https://api.twitter.com/1/users/profile_image/" + account.getScreenName() + ".json"
         );
 
-        ((TextView)findViewById(R.id.tv_edit_account_screen_name)).setText(account.screenName);
-        ((TextView)findViewById(R.id.tv_edit_account_id)).setText(String.valueOf(account.id));
+        ((TextView)findViewById(R.id.tv_edit_account_screen_name)).setText(account.getScreenName());
+        ((TextView)findViewById(R.id.tv_edit_account_id)).setText(String.valueOf(account.getId()));
 
         CheckBox useUserStream = (CheckBox)findViewById(R.id.check_edit_account_use_user_stream);
         useUserStream.setChecked(account.getUseUserStream());

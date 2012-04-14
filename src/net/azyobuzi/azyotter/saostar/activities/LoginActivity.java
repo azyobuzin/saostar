@@ -8,7 +8,6 @@ import net.azyobuzi.azyotter.saostar.Twitter4JFactories;
 import net.azyobuzi.azyotter.saostar.StringUtil;
 import net.azyobuzi.azyotter.saostar.configuration.Account;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -33,12 +32,10 @@ public class LoginActivity extends Activity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.login_waiting_page);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setSubtitle(R.string.login);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         status = (TextView)findViewById(R.id.tv_login_waiting_status);
-        
+
         setProgressBarIndeterminateVisibility(true);
 
         new Thread(new Runnable() {
@@ -113,16 +110,17 @@ public class LoginActivity extends Activity {
 							if (canceled) return;
 
 							if (Accounts.get(token.getUserId()) == null) {
-								final Account a = new Account();
-								a.id = token.getUserId();
-								a.screenName = token.getScreenName();
-								a.oauthToken = token.getToken();
-								a.oauthTokenSecret = token.getTokenSecret();
+								final Account a = new Account(token.getUserId());
+								a.setScreenName(token.getScreenName());
+								a.setOAuthToken(token.getToken());
+								a.setOAuthTokenSecret(token.getTokenSecret());
 								Accounts.add(a);
 								h.post(new Runnable() {
 									@Override
 									public void run() {
-										startActivity(new Intent(LoginActivity.this, EditAccountActivity.class).putExtra("id", a.id));
+										startActivity(new Intent(LoginActivity.this, AccountsActivity.class)
+											.putExtra(AccountPreferenceFragment.ACCOUNT_ID, a.getId())
+											.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
 										finish();
 									}
 								});

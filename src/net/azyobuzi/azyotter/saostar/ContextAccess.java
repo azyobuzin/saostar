@@ -21,8 +21,12 @@ public class ContextAccess {
 	public static FileOutputStream openFileOutput(String fileName, int mode) throws FileNotFoundException {
 		return context.openFileOutput(fileName, mode);
 	}
-	
+
 	public static SharedPreferences getDefaultSharedPreferences() {
 		return PreferenceManager.getDefaultSharedPreferences(context);
+	}
+
+	public static SharedPreferences getSharedPreferences(String name, int mode) {
+		return context.getSharedPreferences(name, mode);
 	}
 }

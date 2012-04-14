@@ -2,29 +2,17 @@ package net.azyobuzi.azyotter.saostar.configuration;
 
 import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import net.azyobuzi.azyotter.saostar.ContextAccess;
+import net.azyobuzi.azyotter.saostar.StringUtil;
 import net.azyobuzi.azyotter.saostar.linq.Enumerable;
+import net.azyobuzi.azyotter.saostar.services.TimelineReceiveService;
 import net.azyobuzi.azyotter.saostar.system.Action;
-import net.azyobuzi.azyotter.saostar.system.Action2;
 import net.azyobuzi.azyotter.saostar.system.Func2;
-import net.azyobuzi.azyotter.saostar.timeline_data.TimelineReceiverCollection;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import android.content.Context;
 import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 
 public class Accounts {
-	private static final String fileName = "accounts.xml";
-
 	private static ArrayList<Account> list = null;
 	private static final Object lockObj = new Object();
 	private static final Handler h = new Handler();
@@ -32,26 +20,13 @@ public class Accounts {
 	private static void loadAccounts() { //synchronized内から呼ぶ
 		list = new ArrayList<Account>();
 
-		try {
-			Element root = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder()
-				.parse(ContextAccess.openFileInput(fileName))
-				.getDocumentElement();
-
-			NodeList accounts = root.getElementsByTagName("account");
-			for (int i = 0; i < accounts.getLength(); i++) {
-				Element elm = (Element)accounts.item(i);
-				Account re = new Account();
-				re.id = Long.valueOf(elm.getElementsByTagName("id").item(0).getTextContent());
-				re.screenName = elm.getElementsByTagName("screen_name").item(0).getTextContent();
-				re.oauthToken = elm.getElementsByTagName("oauth_token").item(0).getTextContent();
-				re.oauthTokenSecret = elm.getElementsByTagName("oauth_token_secret").item(0).getTextContent();
-				re.setUseUserStream(Boolean.valueOf(elm.getElementsByTagName("use_user_stream").item(0).getTextContent()));
+		String[] accountsStr = ContextAccess.getDefaultSharedPreferences().getString("twitterAccounts", "").split(",");
+		for (String id : accountsStr) {
+			if (!StringUtil.isNullOrEmpty(id)) {
+				Account re = new Account(Long.valueOf(id));
 				list.add(re);
-				TimelineReceiverCollection.addAccount(re);
+				TimelineReceiveService.addAccount(re);
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 	}
 
@@ -67,7 +42,7 @@ public class Accounts {
 		return getAllAccounts().where(new Func2<Account, Integer, Boolean>() {
 			@Override
 			public Boolean invoke(Account arg0, Integer arg1) {
-				return arg0.id == id;
+				return arg0.getId() == id;
 			}
 		}).firstOrDefault(null);
 	}
@@ -97,7 +72,7 @@ public class Accounts {
 
 					save();
 
-					TimelineReceiverCollection.addAccount(newAccount);
+					TimelineReceiveService.addAccount(newAccount);
 				}
 			}
 		});
@@ -112,7 +87,7 @@ public class Accounts {
 			@Override
 			public void run() {
 				synchronized (lockObj) {
-					TimelineReceiverCollection.removeAccount(account);
+					TimelineReceiveService.removeAccount(account);
 
 					list.remove(account);
 
@@ -126,57 +101,52 @@ public class Accounts {
 		});
 	}
 
-	public static final ArrayList<Action> accountsChangedHandler = new ArrayList<Action>();
+	public static void sort(final int from, final int to) {
+		synchronized (lockObj) {
+			if (list == null) loadAccounts();
+		}
 
-	public static void save() {
-		try {
-			final Document doc = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder()
-				.newDocument();
+		h.post(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (lockObj) {
+					Account account = list.remove(from);
+					list.add(to, account);
 
-			final Element root = doc.createElement("accounts");
+					for (Action handler : accountsChangedHandler) {
+						handler.invoke();
+					}
 
-			getAllAccounts().forEach(new Action2<Account, Integer>() {
-				@Override
-				public void invoke(Account arg0, Integer arg1) {
-					Element elm = doc.createElement("account");
-
-					Element child = doc.createElement("id");
-					child.appendChild(doc.createTextNode(String.valueOf(arg0.id)));
-					elm.appendChild(child);
-
-					child = doc.createElement("screen_name");
-					child.appendChild(doc.createTextNode(arg0.screenName));
-					elm.appendChild(child);
-
-					child = doc.createElement("oauth_token");
-					child.appendChild(doc.createTextNode(arg0.oauthToken));
-					elm.appendChild(child);
-
-					child = doc.createElement("oauth_token_secret");
-					child.appendChild(doc.createTextNode(arg0.oauthTokenSecret));
-					elm.appendChild(child);
-
-					child = doc.createElement("use_user_stream");
-					child.appendChild(doc.createTextNode(String.valueOf(arg0.getUseUserStream())));
-					elm.appendChild(child);
-
-					root.appendChild(elm);
+					save();
 				}
-			});
+			}
+		});
+	}
 
-			doc.appendChild(root);
+	public static int indexOf(long id) {
+		Account a = get(id);
 
-			TransformerFactory.newInstance()
-				.newTransformer()
-				.transform(new DOMSource(doc), new StreamResult(ContextAccess.openFileOutput(fileName, Context.MODE_PRIVATE)));
-		} catch (Exception ex) {
-			ex.printStackTrace(); //エラー？なにそれ？
+		synchronized (lockObj) {
+			return list.indexOf(a);
 		}
 	}
 
+	public static final ArrayList<Action> accountsChangedHandler = new ArrayList<Action>();
+
+	public static void save() {
+		ContextAccess.getDefaultSharedPreferences().edit().putString("twitterAccounts", StringUtil.join(",",
+			getAllAccounts().select(new Func2<Account, Integer, CharSequence>() {
+				@Override
+				public CharSequence invoke(Account arg0, Integer arg1) {
+					return String.valueOf(arg0.getId());
+				}
+			})
+		))
+		.apply();
+	}
+
 	public static Account getSelectedAccount() {
-		long selectedId = ContextAccess.getDefaultSharedPreferences().getLong("selectedAccount", 0);
+		long selectedId = ContextAccess.getDefaultSharedPreferences().getLong("selectedAccount", -1);
 
 		Account re = get(selectedId);
 		if (re == null) {
@@ -188,7 +158,7 @@ public class Accounts {
 
 	public static void setSelectedAccount(Account value) {
 		Editor ed = ContextAccess.getDefaultSharedPreferences().edit();
-		ed.putLong("selectedAccount", value != null ? value.id : 0);
+		ed.putLong("selectedAccount", value != null ? value.getId() : 0);
 		ed.apply();
 
 		for (Action handler : selectedAccountChangedHandler) {

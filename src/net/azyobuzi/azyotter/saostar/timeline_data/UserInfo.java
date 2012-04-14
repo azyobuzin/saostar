@@ -93,13 +93,13 @@ public class UserInfo {
 			.where(new Func2<Account, Integer, Boolean>() {
 				@Override
 				public Boolean invoke(Account arg0, Integer arg1) {
-					return arg0.id == id;
+					return arg0.getId() == id;
 				}
 			})
 			.forEach(new Action2<Account, Integer>() {
 				@Override
 				public void invoke(Account arg0, Integer arg1) {
-					arg0.screenName = screenName;
+					arg0.setScreenName(screenName);
 				}
 			});
 	}

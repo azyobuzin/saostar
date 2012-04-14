@@ -11,7 +11,6 @@ import net.azyobuzi.azyotter.saostar.services.UpdateStatusService;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection;
 import net.azyobuzi.azyotter.saostar.widget.AccountSelector;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,13 +28,15 @@ public class UpdateStatusActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_status_page);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setSubtitle(R.string.update_status);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        Intent intent = getIntent();
+        fromAzyotter = intent.getBooleanExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, false);
+
+        setTitle(R.string.update_status);
+        if (fromAzyotter)
+        	getActionBar().setDisplayHomeAsUpEnabled(true);
 
         txtStatus = (EditText)findViewById(R.id.txt_update_status_status);
 
-        Intent intent = getIntent();
         Uri uri = intent.getData();
 
         if (isTweetIntentUri(uri)) {
@@ -75,12 +76,14 @@ public class UpdateStatusActivity extends Activity {
         	}
         } else if (intent.hasExtra(Intent.EXTRA_TEXT)) {
         	txtStatus.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
-        } else if (intent.getAction().equals("com.shootingstar067.EXP")) {
+        } else if (intent.getAction() != null && intent.getAction().equals("com.shootingstar067.EXP")) {
         	//未使用 int level = intent.getIntExtra("level", 1);
         	int exp = intent.getIntExtra("experience", 0);
         	txtStatus.setText(getText(R.string.kuzu).toString().replace("$exp$", String.valueOf(exp)));
         }
 	}
+
+	private boolean fromAzyotter;
 
 	private EditText txtStatus;
 
@@ -119,6 +122,11 @@ public class UpdateStatusActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
+				if (!fromAzyotter) {
+					startActivity(new Intent(this, AzyotterActivity.class)
+						.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true)
+						.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+				}
 				finish();
 				return true;
 			case R.id.menu_update_status_tweet:

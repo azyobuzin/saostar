@@ -16,6 +16,7 @@ public class NotificationCenter {
 
 		Intent retryIntent = new Intent(Intent.ACTION_VIEW)
 			.setData(TwitterWebIntentUriGenerator.tweet(status.getStatus(), status.getInReplyToStatusId()));
+		//CALLED_FROM_AZYOTTERは指定しない
 
 		Notification notif = new Notification(R.drawable.ic_stat_tweet, ctx.getText(R.string.tweet_failed), System.currentTimeMillis());
 		notif.setLatestEventInfo(

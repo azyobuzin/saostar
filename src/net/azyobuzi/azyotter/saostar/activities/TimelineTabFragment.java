@@ -33,6 +33,8 @@ public class TimelineTabFragment extends ListFragment {
 		this.tab = tab;
 	}
 
+	private static final String TAB_INDEX = "net.azyobuzi.azyotter.saostar.activities.TimelineTabFragment.TAB_INDEX";
+
 	private Tab tab;
 	private TimelineItemAdapter adapter = new TimelineItemAdapter();
 
@@ -55,14 +57,14 @@ public class TimelineTabFragment extends ListFragment {
     	super.onActivityCreated(savedInstanceState);
 
     	if (tab == null && savedInstanceState != null) {
-    		tab = Tabs.get(savedInstanceState.getInt("tabIndex"));
+    		tab = Tabs.get(savedInstanceState.getInt(TAB_INDEX));
     	}
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
     	super.onSaveInstanceState(outState);
-    	outState.putInt("tabIndex", Tabs.indexOf(tab));
+    	outState.putInt(TAB_INDEX, Tabs.indexOf(tab));
     }
 
     @Override

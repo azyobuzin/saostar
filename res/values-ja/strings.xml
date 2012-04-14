@@ -25,5 +25,8 @@
     <string name="reply_to">返信</string>
     <string name="colon">:</string>
     <string name="kuzu">(^o^)v ＜ $exp$経験値かき集めたクズでーす</string>
+    <string name="accounts_have_not_been_added">アカウントが設定されていません</string>
+    <string name="refresh_setting">更新設定</string>
+    <string name="account_action">アカウント操作</string>
 
 </resources>

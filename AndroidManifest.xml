@@ -23,8 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.EditAccountActivity"></activity>
-        <activity android:name=".activities.LoginActivity" android:launchMode="singleTask">
+        <activity android:name=".activities.LoginActivity" android:launchMode="singleTask" android:label="@string/login">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -32,7 +31,8 @@
                 <data android:scheme="net.azyobuzi.azyotter.saostar" android:host="callback" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AccountsActivity" android:launchMode="singleTask"></activity>
+        <activity android:name=".activities.AccountsActivity" android:launchMode="singleTask" android:label="@string/registered_accounts"></activity>
+        <activity android:name=".activities.AccountPreferenceActivity" android:label="@string/edit_account"></activity>
         <service android:name=".services.UpdateStatusService"></service>
         <activity android:name=".activities.UpdateStatusActivity">
             <intent-filter>
@@ -56,6 +56,7 @@
                 <data android:scheme="https" android:host="www.twitter.com" />
             </intent-filter>
         </activity>
+        <service android:name=".services.TimelineReceiveService"></service>
     </application>
 
 </manifest>

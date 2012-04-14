@@ -23,6 +23,9 @@ import android.widget.EditText;
 
 public class AzyotterActivity extends Activity {
     /** Called when the activity is first created. */
+
+	public static final String CALLED_FROM_AZYOTTER = "net.azyobuzi.azyotter.saostar.activities.AzyotterActivity.CALLED_FROM_AZYOTTER";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,10 +104,10 @@ public class AzyotterActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_main_update_status:
-				startActivity(new Intent(this, UpdateStatusActivity.class));
+				startActivity(new Intent(this, UpdateStatusActivity.class).putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
 				return true;
 			case R.id.menu_main_accounts:
-				startActivity(new Intent(this, AccountsActivity.class));
+				startActivity(new Intent(this, AccountsActivity.class).putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
