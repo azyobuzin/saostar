@@ -1,7 +1,12 @@
 package net.azyobuzi.azyotter.saostar.activities;
 
 import net.azyobuzi.azyotter.saostar.R;
+import net.azyobuzi.azyotter.saostar.configuration.Account;
+import net.azyobuzi.azyotter.saostar.configuration.Accounts;
+import android.app.Activity;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 
 public class AccountPreferenceFragment extends PreferenceFragment {
@@ -21,5 +26,21 @@ public class AccountPreferenceFragment extends PreferenceFragment {
 	public void setAccountId(long id) {
 		getPreferenceManager().setSharedPreferencesName("twitter_" + String.valueOf(id));
         addPreferencesFromResource(R.xml.account_preference);
+        account = Accounts.get(id);
+        findPreference("removeAccount").setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference arg0) {
+				Accounts.remove(account);
+
+				Activity activity = getActivity();
+				if (activity instanceof AccountPreferenceActivity) {
+					activity.finish();
+				}
+
+				return true;
+			}
+        });
 	}
+
+	private Account account;
 }

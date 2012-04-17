@@ -1,6 +1,8 @@
 package net.azyobuzi.azyotter.saostar.activities;
 
 import net.azyobuzi.azyotter.saostar.R;
+import net.azyobuzi.azyotter.saostar.configuration.Accounts;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -11,10 +13,14 @@ public class AccountPreferenceActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_preference_page);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        long id = getIntent().getLongExtra(AccountPreferenceFragment.ACCOUNT_ID, -1);
+        
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setSubtitle(Accounts.get(id).getScreenName());
 
         ((AccountPreferenceFragment)getFragmentManager().findFragmentById(R.id.fragment_account_preference))
-        	.setAccountId(getIntent().getLongExtra(AccountPreferenceFragment.ACCOUNT_ID, -1));
+        	.setAccountId(id);
     }
 
 	@Override

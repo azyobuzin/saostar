@@ -6,6 +6,7 @@ import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.configuration.Account;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
 import net.azyobuzi.azyotter.saostar.system.Action;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.content.Intent;
@@ -51,7 +52,6 @@ public class AccountsFragment extends ListFragment {
         dualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 
         Accounts.accountsChangedHandler.add(accountsChangedHandler);
-        accountsChangedHandler.invoke();
 
     	long id = getActivity().getIntent().getLongExtra(AccountPreferenceFragment.ACCOUNT_ID, -1);
 
@@ -76,16 +76,30 @@ public class AccountsFragment extends ListFragment {
 		@Override
 		public void invoke() {
 			adapter.notifyDataSetChanged();
+
+			if (dualPane) {
+				showDetails(selectedIndex);
+			}
 		}
 	};
 
 	public void showDetails(int index) {
-		if (Accounts.getAccountsCount() <= index)
+		if (Accounts.getAccountsCount() <= index) {
+			showDetails(Accounts.getAccountsCount() - 1);
 			return;
+		}
 
 		selectedIndex = index;
 
 		if (dualPane) {
+			if (selectedIndex < 0) {
+				getFragmentManager().beginTransaction()
+					.replace(R.id.layout_account_page_details, new Fragment(), null)
+					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+					.commit();
+				return;
+			}
+
 			getListView().setItemChecked(index, true);
 
 			AccountPreferenceFragment fragment = new AccountPreferenceFragment();
