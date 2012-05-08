@@ -28,5 +28,16 @@
     <string name="accounts_have_not_been_added">アカウントが設定されていません</string>
     <string name="refresh_setting">更新設定</string>
     <string name="account_action">アカウント操作</string>
+    <string name="tabs_have_not_been_added">タブを作成してください</string>
+    <string name="arguments_have_problem">$funcName$ function: 引数が不正です。</string>
+    <string name="query_ended_in_unexpected_position">クエリが予期せぬ場所で終了しています。</string>
+    <string name="cannot_use_other_than_prop_and_func">「prop:」、「func:」以外は使えません。</string>
+    <string name="not_found_operator_or_type_has_not_matched">$opId$演算子は存在しないか、型が一致しません。</string>
+    <string name="tabs">タブ</string>
+    <string name="edit_tab">タブ設定</string>
+    <string name="general_setting">一般</string>
+    <string name="tab_name">タブ名</string>
+    <string name="filter_setting">フィルター</string>
+    <string name="about_filter">フィルターについて</string>
 
 </resources>

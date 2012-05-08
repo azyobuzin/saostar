@@ -32,7 +32,7 @@ public class AzyotterActivity extends Activity {
         setContentView(R.layout.main);
 
         if (Accounts.getAccountsCount() == 0) {
-        	startActivity(new Intent(this, AccountsActivity.class).putExtra("firstRun", true));
+        	startActivity(new Intent(this, AccountsActivity.class).putExtra("firstRun", true).putExtra(CALLED_FROM_AZYOTTER, true));
         	finish();
         	return;
         }
@@ -104,10 +104,13 @@ public class AzyotterActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_main_update_status:
-				startActivity(new Intent(this, UpdateStatusActivity.class).putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
+				startActivity(new Intent(this, UpdateStatusActivity.class).putExtra(CALLED_FROM_AZYOTTER, true));
+				return true;
+			case R.id.menu_main_tabs:
+				startActivity(new Intent(this, TabsActivity.class).putExtra(CALLED_FROM_AZYOTTER, true));
 				return true;
 			case R.id.menu_main_accounts:
-				startActivity(new Intent(this, AccountsActivity.class).putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
+				startActivity(new Intent(this, AccountsActivity.class).putExtra(CALLED_FROM_AZYOTTER, true));
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);

@@ -48,7 +48,19 @@ public class TimelineItem {
 	public int hashCode() {
 		return id.hashCode();
 	}
-	
+
+	public static TimelineItem getDummyTweet() {
+		TimelineItem re = new TimelineItem();
+		re.id = new TimelineItemId(TimelineItemId.TYPE_TWEET, 0);
+		re.createdAt = new Date();
+		re.originalText = "dummy";
+		re.displayText = re.originalText;
+		re.sourceName = "web";
+		re.sourceUrl = Uri.parse("http://twitter.com/");
+		re.from = UserInfo.getDummyUser();
+		return re;
+	}
+
 	public static TimelineItem create(Status source, boolean isHomeTweet) {
 		TimelineItem re = new TimelineItem();
 		re.id = new TimelineItemId(TimelineItemId.TYPE_TWEET, source.getId());
@@ -122,7 +134,7 @@ public class TimelineItem {
 	}
 
 	private static Pattern sourcePattern = Pattern.compile("^<a href=\"(https?://[\\w\\d/%#$&?!()~_.=+-]+)\" rel=\"nofollow\">(.+)</a>$");
-	
+
 	public static TimelineItem create(DirectMessage source) {
 		TimelineItem re = new TimelineItem();
 		re.id = new TimelineItemId(TimelineItemId.TYPE_DIRECT_MESSAGE, source.getId());
@@ -133,7 +145,7 @@ public class TimelineItem {
 		re.to = UserCollection.addOrMerge(source.getRecipient());
 		return re;
 	}
-	
+
 	public void merge(DirectMessage source) {
 		id = new TimelineItemId(TimelineItemId.TYPE_DIRECT_MESSAGE, source.getId());
 		createdAt = source.getCreatedAt();

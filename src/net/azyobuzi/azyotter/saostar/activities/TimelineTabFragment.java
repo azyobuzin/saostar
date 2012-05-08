@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-import org.apache.commons.jexl2.MapContext;
-
-import jp.sharakova.android.urlimageview.UrlImageView;
-
 import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.configuration.Tab;
 import net.azyobuzi.azyotter.saostar.configuration.Tabs;
@@ -15,6 +11,7 @@ import net.azyobuzi.azyotter.saostar.system.Action1;
 import net.azyobuzi.azyotter.saostar.system.Func2;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection;
+import net.azyobuzi.azyotter.saostar.widget.CustomizedUrlImageView;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.os.Handler;
@@ -94,10 +91,7 @@ public class TimelineTabFragment extends ListFragment {
 					.where(new Func2<TimelineItem, Integer, Boolean>() {
 						@Override
 						public Boolean invoke(TimelineItem arg0, Integer arg1) {
-							MapContext ctx = new MapContext();
-							ctx.set("item", arg0);
-							ctx.set("util", tab.getFilterUtil());
-							return (Boolean)tab.getFilterExpression().evaluate(ctx);
+							return (Boolean)tab.getFilterExpression().invoke(arg0);
 						}
 					})
 					.toArrayList();
@@ -116,10 +110,7 @@ public class TimelineTabFragment extends ListFragment {
     private final Action1<TimelineItem> addedItemHandler = new Action1<TimelineItem>() {
 		@Override
 		public void invoke(final TimelineItem arg) {
-			MapContext ctx = new MapContext();
-			ctx.set("item", arg);
-			ctx.set("util", tab.getFilterUtil());
-			if ((Boolean)tab.getFilterExpression().evaluate(ctx)) {
+			if ((Boolean)tab.getFilterExpression().invoke(arg)) {
 				h.post(new Runnable() {
 					@Override
 					public void run() {
@@ -166,7 +157,7 @@ public class TimelineTabFragment extends ListFragment {
 
 			if (viewHolder == null) {
 				viewHolder = new TimelineItemAdapterViewHolder();
-				viewHolder.profileImage = (UrlImageView)re.findViewById(R.id.iv_timeline_item_profile_image);
+				viewHolder.profileImage = (CustomizedUrlImageView)re.findViewById(R.id.iv_timeline_item_profile_image);
 				viewHolder.name = (TextView)re.findViewById(R.id.tv_timeline_item_name);
 				viewHolder.text = (TextView)re.findViewById(R.id.tv_timeline_item_text);
 				viewHolder.dateAndSource = (TextView)re.findViewById(R.id.tv_timeline_item_date_source);
@@ -183,7 +174,7 @@ public class TimelineTabFragment extends ListFragment {
     }
 
     private static class TimelineItemAdapterViewHolder {
-    	public UrlImageView profileImage;
+    	public CustomizedUrlImageView profileImage;
     	public TextView name;
     	public TextView text;
     	public TextView dateAndSource;

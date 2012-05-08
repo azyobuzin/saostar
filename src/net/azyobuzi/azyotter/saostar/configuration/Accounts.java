@@ -101,7 +101,7 @@ public class Accounts {
 		});
 	}
 
-	public static void sort(final int from, final int to) {
+	public static void move(final int from, final int to) {
 		synchronized (lockObj) {
 			if (list == null) loadAccounts();
 		}

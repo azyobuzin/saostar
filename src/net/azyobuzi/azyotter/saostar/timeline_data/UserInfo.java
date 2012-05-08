@@ -103,4 +103,14 @@ public class UserInfo {
 				}
 			});
 	}
+
+	public static UserInfo getDummyUser() {
+		UserInfo re = new UserInfo();
+		re.id = 0;
+		re.screenName = "dummydummydummydummy";
+		re.name = "dummydummydummydummy";
+		re.createdAt = new Date();
+		re.profileImageUrl = "https://si0.twimg.com/sticky/default_profile_images/default_profile_0_normal.png";
+		return re;
+	}
 }

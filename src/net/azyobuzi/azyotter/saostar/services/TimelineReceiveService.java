@@ -32,6 +32,7 @@ public class TimelineReceiveService extends Service {
 		return null;
 	}
 
+	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		for (Account a : addQueue) {
 			internalAdd(a);
@@ -39,6 +40,14 @@ public class TimelineReceiveService extends Service {
 		addQueue = null;
 
 		return START_STICKY;
+	}
+
+	@Override
+	public void onDestroy() {
+		for (TimelineReceiver receiver : receivers.values()) {
+			receiver.dispose();
+		}
+		receivers.clear();
 	}
 
 	public final HashMap<Account, TimelineReceiver> receivers = new HashMap<Account, TimelineReceiver>();

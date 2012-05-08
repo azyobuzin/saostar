@@ -2,13 +2,20 @@ package net.azyobuzi.azyotter.saostar.configuration;
 
 import java.util.ArrayList;
 
-import org.apache.commons.jexl2.Expression;
-
-import net.azyobuzi.azyotter.saostar.JexlHelper;
-import net.azyobuzi.azyotter.saostar.filter.FilterUtil;
+import net.azyobuzi.azyotter.saostar.d_aqa.Invokable;
+import net.azyobuzi.azyotter.saostar.d_aqa.Reader;
 import net.azyobuzi.azyotter.saostar.system.Action1;
 
 public class Tab {
+	public Tab() {
+		try {
+			filterExpr = Reader.read(filter);
+		} catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+
 	private String name;
 	public final ArrayList<Action1<Tab>> nameChangedHandler = new ArrayList<Action1<Tab>>();
 
@@ -25,8 +32,7 @@ public class Tab {
 	}
 
 	private String filter = "false";
-	private Expression filterExpr = JexlHelper.createExpression("false");
-	private FilterUtil fu = new FilterUtil();
+	private Invokable filterExpr;
 	public final ArrayList<Action1<Tab>> filterChangedHandler = new ArrayList<Action1<Tab>>();
 
 	public String getFilter() {
@@ -35,13 +41,14 @@ public class Tab {
 
 	public boolean setFilter(String value) {
 		try {
-			filterExpr = JexlHelper.createExpression(value);
+			Invokable tmp = Reader.read(value);
+			if (tmp.getResultType() != Invokable.TYPE_BOOLEAN) return false;
+			filterExpr = tmp;
 		} catch (Exception ex) {
 			return false;
 		}
 
 		filter = value;
-		fu = new FilterUtil();
 
 		for (Action1<Tab> handler : filterChangedHandler) {
 			handler.invoke(this);
@@ -50,12 +57,8 @@ public class Tab {
 		return true;
 	}
 
-	public Expression getFilterExpression() {
+	public Invokable getFilterExpression() {
 		return filterExpr;
-	}
-
-	public FilterUtil getFilterUtil() {
-		return fu;
 	}
 
 	//TODO:通知系

@@ -25,8 +25,19 @@
     <string name="reply_to">Reply to</string>
     <string name="colon">:</string>
     <string name="kuzu">(^o^)v ＜ I am scrap of human because I collected $exp$ experience points</string>
-    <string name="accounts_have_not_been_added">Accounts have not been added.</string>
+    <string name="accounts_have_not_been_added">Accounts have not been added</string>
     <string name="refresh_setting">Refresh setting</string>
     <string name="account_action">Account action</string>
+    <string name="tabs_have_not_been_added">Tabs have not been added</string>
+    <string name="arguments_have_problem">$funcName$ function: Arguments have problem.</string>
+    <string name="query_ended_in_unexpected_position">Query ended in unexpected position.</string>
+    <string name="cannot_use_other_than_prop_and_func">Cannot use other than "prop:" and "func:"</string>
+    <string name="not_found_operator_or_type_has_not_matched">Not found $opId$ operator or type has not matched.</string>
+    <string name="tabs">Tabs</string>
+    <string name="edit_tab">Edit tab</string>
+    <string name="general_setting">General</string>
+    <string name="tab_name">Tab\'s name</string>
+    <string name="filter_setting">Filter</string>
+    <string name="about_filter">About filter</string>
 
 </resources>

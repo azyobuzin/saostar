@@ -11,6 +11,7 @@ import net.azyobuzi.azyotter.saostar.ContextAccess;
 import net.azyobuzi.azyotter.saostar.linq.Enumerable;
 import net.azyobuzi.azyotter.saostar.system.Action1;
 import net.azyobuzi.azyotter.saostar.system.Action2;
+import net.azyobuzi.azyotter.saostar.system.Action3;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,7 +47,7 @@ public class Tabs {
 			//初期化
 			Tab homeTab = new Tab();
 			homeTab.setName("Home");
-			homeTab.setFilter("item.isHomeTweet");
+			homeTab.setFilter("prop:isHomeTweet");
 			add(homeTab);
 		}
 	}
@@ -65,13 +66,14 @@ public class Tabs {
 		if (list == null) loadTabs();
 		return list.get(index);
 	}
-	
+
 	public static int indexOf(Tab tab) {
 		if (list == null) loadTabs();
 		return list.indexOf(tab);
 	}
 
 	public static void add(Tab tab) {
+		if (list == null) loadTabs();
 		list.add(tab);
 
 		for (Action1<Tab> handler : addedHandler) {
@@ -84,6 +86,7 @@ public class Tabs {
 	public static final ArrayList<Action1<Tab>> addedHandler = new ArrayList<Action1<Tab>>();
 
 	public static void remove(Tab tab) {
+		if (list == null) loadTabs();
 		list.remove(tab);
 
 		for (Action1<Tab> handler : removedHandler) {
@@ -94,6 +97,20 @@ public class Tabs {
 	}
 
 	public static final ArrayList<Action1<Tab>> removedHandler = new ArrayList<Action1<Tab>>();
+
+	public static void move(int from, int to) {
+		if (list == null) loadTabs();
+		Tab tab = list.remove(from);
+		list.add(to, tab);
+
+		for (Action3<Tab, Integer, Integer> handler : movedHandler) {
+			handler.invoke(tab, from, to);
+		}
+
+		save();
+	}
+
+	public static final ArrayList<Action3<Tab, Integer, Integer>> movedHandler = new ArrayList<Action3<Tab, Integer, Integer>>();
 
 	public static void save() {
 		try {

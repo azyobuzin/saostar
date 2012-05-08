@@ -8,7 +8,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/account_action">
-        <PreferenceScreen android:title="@string/edit_profile"></PreferenceScreen>
+        <PreferenceScreen android:title="@string/edit_profile" android:key="editProfile"></PreferenceScreen>
         <PreferenceScreen android:title="@string/remove_account" android:key="removeAccount"></PreferenceScreen>
     </PreferenceCategory>
 

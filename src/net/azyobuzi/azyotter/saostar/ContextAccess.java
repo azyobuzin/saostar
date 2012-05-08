@@ -14,6 +14,10 @@ public class ContextAccess {
 		context = ctx;
 	}
 
+	public static CharSequence getText(int resId) {
+		return context.getText(resId);
+	}
+
 	public static FileInputStream openFileInput(String fileName) throws FileNotFoundException {
 		return context.openFileInput(fileName);
 	}
