@@ -49,8 +49,8 @@ public class TabsFragment extends ListFragment {
 			}
         });
 
-        View detailsFrame = getActivity().findViewById(R.id.layout_tab_details);
-        dualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
+        //View detailsFrame = getActivity().findViewById(R.id.layout_tab_details);
+        //dualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 
         Tabs.addedHandler.add(tabsChangedHandler);
 		Tabs.removedHandler.add(tabsChangedHandler);
@@ -104,7 +104,7 @@ public class TabsFragment extends ListFragment {
 		selectedIndex = index;
 
 		if (dualPane) {
-			if (selectedIndex < 0) {
+			/*if (selectedIndex < 0) {
 				getFragmentManager().beginTransaction()
 					.replace(R.id.layout_tab_details, new Fragment(), null)
 					.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -122,7 +122,7 @@ public class TabsFragment extends ListFragment {
 			getFragmentManager().beginTransaction()
 				.replace(R.id.layout_tab_details, fragment)
 				.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-				.commit();
+				.commit();*/
 		} else {
 			startActivity(new Intent(getActivity(), TabPreferenceActivity.class)
 				.putExtra(TabPreferenceFragment.TAB_INDEX, index)

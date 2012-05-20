@@ -61,8 +61,6 @@
         <service android:name=".services.TimelineReceiveService"></service>
         <activity android:name=".activities.TabsActivity" android:label="@string/tabs"></activity>
         <activity android:name=".activities.TabPreferenceActivity" android:label="@string/edit_tab"></activity>
-        <activity android:name=".activities.TabGeneralSettingActivity"></activity>
-        <activity android:name=".activities.TabFilterSettingActivity"></activity>
     </application>
 
 </manifest>

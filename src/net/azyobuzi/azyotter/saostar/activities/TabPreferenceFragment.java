@@ -30,7 +30,7 @@ public class TabPreferenceFragment extends Fragment {
 	}
 
 	public void setIndex(int i) {
-		tabHost.addTab(tabHost.newTabSpec("general")
+		/*tabHost.addTab(tabHost.newTabSpec("general")
         	.setIndicator(getText(R.string.general_setting))
         	.setContent(new Intent(getActivity(), TabGeneralSettingActivity.class).putExtra(TAB_INDEX, i))
         );
@@ -40,6 +40,6 @@ public class TabPreferenceFragment extends Fragment {
         	.setContent(new Intent(getActivity(), TabFilterSettingActivity.class).putExtra(TAB_INDEX, i))
         );
 
-        tabHost.setCurrentTab(0);
+        tabHost.setCurrentTab(0);*/
 	}
 }
