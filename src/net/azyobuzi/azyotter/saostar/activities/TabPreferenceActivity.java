@@ -43,13 +43,13 @@ public class TabPreferenceActivity extends Activity {
         actionBar.addTab(
         	actionBar.newTab()
         		.setText(R.string.general_setting)
-        		.setTabListener(new SettingTabListener(new TabGeneralSettingFragment()))
+        		.setTabListener(new SettingTabListener(TabGeneralSettingFragment.createInstance(index)))
         );
 
         actionBar.addTab(
         	actionBar.newTab()
         		.setText(R.string.filter_setting)
-        		.setTabListener(new SettingTabListener(new TabFilterSettingFragment()))
+        		.setTabListener(new SettingTabListener(TabFilterSettingFragment.createInstance(index)))
         );
 	}
 

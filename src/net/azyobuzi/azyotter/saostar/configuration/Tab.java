@@ -29,6 +29,8 @@ public class Tab {
 		for (Action1<Tab> handler : nameChangedHandler) {
 			handler.invoke(this);
 		}
+		
+		Tabs.save();
 	}
 
 	private String filter = "false";
@@ -53,6 +55,8 @@ public class Tab {
 		for (Action1<Tab> handler : filterChangedHandler) {
 			handler.invoke(this);
 		}
+		
+		Tabs.save();
 
 		return true;
 	}

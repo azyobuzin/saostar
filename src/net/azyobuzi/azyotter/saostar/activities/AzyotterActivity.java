@@ -126,12 +126,12 @@ public class AzyotterActivity extends Activity {
 
 		@Override
 		public void onTabReselected(ActionBar.Tab arg0, FragmentTransaction arg1) {
-
 		}
 
 		@Override
 		public void onTabSelected(ActionBar.Tab arg0, FragmentTransaction arg1) {
 			arg1.add(R.id.fragment_content, mFragment, null);
+			mFragment.setActionBarTab(arg0);
 		}
 
 		@Override

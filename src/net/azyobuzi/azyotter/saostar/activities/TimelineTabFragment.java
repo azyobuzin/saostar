@@ -12,7 +12,9 @@ import net.azyobuzi.azyotter.saostar.system.Func2;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection;
 import net.azyobuzi.azyotter.saostar.widget.CustomizedUrlImageView;
+import android.app.ActionBar;
 import android.app.ListFragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -34,6 +36,8 @@ public class TimelineTabFragment extends ListFragment {
 
 	private Tab tab;
 	private TimelineItemAdapter adapter = new TimelineItemAdapter();
+
+	private ActionBar.Tab actionBarTab;
 
 	private Handler h = new Handler();
 
@@ -70,41 +74,25 @@ public class TimelineTabFragment extends ListFragment {
 
     	setListAdapter(adapter);
 
-    	generateTimelineAsync();
     	TimelineItemCollection.addedHandler.add(addedItemHandler);
     	TimelineItemCollection.removedHandler.add(removedItemHandler);
+    	tab.filterChangedHandler.add(filterChangedHandler);
+    	tab.nameChangedHandler.add(tabNameChangedHandler);
+    	filterChangedHandler.invoke(tab);
     }
 
     @Override
     public void onDestroy() {
     	TimelineItemCollection.addedHandler.remove(addedItemHandler);
     	TimelineItemCollection.removedHandler.remove(removedItemHandler);
+    	tab.filterChangedHandler.remove(filterChangedHandler);
+    	tab.nameChangedHandler.remove(tabNameChangedHandler);
 
     	super.onDestroy();
     }
 
-    private void generateTimelineAsync() {
-    	new Thread(new Runnable() {
-			@Override
-			public void run() {
-				final ArrayList<TimelineItem> addItems = TimelineItemCollection.getEnumerable()
-					.where(new Func2<TimelineItem, Integer, Boolean>() {
-						@Override
-						public Boolean invoke(TimelineItem arg0, Integer arg1) {
-							return (Boolean)tab.getFilterExpression().invoke(arg0);
-						}
-					})
-					.toArrayList();
-
-				h.post(new Runnable() {
-					@Override
-					public void run() {
-						items.addAll(addItems);
-						adapter.notifyDataSetChanged();
-					}
-				});
-			}
-    	}).start();
+    public void setActionBarTab(ActionBar.Tab actionBarTab) {
+    	this.actionBarTab = actionBarTab;
     }
 
     private final Action1<TimelineItem> addedItemHandler = new Action1<TimelineItem>() {
@@ -126,6 +114,46 @@ public class TimelineTabFragment extends ListFragment {
 		@Override
 		public void invoke(TimelineItem arg) {
 			items.remove(arg);
+		}
+    };
+
+    private final Action1<Tab> filterChangedHandler = new Action1<Tab>() {
+		@Override
+		public void invoke(Tab arg) {
+			new AsyncTask<Void, Void, ArrayList<TimelineItem>>() {
+				@Override
+				protected void onPreExecute() {
+					items.clear();
+					adapter.notifyDataSetChanged();
+				}
+
+				@Override
+				protected ArrayList<TimelineItem> doInBackground(Void... params) {
+					return TimelineItemCollection.getEnumerable()
+						.where(new Func2<TimelineItem, Integer, Boolean>() {
+							@Override
+							public Boolean invoke(TimelineItem arg0, Integer arg1) {
+								return (Boolean)tab.getFilterExpression().invoke(arg0);
+							}
+						})
+						.toArrayList();
+				}
+
+				@Override
+				protected void onPostExecute(ArrayList<TimelineItem> result) {
+					items.addAll(result);
+					adapter.notifyDataSetChanged();
+				}
+			}
+			.execute();
+		}
+    };
+
+    private final Action1<Tab> tabNameChangedHandler = new Action1<Tab>() {
+		@Override
+		public void invoke(Tab arg) {
+			if (actionBarTab != null)
+				actionBarTab.setText(tab.getName());
 		}
     };
 

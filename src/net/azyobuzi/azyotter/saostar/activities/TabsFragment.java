@@ -76,6 +76,12 @@ public class TabsFragment extends ListFragment {
 
 		super.onDestroy();
 	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		adapter.notifyDataSetChanged(); //タブ名変更に対応
+	}
 
 	private final Action1<Tab> tabsChangedHandler = new Action1<Tab>() {
 		@Override

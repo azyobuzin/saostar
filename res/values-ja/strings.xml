@@ -39,5 +39,9 @@
     <string name="tab_name">タブ名</string>
     <string name="filter_setting">フィルター</string>
     <string name="about_filter">フィルターについて</string>
+    <string name="query_is_nothing">クエリが入力されていません</string>
+    <string name="query_successfully_parsed">クエリ解析成功</string>
+    <string name="parsing_query_failed">クエリ解析失敗：</string>
+    <string name="return_type_is_not_boolean">戻り値の型がBooleanではありません。</string>
 
 </resources>
