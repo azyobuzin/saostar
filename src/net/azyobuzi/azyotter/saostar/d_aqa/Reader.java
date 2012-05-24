@@ -2,11 +2,11 @@ package net.azyobuzi.azyotter.saostar.d_aqa;
 
 import java.io.EOFException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.GregorianCalendar;
 
 import net.azyobuzi.azyotter.saostar.ContextAccess;
 import net.azyobuzi.azyotter.saostar.R;
-import net.azyobuzi.azyotter.saostar.d_aqa.operators.EqualityOperator;
+import net.azyobuzi.azyotter.saostar.d_aqa.operators.*;
 import net.azyobuzi.azyotter.saostar.d_aqa.properties.*;
 import net.azyobuzi.azyotter.saostar.linq.Enumerable;
 import net.azyobuzi.azyotter.saostar.system.Func2;
@@ -42,7 +42,12 @@ public class Reader {
 	};
 
 	public static final OperatorFactory[] operators = new OperatorFactory[] {
-		new EqualityOperator.Factory()
+		new EqualityOperator.Factory(),
+		new InequalityOperator.Factory(),
+		new GreaterThanOperator.Factory(),
+		new GreaterThanOrEqualOperator.Factory(),
+		new LessThanOperator.Factory(),
+		new LessThanOrEqualOperator.Factory()
 	};
 
 	public static final FunctionFactory[] functions = new FunctionFactory[] {
@@ -122,7 +127,7 @@ public class Reader {
 					if (i == -1) break;
 
 					char c = (char)i;
-					if (space.contains(String.valueOf(c))) break;
+					if (!"0123456789".contains(String.valueOf(c))) break;
 
 					sb.append(c);
 					reader.read();
@@ -137,7 +142,7 @@ public class Reader {
 					if (i == -1) break;
 
 					char c = (char)i;
-					if (space.contains(String.valueOf(c))) break;
+					if ((space + ")").contains(String.valueOf(c))) break;
 
 					sb.append(c);
 					reader.read();
@@ -147,17 +152,19 @@ public class Reader {
 			case 'd':
 				boolean timeFlag = false;
 				while (true) {
-					int i = reader.read();
+					int i = reader.peek();
 					if (i == -1) break;
 
 					char c = (char)i;
-					if (space.contains(String.valueOf(c))) break;
+					if (!"/-0123456789".contains(String.valueOf(c))) break;
 					if (c == '-') {
 						timeFlag = true;
+						reader.read();
 						break;
 					}
 
 					sb.append(c);
+					reader.read();
 				}
 
 				String[] splittedDate = sb.toString().split("/");
@@ -166,7 +173,7 @@ public class Reader {
 				int day = Integer.valueOf(splittedDate[2]);
 
 				if (!timeFlag) {
-					return new Constant(Invokable.TYPE_DATETIME, new Date(year, month, day));
+					return new Constant(Invokable.TYPE_DATETIME, new GregorianCalendar(year, month, day).getTime());
 				} else {
 					sb = new StringBuilder();
 					while (true) {
@@ -174,7 +181,7 @@ public class Reader {
 						if (i == -1) break;
 
 						char c = (char)i;
-						if (space.contains(String.valueOf(c))) break;
+						if (!":0123456789".contains(String.valueOf(c))) break;
 
 						sb.append(c);
 						reader.read();
@@ -186,9 +193,9 @@ public class Reader {
 
 					if (splittedTime.length == 3) {
 						int second = Integer.valueOf(splittedTime[2]);
-						return new Constant(Invokable.TYPE_DATETIME, new Date(year, month, day, hour, minute, second));
+						return new Constant(Invokable.TYPE_DATETIME, new GregorianCalendar(year, month, day, hour, minute, second).getTime());
 					} else {
-						return new Constant(Invokable.TYPE_DATETIME, new Date(year, month, day, hour, minute));
+						return new Constant(Invokable.TYPE_DATETIME, new GregorianCalendar(year, month, day, hour, minute).getTime());
 					}
 				}
 

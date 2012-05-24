@@ -8,9 +8,9 @@ import net.azyobuzi.azyotter.saostar.d_aqa.Operator;
 import net.azyobuzi.azyotter.saostar.d_aqa.OperatorFactory;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 
-public class EqualityOperator extends Operator {
+public class InequalityOperator extends Operator {
 
-	public EqualityOperator(Invokable left, Invokable right) {
+	public InequalityOperator(Invokable left, Invokable right) {
 		super(left, right);
 	}
 
@@ -21,19 +21,19 @@ public class EqualityOperator extends Operator {
 
 		if (left.getResultType() == TYPE_STRING && right.getResultType() == TYPE_STRING) {
 			if (leftResult == null)
-				return rightResult == null;
+				return rightResult != null;
 
-			return ((String)leftResult).equalsIgnoreCase((String)rightResult);
+			return !((String)leftResult).equalsIgnoreCase((String)rightResult);
 		}
 
-		return leftResult.equals(rightResult);
+		return !leftResult.equals(rightResult);
 	}
 
 	public static class Factory implements OperatorFactory {
 
 		@Override
 		public String getOperatorIdentifier() {
-			return "=";
+			return "!";
 		}
 
 		private static final HashMap<Integer, Integer> parameterTypes = new HashMap<Integer, Integer>() {
@@ -54,7 +54,7 @@ public class EqualityOperator extends Operator {
 
 		@Override
 		public Operator createOperator(Invokable left, Invokable right) {
-			return new EqualityOperator(left, right);
+			return new InequalityOperator(left, right);
 		}
 
 	}

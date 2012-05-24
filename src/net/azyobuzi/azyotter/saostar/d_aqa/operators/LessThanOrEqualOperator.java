@@ -1,5 +1,6 @@
 package net.azyobuzi.azyotter.saostar.d_aqa.operators;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,9 +9,9 @@ import net.azyobuzi.azyotter.saostar.d_aqa.Operator;
 import net.azyobuzi.azyotter.saostar.d_aqa.OperatorFactory;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 
-public class EqualityOperator extends Operator {
+public class LessThanOrEqualOperator extends Operator {
 
-	public EqualityOperator(Invokable left, Invokable right) {
+	public LessThanOrEqualOperator(Invokable left, Invokable right) {
 		super(left, right);
 	}
 
@@ -19,30 +20,25 @@ public class EqualityOperator extends Operator {
 		Object leftResult = left.invoke(target);
 		Object rightResult = right.invoke(target);
 
-		if (left.getResultType() == TYPE_STRING && right.getResultType() == TYPE_STRING) {
-			if (leftResult == null)
-				return rightResult == null;
-
-			return ((String)leftResult).equalsIgnoreCase((String)rightResult);
+		if (left.getResultType() == TYPE_NUMBER && right.getResultType() == TYPE_NUMBER) {
+			return (Long)leftResult <= (Long)rightResult;
+		} else {
+			return ((Date)leftResult).compareTo((Date)rightResult) <= 0;
 		}
-
-		return leftResult.equals(rightResult);
 	}
 
 	public static class Factory implements OperatorFactory {
 
 		@Override
 		public String getOperatorIdentifier() {
-			return "=";
+			return "<=";
 		}
 
 		private static final HashMap<Integer, Integer> parameterTypes = new HashMap<Integer, Integer>() {
 			private static final long serialVersionUID = 1L;
 
 			{
-				put(TYPE_STRING, TYPE_STRING);
 				put(TYPE_NUMBER, TYPE_NUMBER);
-				put(TYPE_BOOLEAN, TYPE_BOOLEAN);
 				put(TYPE_DATETIME, TYPE_DATETIME);
 			}
 		};
@@ -54,7 +50,7 @@ public class EqualityOperator extends Operator {
 
 		@Override
 		public Operator createOperator(Invokable left, Invokable right) {
-			return new EqualityOperator(left, right);
+			return new LessThanOrEqualOperator(left, right);
 		}
 
 	}
