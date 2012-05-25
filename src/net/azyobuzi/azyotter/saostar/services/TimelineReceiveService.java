@@ -34,10 +34,13 @@ public class TimelineReceiveService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		for (TimelineReceiver receiver : receivers.values()) {
+			receiver.start();
+		}
 		for (Account a : addQueue) {
 			internalAdd(a);
 		}
-		addQueue = null;
+		addQueue.clear();
 
 		return START_STICKY;
 	}
@@ -45,9 +48,8 @@ public class TimelineReceiveService extends Service {
 	@Override
 	public void onDestroy() {
 		for (TimelineReceiver receiver : receivers.values()) {
-			receiver.dispose();
+			receiver.stop();
 		}
-		receivers.clear();
 	}
 
 	public final HashMap<Account, TimelineReceiver> receivers = new HashMap<Account, TimelineReceiver>();
@@ -228,8 +230,13 @@ public class TimelineReceiveService extends Service {
 			useUserStreamChangedHandler.invoke();
 		}
 
-		public void dispose() {
+		public void stop() {
 			account.useUserStreamChangedHandler.remove(useUserStreamChangedHandler);
+			stream.cleanUp();
+		}
+		
+		public void dispose() {
+			stop();
 			stream.shutdown();
 		}
 
