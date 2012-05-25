@@ -37,6 +37,9 @@ public class TimelineTabFragment extends ListFragment {
 	private Tab tab;
 	private TimelineItemAdapter adapter = new TimelineItemAdapter();
 
+	private boolean pausing = false;
+	private boolean haveToExecuteFilter = false;
+
 	private ActionBar.Tab actionBarTab;
 
 	private Handler h = new Handler();
@@ -95,6 +98,35 @@ public class TimelineTabFragment extends ListFragment {
     	this.actionBarTab = actionBarTab;
     }
 
+    private void executeFilter() {
+    	new AsyncTask<Void, Void, ArrayList<TimelineItem>>() {
+			@Override
+			protected void onPreExecute() {
+				items.clear();
+				adapter.notifyDataSetChanged();
+			}
+
+			@Override
+			protected ArrayList<TimelineItem> doInBackground(Void... params) {
+				return TimelineItemCollection.getEnumerable()
+					.where(new Func2<TimelineItem, Integer, Boolean>() {
+						@Override
+						public Boolean invoke(TimelineItem arg0, Integer arg1) {
+							return (Boolean)tab.getFilterExpression().invoke(arg0);
+						}
+					})
+					.toArrayList();
+			}
+
+			@Override
+			protected void onPostExecute(ArrayList<TimelineItem> result) {
+				items.addAll(result);
+				adapter.notifyDataSetChanged();
+			}
+		}
+		.execute();
+    }
+
     private final Action1<TimelineItem> addedItemHandler = new Action1<TimelineItem>() {
 		@Override
 		public void invoke(final TimelineItem arg) {
@@ -120,32 +152,10 @@ public class TimelineTabFragment extends ListFragment {
     private final Action1<Tab> filterChangedHandler = new Action1<Tab>() {
 		@Override
 		public void invoke(Tab arg) {
-			new AsyncTask<Void, Void, ArrayList<TimelineItem>>() {
-				@Override
-				protected void onPreExecute() {
-					items.clear();
-					adapter.notifyDataSetChanged();
-				}
-
-				@Override
-				protected ArrayList<TimelineItem> doInBackground(Void... params) {
-					return TimelineItemCollection.getEnumerable()
-						.where(new Func2<TimelineItem, Integer, Boolean>() {
-							@Override
-							public Boolean invoke(TimelineItem arg0, Integer arg1) {
-								return (Boolean)tab.getFilterExpression().invoke(arg0);
-							}
-						})
-						.toArrayList();
-				}
-
-				@Override
-				protected void onPostExecute(ArrayList<TimelineItem> result) {
-					items.addAll(result);
-					adapter.notifyDataSetChanged();
-				}
-			}
-			.execute();
+			if (pausing)
+				haveToExecuteFilter = true;
+			else
+				executeFilter();
 		}
     };
 
@@ -155,6 +165,19 @@ public class TimelineTabFragment extends ListFragment {
 			if (actionBarTab != null)
 				actionBarTab.setText(tab.getName());
 		}
+    };
+
+    @Override
+    public void onPause() {
+    	super.onPause();
+    	pausing = true;
+    }
+
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	pausing = false;
+    	if (haveToExecuteFilter) executeFilter();
     };
 
 

@@ -4,9 +4,6 @@ import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.StringUtil;
 import net.azyobuzi.azyotter.saostar.configuration.Tab;
 import net.azyobuzi.azyotter.saostar.configuration.Tabs;
-import net.azyobuzi.azyotter.saostar.d_aqa.Invokable;
-import net.azyobuzi.azyotter.saostar.d_aqa.Reader;
-import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
@@ -69,11 +66,6 @@ public class TabFilterSettingFragment extends Fragment {
 				}
 
 				try {
-					Invokable expr = Reader.read(newText);
-					if (expr.getResultType() != Invokable.TYPE_BOOLEAN)
-						throw new IllegalArgumentException(getString(R.string.return_type_is_not_boolean));
-					expr.invoke(TimelineItem.getDummyTweet());
-
 					tab.setFilter(newText);
 					tvQueryState.setText(R.string.query_successfully_parsed);
 					tvQueryState.setTextColor(GREEN);

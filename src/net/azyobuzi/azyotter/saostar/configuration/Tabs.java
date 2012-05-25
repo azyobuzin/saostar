@@ -47,7 +47,11 @@ public class Tabs {
 			//初期化
 			Tab homeTab = new Tab();
 			homeTab.setName("Home");
-			homeTab.setFilter("prop:isHomeTweet");
+			try {
+				homeTab.setFilter("prop:isHomeTweet");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			add(homeTab);
 		}
 	}

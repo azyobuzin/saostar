@@ -18,6 +18,10 @@ public class ContextAccess {
 		return context.getText(resId);
 	}
 
+	public static String getString(int resId) {
+		return context.getString(resId);
+	}
+
 	public static FileInputStream openFileInput(String fileName) throws FileNotFoundException {
 		return context.openFileInput(fileName);
 	}

@@ -1,10 +1,14 @@
 package net.azyobuzi.azyotter.saostar.configuration;
 
+import java.io.EOFException;
 import java.util.ArrayList;
 
+import net.azyobuzi.azyotter.saostar.ContextAccess;
+import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.d_aqa.Invokable;
 import net.azyobuzi.azyotter.saostar.d_aqa.Reader;
 import net.azyobuzi.azyotter.saostar.system.Action1;
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 
 public class Tab {
 	public Tab() {
@@ -29,7 +33,7 @@ public class Tab {
 		for (Action1<Tab> handler : nameChangedHandler) {
 			handler.invoke(this);
 		}
-		
+
 		Tabs.save();
 	}
 
@@ -41,24 +45,21 @@ public class Tab {
 		return filter;
 	}
 
-	public boolean setFilter(String value) {
-		try {
-			Invokable tmp = Reader.read(value);
-			if (tmp.getResultType() != Invokable.TYPE_BOOLEAN) return false;
-			filterExpr = tmp;
-		} catch (Exception ex) {
-			return false;
-		}
+	public void setFilter(String value) throws EOFException, IllegalArgumentException {
+		//正しく動くかテスト
+		Invokable tmp = Reader.read(value);
+		if (tmp.getResultType() != Invokable.TYPE_BOOLEAN)
+			throw new IllegalArgumentException(ContextAccess.getString(R.string.return_type_is_not_boolean));
+		tmp.invoke(TimelineItem.getDummyTweet());
 
+		filterExpr = tmp;
 		filter = value;
 
 		for (Action1<Tab> handler : filterChangedHandler) {
 			handler.invoke(this);
 		}
-		
-		Tabs.save();
 
-		return true;
+		Tabs.save();
 	}
 
 	public Invokable getFilterExpression() {
