@@ -12,31 +12,18 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 public class TabPreferenceActivity extends Activity {
+	public static final String TAB_INDEX = "net.azyobuzi.azyotter.saostar.activities.TabPreferenceActivity.TAB_INDEX";
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_container);
 
-        int index = getIntent().getIntExtra(TabPreferenceFragment.TAB_INDEX, 0);
+        int index = getIntent().getIntExtra(TAB_INDEX, 0);
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setSubtitle(Tabs.get(index).getName());
-
-        /*((TabPreferenceFragment)getFragmentManager().findFragmentById(R.id.fragment_tab_preference))
-        	.setIndex(index);*/
-
-        /*tabHost.addTab(tabHost.newTabSpec("general")
-        	.setIndicator(getText(R.string.general_setting))
-        	.setContent(new Intent(this, TabGeneralSettingActivity.class).putExtra(TabPreferenceFragment.TAB_INDEX, index))
-        );
-
-        tabHost.addTab(tabHost.newTabSpec("filter")
-        	.setIndicator(getText(R.string.filter_setting))
-        	.setContent(new Intent(this, TabFilterSettingActivity.class).putExtra(TabPreferenceFragment.TAB_INDEX, index))
-        );
-
-        tabHost.setCurrentTab(0);*/
 
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
