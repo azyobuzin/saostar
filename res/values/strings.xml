@@ -43,5 +43,6 @@
     <string name="query_successfully_parsed">Query successfully parsed</string>
     <string name="parsing_query_failed">Parsing query failed：</string>
     <string name="return_type_is_not_boolean">Return type is not Boolean.</string>
+    <string name="add_tab">Add tab</string>
 
 </resources>

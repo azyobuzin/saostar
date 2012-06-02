@@ -43,5 +43,6 @@
     <string name="query_successfully_parsed">クエリ解析成功</string>
     <string name="parsing_query_failed">クエリ解析失敗：</string>
     <string name="return_type_is_not_boolean">戻り値の型がBooleanではありません。</string>
+    <string name="add_tab">タブ追加</string>
 
 </resources>

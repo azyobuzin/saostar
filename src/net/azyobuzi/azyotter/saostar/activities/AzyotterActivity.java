@@ -8,6 +8,7 @@ import net.azyobuzi.azyotter.saostar.configuration.Tabs;
 import net.azyobuzi.azyotter.saostar.services.UpdateStatusService;
 import net.azyobuzi.azyotter.saostar.system.Action1;
 import net.azyobuzi.azyotter.saostar.system.Action2;
+import net.azyobuzi.azyotter.saostar.system.Action3;
 import net.azyobuzi.azyotter.saostar.widget.AccountSelector;
 import android.app.ActionBar;
 import android.app.ActionBar.TabListener;
@@ -26,7 +27,9 @@ public class AzyotterActivity extends Activity {
 
 	public static final String CALLED_FROM_AZYOTTER = "net.azyobuzi.azyotter.saostar.activities.AzyotterActivity.CALLED_FROM_AZYOTTER";
 
-    @Override
+    private boolean tabChanged = false;
+
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -37,16 +40,12 @@ public class AzyotterActivity extends Activity {
         	return;
         }
 
-        ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        Tabs.getAllTabs().forEach(new Action2<Tab, Integer>() {
-			@Override
-			public void invoke(Tab arg0, Integer arg1) {
-				addedTabHandler.invoke(arg0);
-			}
-        });
-        Tabs.addedHandler.add(addedTabHandler);
-        Tabs.removedHandler.add(removedTabHandler);
+        createTabs();
+        Tabs.addedHandler.add(tabChangedHandler);
+        Tabs.removedHandler.add(tabChangedHandler);
+        Tabs.movedHandler.add(movedTabHandler);
 
         findViewById(R.id.btn_main_update_status).setOnClickListener(new OnClickListener() {
 			@Override
@@ -65,32 +64,48 @@ public class AzyotterActivity extends Activity {
     @Override
     public void onDestroy() {
     	((AccountSelector)findViewById(R.id.as_main)).dispose();
+    	Tabs.addedHandler.remove(tabChangedHandler);
+        Tabs.removedHandler.remove(tabChangedHandler);
+        Tabs.movedHandler.remove(movedTabHandler);
     	super.onDestroy();
     }
 
-	private final Action1<Tab> addedTabHandler = new Action1<Tab>() {
+    @Override
+    protected void onResume() {
+    	super.onResume();
+
+    	if (tabChanged) {
+    		getActionBar().removeAllTabs();
+    		createTabs();
+    	}
+    }
+
+    private void createTabs() {
+    	final ActionBar actionBar = getActionBar();
+    	Tabs.getAllTabs().forEach(new Action2<Tab, Integer>() {
+			@Override
+			public void invoke(Tab arg0, Integer arg1) {
+				actionBar.addTab(
+					actionBar.newTab()
+						.setText(arg0.getName())
+						.setTabListener(new TimelineTabListener(arg0))
+						.setTag(arg0)
+				);
+			}
+        });
+    }
+
+	private final Action1<Tab> tabChangedHandler = new Action1<Tab>() {
 		@Override
 		public void invoke(Tab arg) {
-			ActionBar actionBar = getActionBar();
-			actionBar.addTab(
-				actionBar.newTab()
-					.setText(arg.getName())
-					.setTabListener(new TimelineTabListener(arg))
-					.setTag(arg)
-			);
+			tabChanged = true;
 		}
 	};
 
-	private final Action1<Tab> removedTabHandler = new Action1<Tab>() {
+	private final Action3<Tab, Integer, Integer> movedTabHandler = new Action3<Tab, Integer, Integer>() {
 		@Override
-		public void invoke(Tab arg) {
-			ActionBar actionBar = getActionBar();
-			for (int i = 0; i < actionBar.getTabCount(); i++) {
-				if (actionBar.getTabAt(i).getTag() == arg) {
-					actionBar.removeTabAt(i);
-					return;
-				}
-			}
+		public void invoke(Tab arg0, Integer arg1, Integer arg2) {
+			tabChanged = true;
 		}
 	};
 

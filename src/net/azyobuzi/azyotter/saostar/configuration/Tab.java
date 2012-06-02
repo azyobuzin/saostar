@@ -20,7 +20,7 @@ public class Tab {
 		}
 	}
 
-	private String name;
+	private String name = "NewTab";
 	public final ArrayList<Action1<Tab>> nameChangedHandler = new ArrayList<Action1<Tab>>();
 
 	public String getName() {
