@@ -44,5 +44,15 @@
     <string name="parsing_query_failed">クエリ解析失敗：</string>
     <string name="return_type_is_not_boolean">戻り値の型がBooleanではありません。</string>
     <string name="add_tab">タブ追加</string>
-
+    <string name="attachment_picture">添付される画像</string>
+    <string name="attach_picture">画像を添付</string>
+    <string name="couldnt_open_picture_file">画像ファイルを開けませんでした。</string>
+    <string name="cannot_attach_over_2_pictures">2つ以上の画像を添付することはできません。</string>
+    <string name="upload_to_twitpic">Twitpicへアップロード</string>
+    <string name="upload_to_hatena_fotolife">はてなフォトライフへアップロード</string>
+    <string name="remove">削除</string>
+    <string name="uploading_picture">画像をアップロードしています…</string>
+    <string name="couldnt_upload_picture">アップロード失敗</string>
+    <string name="hatena_fotolife_application_has_not_been_installed">はてなフォトライフアプリがインストールされていません。</string>
+    <string name="hatena_fotolife_supports_only_jpeg">はてなフォトライフはJPEG画像のみサポートしています。</string>
 </resources>

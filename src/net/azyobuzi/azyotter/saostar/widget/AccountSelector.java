@@ -30,30 +30,32 @@ public class AccountSelector extends CustomizedUrlImageView {
 	}
 
 	private void init(final Context context) {
-		setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				final ArrayList<Account> accounts = Accounts.getAllAccounts().toArrayList();
-				CharSequence[] screenNames = new CharSequence[accounts.size()];
-				for (int i = 0; i < accounts.size(); i++) {
-					screenNames[i] = accounts.get(i).getScreenName();
+		if (!isInEditMode()) {
+			setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					final ArrayList<Account> accounts = Accounts.getAllAccounts().toArrayList();
+					CharSequence[] screenNames = new CharSequence[accounts.size()];
+					for (int i = 0; i < accounts.size(); i++) {
+						screenNames[i] = accounts.get(i).getScreenName();
+					}
+
+					new AlertDialog.Builder(context)
+						.setTitle(R.string.select_account_to_use)
+						.setItems(screenNames, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Accounts.setSelectedAccount(accounts.get(which));
+							}
+						})
+						.setPositiveButton(android.R.string.cancel, ActivityUtil.emptyDialogOnClickListener)
+						.show();
 				}
+			});
 
-				new AlertDialog.Builder(context)
-					.setTitle(R.string.select_account_to_use)
-					.setItems(screenNames, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Accounts.setSelectedAccount(accounts.get(which));
-						}
-					})
-					.setPositiveButton(android.R.string.cancel, ActivityUtil.emptyDialogOnClickListener)
-					.show();
-			}
-		});
-
-		Accounts.selectedAccountChangedHandler.add(selectedAccountChangedHandler);
-		selectedAccountChangedHandler.invoke();
+			Accounts.selectedAccountChangedHandler.add(selectedAccountChangedHandler);
+			selectedAccountChangedHandler.invoke();
+		}
 	}
 
 	private final Action selectedAccountChangedHandler = new Action() {

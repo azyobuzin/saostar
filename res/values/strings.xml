@@ -44,5 +44,15 @@
     <string name="parsing_query_failed">Parsing query failed：</string>
     <string name="return_type_is_not_boolean">Return type is not Boolean.</string>
     <string name="add_tab">Add tab</string>
-
+    <string name="attachment_picture">Attachment picture</string>
+    <string name="attach_picture">Attach picture</string>
+    <string name="couldnt_open_picture_file">Couldn\'t open picture file.</string>
+    <string name="cannot_attach_over_2_pictures">Cannot attach over 2 pictures.</string>
+    <string name="upload_to_twitpic">Upload to Twitpic</string>
+    <string name="upload_to_hatena_fotolife">Upload to Hatena Fotolife</string>
+    <string name="remove">Remove</string>
+    <string name="uploading_picture">Uploading picture…</string>
+    <string name="couldnt_upload_picture">Couldn\'t upload picture</string>
+    <string name="hatena_fotolife_application_has_not_been_installed">Hatena Fotolife application has not been installed.</string>
+    <string name="hatena_fotolife_supports_only_jpeg">Hatena Fotolife supports only JPEG.</string>
 </resources>

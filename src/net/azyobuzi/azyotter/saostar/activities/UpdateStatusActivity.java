@@ -1,8 +1,17 @@
 package net.azyobuzi.azyotter.saostar.activities;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import twitter4j.AsyncTwitter;
 import twitter4j.Status;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.media.ImageUploadFactory;
+import twitter4j.media.MediaProvider;
+import net.azyobuzi.azyotter.saostar.ActivityUtil;
 import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.StringUtil;
 import net.azyobuzi.azyotter.saostar.Twitter4JFactories;
@@ -12,17 +21,32 @@ import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection;
 import net.azyobuzi.azyotter.saostar.widget.AccountSelector;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
 public class UpdateStatusActivity extends Activity {
+	private static final int PICK_PICTURE = 0;
+	private static final int UPLOAD_HATENA_FOTOLIFE = 1;
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +60,58 @@ public class UpdateStatusActivity extends Activity {
         	getActionBar().setDisplayHomeAsUpEnabled(true);
 
         txtStatus = (EditText)findViewById(R.id.txt_update_status_status);
+        btnAttachmentPicture = (Button)findViewById(R.id.btn_update_status_attachment_pic);
+
+        final PopupMenu attachmentPicPopup = new PopupMenu(this, btnAttachmentPicture);
+        attachmentPicPopup.getMenuInflater().inflate(R.menu.attachment_picture_menu, attachmentPicPopup.getMenu());
+
+        btnAttachmentPicture.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				attachmentPicPopup.show();
+			}
+        });
+        attachmentPicPopup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				switch (item.getItemId()) {
+					case R.id.menu_attachment_picture_upload_twitpic:
+						new TwitpicUploadTask().execute();
+						break;
+					case R.id.menu_attachment_picture_upload_hatena_fotolife:
+						if (attachmentPictureMimeType.equals("image/jpeg")) {
+							try {
+								startActivityForResult(
+									new Intent("com.hatena.android.fotolife.ACTION_UPLOAD")
+										.setType("image/jpeg")
+										.putExtra(Intent.EXTRA_STREAM, attachmentPictureUri)
+										.putExtra("title", txtStatus.getText().toString()),
+									UPLOAD_HATENA_FOTOLIFE
+								);
+							} catch (ActivityNotFoundException ex) {
+								new AlertDialog.Builder(UpdateStatusActivity.this)
+									.setTitle(android.R.string.dialog_alert_title)
+									.setIcon(android.R.drawable.ic_dialog_alert)
+									.setMessage(R.string.hatena_fotolife_application_has_not_been_installed)
+									.setPositiveButton(android.R.string.ok, ActivityUtil.emptyDialogOnClickListener)
+									.show();
+							}
+						} else {
+							new AlertDialog.Builder(UpdateStatusActivity.this)
+								.setTitle(android.R.string.dialog_alert_title)
+								.setIcon(android.R.drawable.ic_dialog_alert)
+								.setMessage(R.string.hatena_fotolife_supports_only_jpeg)
+								.setPositiveButton(android.R.string.ok, ActivityUtil.emptyDialogOnClickListener)
+								.show();
+						}
+						break;
+					case R.id.menu_attachment_picture_remove:
+						removeAttachment();
+						break;
+				}
+				return true;
+			}
+        });
 
         Uri uri = intent.getData();
 
@@ -81,14 +157,22 @@ public class UpdateStatusActivity extends Activity {
         	int exp = intent.getIntExtra("experience", 0);
         	txtStatus.setText(getText(R.string.kuzu).toString().replace("$exp$", String.valueOf(exp)));
         }
+
+        if (intent.hasExtra(Intent.EXTRA_STREAM)) {
+        	attachPicture((Uri)intent.getExtras().get(Intent.EXTRA_STREAM));
+        }
 	}
 
 	private boolean fromAzyotter;
 
 	private EditText txtStatus;
+	private Button btnAttachmentPicture;
 
 	private long inReplyToStatusId = -1;
 	private TimelineItem inReplyToStatus = null;
+
+	private Uri attachmentPictureUri = null;
+	private String attachmentPictureMimeType = null;
 
 	private void showInReplyTo() {
 		if (inReplyToStatus != null) {
@@ -134,12 +218,144 @@ public class UpdateStatusActivity extends Activity {
 				String text = txtStatus.getText().toString();
 				if (!StringUtil.isNullOrEmpty(text)) {
 					startService(new Intent(this, UpdateStatusService.class)
-						.putExtra(UpdateStatusService.TEXT, text));
+						.putExtra(UpdateStatusService.TEXT, text)
+						.putExtra(UpdateStatusService.IN_REPLY_TO_STATUS_ID, inReplyToStatusId)
+						.putExtra(UpdateStatusService.MEDIA, attachmentPictureUri != null ? attachmentPictureUri.toString() : null)
+					);
 					finish();
+				}
+				return true;
+			case R.id.menu_update_status_attach_picture:
+				if (attachmentPictureUri == null) {
+					startActivityForResult(
+						new Intent(Intent.ACTION_GET_CONTENT)
+							.setType("image/*"),
+						PICK_PICTURE
+					);
+				} else {
+					new AlertDialog.Builder(this)
+						.setTitle(android.R.string.dialog_alert_title)
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setMessage(R.string.cannot_attach_over_2_pictures)
+						.setPositiveButton(android.R.string.ok, ActivityUtil.emptyDialogOnClickListener)
+						.show();
 				}
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			switch (requestCode) {
+				case PICK_PICTURE:
+					attachPicture(data.getData());
+					break;
+				case UPLOAD_HATENA_FOTOLIFE:
+					txtStatus.getText().append(" " + data.getDataString());
+					removeAttachment();
+					break;
+			}
+		}
+
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	private void attachPicture(Uri uri) {
+		try {
+			attachmentPictureUri = uri;
+
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inJustDecodeBounds = true;
+			InputStream stream = getContentResolver().openInputStream(uri);
+			BitmapFactory.decodeStream(stream, null, options);
+			stream.close();
+			int targetSize = getResources().getInteger(R.integer.attachment_pic_size);
+			options.inSampleSize = Math.max(options.outWidth / targetSize, options.outHeight / targetSize) + 1;
+			options.inJustDecodeBounds = false;
+			stream = getContentResolver().openInputStream(uri);
+			Bitmap bmp = BitmapFactory.decodeStream(stream, null, options);
+			stream.close();
+
+			BitmapDrawable drawable = new BitmapDrawable(bmp);
+			drawable.setBounds(0, 0, options.outWidth, options.outHeight);
+			btnAttachmentPicture.setCompoundDrawables(drawable, null, null, null);
+			btnAttachmentPicture.setVisibility(View.VISIBLE);
+			attachmentPictureMimeType = options.outMimeType;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			attachmentPictureUri = null;
+			new AlertDialog.Builder(this)
+				.setTitle(android.R.string.dialog_alert_title)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setMessage(R.string.couldnt_open_picture_file)
+				.setPositiveButton(android.R.string.ok, ActivityUtil.emptyDialogOnClickListener)
+				.show();
+		}
+	}
+
+	private void removeAttachment() {
+		attachmentPictureUri = null;
+		btnAttachmentPicture.setVisibility(View.GONE);
+	}
+
+	private class TwitpicUploadTask extends AsyncTask<Void, Void, String> {
+		private ProgressDialog dialog;
+		private String message;
+		private TwitterException ex;
+
+		@Override
+		protected void onPreExecute() {
+			message = txtStatus.getText().toString();
+			dialog = new ProgressDialog(UpdateStatusActivity.this);
+			dialog.setMessage(getText(R.string.uploading_picture));
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
+			dialog.show();
+		}
+
+		@Override
+		protected String doInBackground(Void... arg0) {
+			try {
+				Configuration conf = new ConfigurationBuilder()
+					.setMediaProvider(MediaProvider.TWITPIC.toString())
+					.setMediaProviderAPIKey("b466e89334557babab629bf7d9a92efd")
+					.setOAuthAccessToken(Accounts.getSelectedAccount().getOAuthToken())
+					.setOAuthAccessTokenSecret(Accounts.getSelectedAccount().getOAuthTokenSecret())
+					.build();
+
+				return new ImageUploadFactory(conf).getInstance().upload(
+					"media." + MimeTypeMap.getSingleton().getExtensionFromMimeType(attachmentPictureMimeType),
+					getContentResolver().openInputStream(attachmentPictureUri),
+					message
+				);
+			} catch (FileNotFoundException ex) {
+				ex.printStackTrace();
+				return "";
+			} catch (TwitterException ex) {
+				ex.printStackTrace();
+				this.ex = ex;
+				return "";
+			}
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (ex == null) {
+				txtStatus.getText().append(" " + result);
+				removeAttachment();
+			} else {
+				new AlertDialog.Builder(UpdateStatusActivity.this)
+					.setTitle(R.string.couldnt_upload_picture)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setMessage(StringUtil.isNullOrEmpty(ex.getErrorMessage()) ? ex.getMessage() : ex.getErrorMessage())
+					.setPositiveButton(android.R.string.ok, ActivityUtil.emptyDialogOnClickListener)
+					.show();
+			}
+
+			dialog.dismiss();
 		}
 	}
 }
