@@ -58,17 +58,34 @@
 
 		        <requestFocus />
 		    </EditText>
-
-		    <Button
-		        android:id="@+id/btn_update_status_attachment_pic"
-		        style="?android:attr/buttonBarButtonStyle"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_marginTop="5dp"
-		        android:padding="10dp"
-		        android:gravity="left|center_vertical"
-		        android:text="@string/attachment_picture"
-		        android:visibility="gone" />
+			<LinearLayout
+			    android:layout_width="match_parent"
+	    		android:layout_height="wrap_content"
+	    		android:orientation="vertical"
+	    		android:layout_marginTop="5dp">
+
+			    <Button
+			        android:id="@+id/btn_update_status_attachment_pic"
+			        style="?android:attr/buttonBarButtonStyle"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:padding="10dp"
+			        android:gravity="left|center_vertical"
+			        android:text="@string/attachment_picture"
+			        android:visibility="gone" />
+
+			    <Button
+			        android:id="@+id/btn_update_status_attachment_location"
+			        style="?android:attr/buttonBarButtonStyle"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:gravity="left|center_vertical"
+			        android:padding="10dp"
+			        android:text="@string/attachment_location"
+			        android:drawableLeft="@android:drawable/ic_menu_mylocation"
+			        android:visibility="gone" />
+
+			</LinearLayout>
 
 	    </LinearLayout>
 

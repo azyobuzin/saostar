@@ -19,6 +19,9 @@ public class NotificationCenter {
 			.setData(TwitterWebIntentUriGenerator.tweet(status.getStatus(), status.getInReplyToStatusId()));
 		if (!StringUtil.isNullOrEmpty(mediaUri))
 			retryIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mediaUri));
+		if (status.getLocation() != null)
+			retryIntent.putExtra("latitude", status.getLocation().getLatitude())
+				.putExtra("longitude", status.getLocation().getLongitude());
 		//CALLED_FROM_AZYOTTERは指定しない
 
 		Notification notif = new Notification(R.drawable.ic_stat_tweet, ctx.getText(R.string.tweet_failed), System.currentTimeMillis());

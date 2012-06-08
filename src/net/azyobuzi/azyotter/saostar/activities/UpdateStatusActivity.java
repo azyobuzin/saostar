@@ -28,6 +28,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -61,6 +64,7 @@ public class UpdateStatusActivity extends Activity {
 
         txtStatus = (EditText)findViewById(R.id.txt_update_status_status);
         btnAttachmentPicture = (Button)findViewById(R.id.btn_update_status_attachment_pic);
+        btnAttachmentLocation = (Button)findViewById(R.id.btn_update_status_attachment_location);
 
         final PopupMenu attachmentPicPopup = new PopupMenu(this, btnAttachmentPicture);
         attachmentPicPopup.getMenuInflater().inflate(R.menu.attachment_picture_menu, attachmentPicPopup.getMenu());
@@ -106,7 +110,50 @@ public class UpdateStatusActivity extends Activity {
 						}
 						break;
 					case R.id.menu_attachment_picture_remove:
-						removeAttachment();
+						removeAttachmentPicture();
+						break;
+				}
+				return true;
+			}
+        });
+
+        final PopupMenu attachmentLocationPopup = new PopupMenu(this, btnAttachmentLocation);
+        attachmentLocationPopup.getMenuInflater().inflate(R.menu.attachment_location_menu, attachmentLocationPopup.getMenu());
+
+        btnAttachmentLocation.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				attachmentLocationPopup.show();
+			}
+        });
+        attachmentLocationPopup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				switch (item.getItemId()) {
+					case R.id.menu_attachment_location_show_the_location:
+						if (currentLocation != null) {
+							try {
+								startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+									"geo:" + currentLocation.getLatitude() + "," + currentLocation.getLongitude()
+								)));
+							} catch (ActivityNotFoundException ex) {
+								new AlertDialog.Builder(UpdateStatusActivity.this)
+									.setTitle(android.R.string.dialog_alert_title)
+									.setIcon(android.R.drawable.ic_dialog_alert)
+									.setMessage(R.string.a_application_to_show_map_has_not_been_installded)
+									.setPositiveButton(android.R.string.ok, ActivityUtil.emptyDialogOnClickListener)
+									.show();
+							}
+						}
+						break;
+					case R.id.menu_attachment_location_remove:
+						if (locationGetter != null) {
+							locationGetter.stop();
+							locationGetter = null;
+						}
+						currentLocation = null;
+						gotFromGps = false;
+						btnAttachmentLocation.setVisibility(View.GONE);
 						break;
 				}
 				return true;
@@ -159,7 +206,7 @@ public class UpdateStatusActivity extends Activity {
         }
 
         if (intent.hasExtra(Intent.EXTRA_STREAM)) {
-        	attachPicture((Uri)intent.getExtras().get(Intent.EXTRA_STREAM));
+        	attachPicture((Uri)intent.getParcelableExtra(Intent.EXTRA_STREAM));
         }
 	}
 
@@ -167,12 +214,17 @@ public class UpdateStatusActivity extends Activity {
 
 	private EditText txtStatus;
 	private Button btnAttachmentPicture;
+	private Button btnAttachmentLocation;
 
 	private long inReplyToStatusId = -1;
 	private TimelineItem inReplyToStatus = null;
 
 	private Uri attachmentPictureUri = null;
 	private String attachmentPictureMimeType = null;
+
+	private LocationGetter locationGetter;
+	private Location currentLocation;
+	private boolean gotFromGps = false;
 
 	private void showInReplyTo() {
 		if (inReplyToStatus != null) {
@@ -195,6 +247,20 @@ public class UpdateStatusActivity extends Activity {
     	((AccountSelector)findViewById(R.id.as_update_status)).dispose();
     	super.onDestroy();
     }
+
+	@Override
+	protected void onPause() {
+		if (locationGetter != null) locationGetter.stop();
+
+		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		if (locationGetter != null) locationGetter.start();
+	}
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -221,6 +287,7 @@ public class UpdateStatusActivity extends Activity {
 						.putExtra(UpdateStatusService.TEXT, text)
 						.putExtra(UpdateStatusService.IN_REPLY_TO_STATUS_ID, inReplyToStatusId)
 						.putExtra(UpdateStatusService.MEDIA, attachmentPictureUri != null ? attachmentPictureUri.toString() : null)
+						.putExtra(UpdateStatusService.LOCATION, currentLocation)
 					);
 					finish();
 				}
@@ -241,6 +308,23 @@ public class UpdateStatusActivity extends Activity {
 						.show();
 				}
 				return true;
+			case R.id.menu_update_status_attach_location:
+				if (locationGetter == null) {
+					locationGetter = new LocationGetter();
+					if (locationGetter.start()) {
+						btnAttachmentLocation.setText(getText(R.string.attachment_location) + "\n" + getText(R.string.getting_location));
+						btnAttachmentLocation.setVisibility(View.VISIBLE);
+					} else {
+						new AlertDialog.Builder(this)
+							.setTitle(android.R.string.dialog_alert_title)
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.setMessage(R.string.your_device_cannot_be_used_location_service_or_location_service_is_not_enabled)
+							.setPositiveButton(android.R.string.ok, ActivityUtil.emptyDialogOnClickListener)
+							.show();
+						locationGetter = null;
+					}
+				}
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -255,7 +339,7 @@ public class UpdateStatusActivity extends Activity {
 					break;
 				case UPLOAD_HATENA_FOTOLIFE:
 					txtStatus.getText().append(" " + data.getDataString());
-					removeAttachment();
+					removeAttachmentPicture();
 					break;
 			}
 		}
@@ -296,9 +380,17 @@ public class UpdateStatusActivity extends Activity {
 		}
 	}
 
-	private void removeAttachment() {
+	private void removeAttachmentPicture() {
 		attachmentPictureUri = null;
 		btnAttachmentPicture.setVisibility(View.GONE);
+	}
+
+	private void refreshLocationView() {
+		btnAttachmentLocation.setText(
+			getText(R.string.attachment_location) + "\n"
+			+ currentLocation.getLatitude() + "\n"
+			+ currentLocation.getLongitude()
+		);
 	}
 
 	private class TwitpicUploadTask extends AsyncTask<Void, Void, String> {
@@ -345,7 +437,7 @@ public class UpdateStatusActivity extends Activity {
 		protected void onPostExecute(String result) {
 			if (ex == null) {
 				txtStatus.getText().append(" " + result);
-				removeAttachment();
+				removeAttachmentPicture();
 			} else {
 				new AlertDialog.Builder(UpdateStatusActivity.this)
 					.setTitle(R.string.couldnt_upload_picture)
@@ -356,6 +448,101 @@ public class UpdateStatusActivity extends Activity {
 			}
 
 			dialog.dismiss();
+		}
+	}
+
+	private class LocationGetter {
+		private LocationManager locationManager;
+		private boolean usingGps = false;
+		private boolean usingNetwork = false;
+
+		private final LocationListener gpsLocationListener = new LocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				currentLocation = location;
+				gotFromGps = true;
+				refreshLocationView();
+			}
+
+			@Override
+			public void onProviderDisabled(String s) {
+			}
+
+			@Override
+			public void onProviderEnabled(String s) {
+			}
+
+			@Override
+			public void onStatusChanged(String s, int i, Bundle bundle) {
+			}
+		};
+
+		private final LocationListener networkLocationListener = new LocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				if (!gotFromGps) {
+					currentLocation = location;
+					refreshLocationView();
+				}
+
+				locationManager.removeUpdates(networkLocationListener);
+				usingNetwork = false;
+			}
+
+			@Override
+			public void onProviderDisabled(String s) {
+			}
+
+			@Override
+			public void onProviderEnabled(String s) {
+			}
+
+			@Override
+			public void onStatusChanged(String s, int i, Bundle bundle) {
+			}
+		};
+
+		public boolean start() {
+			locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+
+			if (locationManager == null) return false;
+
+			boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+			if (!gpsEnabled && !networkEnabled) return false;
+
+			if (gpsEnabled) {
+				locationManager.requestLocationUpdates(
+					LocationManager.GPS_PROVIDER,
+					30 * 1000,
+					0,
+					gpsLocationListener
+				);
+			}
+
+			if (networkEnabled) {
+				locationManager.requestLocationUpdates(
+					LocationManager.NETWORK_PROVIDER,
+					15 * 60 * 1000,
+					0,
+					networkLocationListener
+				);
+			}
+
+			return true;
+		}
+
+		public void stop() {
+			if (usingGps) {
+				locationManager.removeUpdates(gpsLocationListener);
+				usingGps = false;
+			}
+
+			if (usingNetwork) {
+				locationManager.removeUpdates(networkLocationListener);
+				usingNetwork = false;
+			}
 		}
 	}
 }
