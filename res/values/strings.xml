@@ -7,7 +7,7 @@
     <string name="id">ID : </string>
     <string name="use_user_stream">Use UserStream</string>
     <string name="edit_account">Edit Account</string>
-    <string name="remove_account">Remove</string>
+    <string name="remove_account">Remove this account</string>
     <string name="edit_profile">Edit profile</string>
     <string name="login">Login</string>
     <string name="waiting_for_you_to_authorize">Waiting for you to authorize…</string>
@@ -55,4 +55,5 @@
     <string name="couldnt_upload_picture">Couldn\'t upload picture</string>
     <string name="hatena_fotolife_application_has_not_been_installed">Hatena Fotolife application has not been installed.</string>
     <string name="hatena_fotolife_supports_only_jpeg">Hatena Fotolife supports only JPEG.</string>
+    <string name="remove_this_tab">Remove this tab</string>
 </resources>

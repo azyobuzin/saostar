@@ -55,4 +55,5 @@
     <string name="couldnt_upload_picture">アップロード失敗</string>
     <string name="hatena_fotolife_application_has_not_been_installed">はてなフォトライフアプリがインストールされていません。</string>
     <string name="hatena_fotolife_supports_only_jpeg">はてなフォトライフはJPEG画像のみサポートしています。</string>
+    <string name="remove_this_tab">このタブを削除</string>
 </resources>

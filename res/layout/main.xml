@@ -22,7 +22,6 @@
             android:layout_height="48dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true" />
-
         <EditText
             android:id="@+id/txt_main_tweet"
             android:layout_width="fill_parent"

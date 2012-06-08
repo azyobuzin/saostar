@@ -9,7 +9,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 public class TabGeneralSettingFragment extends Fragment {
@@ -27,12 +29,14 @@ public class TabGeneralSettingFragment extends Fragment {
 	}
 
 	private EditText txtTabName;
+	private Button btnRemove;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
 		txtTabName = (EditText)getView().findViewById(R.id.txt_tab_general_setting_tab_name);
+		btnRemove = (Button)getView().findViewById(R.id.btn_tab_general_setting_remove);
 
 		txtTabName.setText(tab.getName());
 
@@ -48,6 +52,13 @@ public class TabGeneralSettingFragment extends Fragment {
 
 			@Override
 			public void afterTextChanged(Editable s) {
+			}
+		});
+		btnRemove.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Tabs.remove(tab);
+				getActivity().finish();
 			}
 		});
 	}
