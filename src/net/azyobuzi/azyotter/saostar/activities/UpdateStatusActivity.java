@@ -484,9 +484,6 @@ public class UpdateStatusActivity extends Activity {
 					currentLocation = location;
 					refreshLocationView();
 				}
-
-				locationManager.removeUpdates(networkLocationListener);
-				usingNetwork = false;
 			}
 
 			@Override
@@ -519,15 +516,17 @@ public class UpdateStatusActivity extends Activity {
 					0,
 					gpsLocationListener
 				);
+				usingGps = true;
 			}
 
 			if (networkEnabled) {
 				locationManager.requestLocationUpdates(
 					LocationManager.NETWORK_PROVIDER,
-					15 * 60 * 1000,
+					60 * 1000,
 					0,
 					networkLocationListener
 				);
+				usingNetwork = true;
 			}
 
 			return true;
