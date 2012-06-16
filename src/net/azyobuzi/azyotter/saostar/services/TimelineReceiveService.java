@@ -92,7 +92,7 @@ public class TimelineReceiveService extends Service {
 			stream.addListener(new UserStreamListener() {
 				@Override
 				public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-					TimelineItemCollection.removeTweet(statusDeletionNotice.getStatusId());
+					//TimelineItemCollection.removeTweet(statusDeletionNotice.getStatusId());
 				}
 
 				@Override

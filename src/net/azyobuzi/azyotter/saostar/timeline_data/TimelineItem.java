@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.azyobuzi.azyotter.saostar.linq.Enumerable;
+import net.azyobuzi.azyotter.saostar.services.FavoriteService;
 import net.azyobuzi.azyotter.saostar.system.Action1;
 import net.azyobuzi.azyotter.saostar.system.Func2;
 
@@ -15,6 +16,8 @@ import twitter4j.DirectMessage;
 import twitter4j.Status;
 import twitter4j.URLEntity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 
 public class TimelineItem {
@@ -154,5 +157,14 @@ public class TimelineItem {
 		from = UserCollection.addOrMerge(source.getSender());
 		to = UserCollection.addOrMerge(source.getRecipient());
 		raiseMerged();
+	}
+
+	public boolean canFavorite() {
+		return id.type == TimelineItemId.TYPE_TWEET;
+	}
+
+	public void favorite(Context ctx) {
+		ctx.startService(new Intent(ctx, FavoriteService.class)
+			.putExtra(FavoriteService.STATUSES, String.valueOf(id.id)));
 	}
 }

@@ -8,7 +8,6 @@ import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterMethod;
 import net.azyobuzi.azyotter.saostar.NotificationCenter;
-import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.StringUtil;
 import net.azyobuzi.azyotter.saostar.Twitter4JFactories;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
@@ -17,7 +16,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.IBinder;
-import android.widget.Toast;
 
 public class UpdateStatusService extends Service {
 	public static final String TEXT = "net.azyobuzi.azyotter.saostar.services.UpdateStatusService.TEXT";
@@ -32,7 +30,7 @@ public class UpdateStatusService extends Service {
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		String text = intent.getStringExtra(TEXT);
-		Toast.makeText(this, R.string.tweeting, Toast.LENGTH_SHORT).show();
+		NotificationCenter.notifyStartedTweeting(this);
 
 		final StatusUpdate statusUpdate = new StatusUpdate(text)
 			.inReplyToStatusId(intent.getLongExtra(IN_REPLY_TO_STATUS_ID, -1));

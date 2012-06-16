@@ -14,12 +14,21 @@ import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection;
 import net.azyobuzi.azyotter.saostar.widget.CustomizedUrlImageView;
 import android.app.ActionBar;
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.Display;
+import android.view.GestureDetector.OnDoubleTapListener;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
@@ -33,6 +42,9 @@ public class TimelineTabFragment extends ListFragment {
 	}
 
 	private static final String TAB_INDEX = "net.azyobuzi.azyotter.saostar.activities.TimelineTabFragment.TAB_INDEX";
+
+	private int windowWidth;
+	private int windowHeight;
 
 	private Tab tab;
 	private TimelineItemAdapter adapter = new TimelineItemAdapter();
@@ -63,6 +75,21 @@ public class TimelineTabFragment extends ListFragment {
     	if (tab == null && savedInstanceState != null) {
     		tab = Tabs.get(savedInstanceState.getInt(TAB_INDEX));
     	}
+
+    	Display disp = ((WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+    	windowWidth = disp.getWidth();
+    	windowHeight = disp.getHeight();
+
+    	GestureListener listener = new GestureListener();
+    	final GestureDetector gestureDetector = new GestureDetector(listener);
+    	gestureDetector.setOnDoubleTapListener(listener);
+    	getListView().setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent motionevent) {
+				gestureDetector.onTouchEvent(motionevent);
+				return false;
+			}
+    	});
     }
 
     @Override
@@ -144,8 +171,14 @@ public class TimelineTabFragment extends ListFragment {
 
     private final Action1<TimelineItem> removedItemHandler = new Action1<TimelineItem>() {
 		@Override
-		public void invoke(TimelineItem arg) {
-			items.remove(arg);
+		public void invoke(final TimelineItem arg) {
+			h.post(new Runnable() {
+				@Override
+				public void run() {
+					items.remove(arg);
+					adapter.notifyDataSetChanged();
+				}
+			});
 		}
     };
 
@@ -229,5 +262,78 @@ public class TimelineTabFragment extends ListFragment {
     	public TextView name;
     	public TextView text;
     	public TextView dateAndSource;
+    }
+
+    private class GestureListener implements OnGestureListener, OnDoubleTapListener {
+    	private TimelineItem getItemFromEvent(MotionEvent e) {
+    		return (TimelineItem)getListView().getItemAtPosition(
+    			getListView().pointToPosition((int)e.getX(), (int)e.getY()));
+    	}
+    	
+    	private boolean gestured;
+
+		@Override
+		public boolean onDoubleTap(MotionEvent e) {
+			//Log.d("debug", getItemFromEvent(e).from.screenName + " double tap");
+			return false;
+		}
+
+		@Override
+		public boolean onDoubleTapEvent(MotionEvent e) {
+			//Log.d("debug", getItemFromEvent(e).from.screenName + " double tap event");
+			return false;
+		}
+
+		@Override
+		public boolean onSingleTapConfirmed(MotionEvent e) {
+			//Log.d("debug", getItemFromEvent(e).from.screenName + " single tap confirmed");
+			return false;
+		}
+
+		@Override
+		public boolean onDown(MotionEvent arg0) {
+			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " down");
+			gestured = false;
+			return false;
+		}
+
+		@Override
+		public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
+			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " fling");
+			return false;
+		}
+
+		@Override
+		public void onLongPress(MotionEvent arg0) {
+			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " long press");
+		}
+
+		@Override
+		public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
+			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " scroll");
+			TimelineItem item = getItemFromEvent(arg0);
+			if (!gestured && item != null) {
+				if (Math.abs(arg0.getY() - arg1.getY()) < windowHeight * 0.2) {
+					if (Math.abs(arg0.getX() - arg1.getX()) > windowWidth * 0.4) {
+						gestured = true;
+						item.favorite(getActivity());
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public void onShowPress(MotionEvent arg0) {
+			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " show press");
+		}
+
+		@Override
+		public boolean onSingleTapUp(MotionEvent arg0) {
+			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " single tap up");
+			return false;
+		}
+
     }
 }
