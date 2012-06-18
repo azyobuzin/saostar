@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.TreeSet;
 
 import net.azyobuzi.azyotter.saostar.R;
+import net.azyobuzi.azyotter.saostar.configuration.Setting;
 import net.azyobuzi.azyotter.saostar.configuration.Tab;
 import net.azyobuzi.azyotter.saostar.configuration.Tabs;
 import net.azyobuzi.azyotter.saostar.system.Action1;
@@ -18,7 +19,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
@@ -213,6 +213,17 @@ public class TimelineTabFragment extends ListFragment {
     	if (haveToExecuteFilter) executeFilter();
     };
 
+    private void runCommand(TimelineItem item, int command) {
+    	switch (command) {
+    		case Setting.COMMAND_FAVORITE:
+    			item.favorite(getActivity());
+    			break;
+    		case Setting.COMMAND_RETWEET:
+    			item.retweet(getActivity());
+    			break;
+    	}
+    }
+
 
     private class TimelineItemAdapter extends BaseAdapter {
 		@Override
@@ -269,7 +280,7 @@ public class TimelineTabFragment extends ListFragment {
     		return (TimelineItem)getListView().getItemAtPosition(
     			getListView().pointToPosition((int)e.getX(), (int)e.getY()));
     	}
-    	
+
     	private boolean gestured;
 
 		@Override
@@ -310,13 +321,21 @@ public class TimelineTabFragment extends ListFragment {
 
 		@Override
 		public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
-			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " scroll");
 			TimelineItem item = getItemFromEvent(arg0);
 			if (!gestured && item != null) {
 				if (Math.abs(arg0.getY() - arg1.getY()) < windowHeight * 0.2) {
-					if (Math.abs(arg0.getX() - arg1.getX()) > windowWidth * 0.4) {
+					float subWidth = arg0.getX() - arg1.getX();
+					if (Math.abs(subWidth) > windowWidth * 0.4) {
 						gestured = true;
-						item.favorite(getActivity());
+
+						if (subWidth <= 0) {
+							//右へフリック
+							runCommand(item, Setting.getFlickToRightCommand());
+						} else {
+							//左へフリック
+							runCommand(item, Setting.getFlickToLeftCommand());
+						}
+
 						return true;
 					}
 				}

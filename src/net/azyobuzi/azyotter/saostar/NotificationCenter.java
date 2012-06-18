@@ -70,4 +70,27 @@ public class NotificationCenter {
 		notif.flags |= Notification.FLAG_AUTO_CANCEL;
 		mng.notify(getRandomId(), notif);
 	}
+
+	public static void notifyStartedRetweeting(Context ctx) {
+		Toast.makeText(ctx, R.string.retweeting, Toast.LENGTH_SHORT).show();
+	}
+
+	public static void notifyFailedRetweet(Context ctx, TwitterException ex, String statuses) {
+		NotificationManager mng = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		Intent retryIntent = new Intent(ctx, RetryActivity.class)
+			.putExtra(RetryActivity.TYPE, RetryActivity.TYPE_RETWEET)
+			.putExtra(RetryActivity.STATUSES, statuses)
+			.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true);
+
+		Notification notif = new Notification(android.R.drawable.stat_notify_error, ctx.getText(R.string.retweet_failed), System.currentTimeMillis());
+		notif.setLatestEventInfo(
+			ctx,
+			ctx.getText(R.string.retweet_failed),
+			StringUtil.isNullOrEmpty(ex.getErrorMessage()) ? ex.getMessage() : ex.getErrorMessage(),
+			PendingIntent.getActivity(ctx, 0, retryIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+		);
+		notif.flags |= Notification.FLAG_AUTO_CANCEL;
+		mng.notify(getRandomId(), notif);
+	}
 }

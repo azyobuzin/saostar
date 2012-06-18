@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import net.azyobuzi.azyotter.saostar.linq.Enumerable;
 import net.azyobuzi.azyotter.saostar.services.FavoriteService;
+import net.azyobuzi.azyotter.saostar.services.RetweetService;
 import net.azyobuzi.azyotter.saostar.system.Action1;
 import net.azyobuzi.azyotter.saostar.system.Func2;
 
@@ -166,5 +167,14 @@ public class TimelineItem {
 	public void favorite(Context ctx) {
 		ctx.startService(new Intent(ctx, FavoriteService.class)
 			.putExtra(FavoriteService.STATUSES, String.valueOf(id.id)));
+	}
+
+	public boolean canRetweet() {
+		return id.type == TimelineItemId.TYPE_TWEET && !from.isProtected;
+	}
+
+	public void retweet(Context ctx) {
+		ctx.startService(new Intent(ctx, RetweetService.class)
+			.putExtra(RetweetService.STATUSES, String.valueOf(id.id)));
 	}
 }
