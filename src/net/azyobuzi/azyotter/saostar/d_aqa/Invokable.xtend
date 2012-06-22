@@ -1,8 +1,8 @@
-package net.azyobuzi.azyotter.saostar.d_aqa;
+package net.azyobuzi.azyotter.saostar.d_aqa
 
-import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem
 
-public interface Invokable {
+abstract class Invokable {
 	/*
 	 * 型
 	 * TYPE_STRING - String
@@ -11,12 +11,12 @@ public interface Invokable {
 	 * TYPE_DATETIME - Date
 	 * TYPE_STRING_ARRAY - String[]
 	 */
-	public static final int TYPE_STRING = 0;
-	public static final int TYPE_NUMBER = 1;
-	public static final int TYPE_BOOLEAN = 2;
-	public static final int TYPE_DATETIME = 3;
-	public static final int TYPE_STRING_ARRAY = 4;
+	public static val TYPE_STRING = 0
+	public static val TYPE_NUMBER = 1
+	public static val TYPE_BOOLEAN = 2
+	public static val TYPE_DATETIME = 3
+	public static val TYPE_STRING_ARRAY = 4
 
-	int getResultType();
-	Object invoke(TimelineItem target);
+	def int getResultType()
+	def Object invoke(TimelineItem target)
 }

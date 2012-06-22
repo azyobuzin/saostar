@@ -1,40 +1,34 @@
-package net.azyobuzi.azyotter.saostar;
+package net.azyobuzi.azyotter.saostar
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import android.content.Context
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-public class ContextAccess {
-	private static Context context;
-	public static void setContext(Context ctx) {
-		context = ctx;
+class ContextAccess {
+	private static Context context = null
+	def static setContext(Context ctx) {
+		context = ctx
 	}
 
-	public static CharSequence getText(int resId) {
-		return context.getText(resId);
+	def static getText(int resId) {
+		context.getText(resId)
 	}
 
-	public static String getString(int resId) {
-		return context.getString(resId);
+	def static getString(int resId) {
+		context.getString(resId)
 	}
 
-	public static FileInputStream openFileInput(String fileName) throws FileNotFoundException {
-		return context.openFileInput(fileName);
+	def static openFileInput(String fileName) {
+		context.openFileInput(fileName)
 	}
 
-	public static FileOutputStream openFileOutput(String fileName, int mode) throws FileNotFoundException {
-		return context.openFileOutput(fileName, mode);
+	def static openFileOutput(String fileName, int mode) {
+		context.openFileOutput(fileName, mode)
 	}
 
-	public static SharedPreferences getDefaultSharedPreferences() {
-		return PreferenceManager.getDefaultSharedPreferences(context);
+	def static getDefaultSharedPreferences() {
+		PreferenceManager.getDefaultSharedPreferences(context)
 	}
 
-	public static SharedPreferences getSharedPreferences(String name, int mode) {
-		return context.getSharedPreferences(name, mode);
+	def static getSharedPreferences(String name, int mode) {
+		context.getSharedPreferences(name, mode)
 	}
 }

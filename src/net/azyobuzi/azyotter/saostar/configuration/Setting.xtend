@@ -1,26 +1,26 @@
-package net.azyobuzi.azyotter.saostar.configuration;
+package net.azyobuzi.azyotter.saostar.configuration
 
-import android.content.SharedPreferences;
+import android.content.SharedPreferences
 
-public class Setting {
-	public static SharedPreferences sp;
+class Setting {
+	public static SharedPreferences sp
 
-	public static final int COMMAND_FAVORITE = 0;
-	public static final int COMMAND_RETWEET = 1;
+	public static val COMMAND_FAVORITE = 0
+	public static val COMMAND_RETWEET = 1
 
-	public static int getFlickToRightCommand() {
-		return sp.getInt("flickToRightCommand", COMMAND_FAVORITE);
+	def static getFlickToRightCommand() {
+		sp.getInt("flickToRightCommand", COMMAND_FAVORITE)
 	}
 
-	public static void setFlickToRightCommand(int value) {
-		sp.edit().putInt("flickToRightCommand", value).apply();
+	def static setFlickToRightCommand(int value) {
+		sp.edit().putInt("flickToRightCommand", value).apply()
 	}
 
-	public static int getFlickToLeftCommand() {
-		return sp.getInt("flickToLeftCommand", COMMAND_RETWEET);
+	def static getFlickToLeftCommand() {
+		sp.getInt("flickToLeftCommand", COMMAND_RETWEET)
 	}
 
-	public static void setFlickToLeftCommand(int value) {
-		sp.edit().putInt("flickToLeftCommand", value).apply();
+	def static setFlickToLeftCommand(int value) {
+		sp.edit().putInt("flickToLeftCommand", value).apply()
 	}
 }

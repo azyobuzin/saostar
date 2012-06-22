@@ -1,60 +1,56 @@
-package net.azyobuzi.azyotter.saostar.d_aqa.operators;
+package net.azyobuzi.azyotter.saostar.d_aqa.operators
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashMap
+import java.util.Map
 
-import net.azyobuzi.azyotter.saostar.d_aqa.Invokable;
-import net.azyobuzi.azyotter.saostar.d_aqa.Operator;
-import net.azyobuzi.azyotter.saostar.d_aqa.OperatorFactory;
-import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
+import net.azyobuzi.azyotter.saostar.d_aqa.Invokable
+import net.azyobuzi.azyotter.saostar.d_aqa.Operator
+import net.azyobuzi.azyotter.saostar.d_aqa.OperatorFactory
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem
 
-public class EqualityOperator extends Operator {
+class EqualityOperator extends Operator {
 
-	public EqualityOperator(Invokable left, Invokable right) {
+	new(Invokable left, Invokable right) {
 		super(left, right);
 	}
 
-	@Override
-	public Object invoke(TimelineItem target) {
-		Object leftResult = left.invoke(target);
-		Object rightResult = right.invoke(target);
+	override invoke(TimelineItem target) {
+		val leftResult = left.invoke(target)
+		val rightResult = right.invoke(target)
 
 		if (left.getResultType() == TYPE_STRING && right.getResultType() == TYPE_STRING) {
 			if (leftResult == null)
-				return rightResult == null;
+				return rightResult == null
 
-			return ((String)leftResult).equalsIgnoreCase((String)rightResult);
+			(leftResult as String).equalsIgnoreCase(rightResult as String)
 		}
 
-		return leftResult.equals(rightResult);
+		leftResult.equals(rightResult)
 	}
 
-	public static class Factory implements OperatorFactory {
+	static class Factory extends OperatorFactory {
 
-		@Override
-		public String getOperatorIdentifier() {
-			return "=";
+		override getOperatorIdentifier() {
+			"="
 		}
 
-		private static final HashMap<Integer, Integer> parameterTypes = new HashMap<Integer, Integer>() {
-			private static final long serialVersionUID = 1L;
+		private static val parameterTypes = new HashMap<Integer, Integer>() {
+			private static val long serialVersionUID = 1L
 
 			{
-				put(TYPE_STRING, TYPE_STRING);
-				put(TYPE_NUMBER, TYPE_NUMBER);
-				put(TYPE_BOOLEAN, TYPE_BOOLEAN);
-				put(TYPE_DATETIME, TYPE_DATETIME);
+				put(TYPE_STRING, TYPE_STRING)
+				put(TYPE_NUMBER, TYPE_NUMBER)
+				put(TYPE_BOOLEAN, TYPE_BOOLEAN)
+				put(TYPE_DATETIME, TYPE_DATETIME)
 			}
-		};
-
-		@Override
-		public Map<Integer, Integer> getParameterTypes() {
-			return parameterTypes;
 		}
 
-		@Override
-		public Operator createOperator(Invokable left, Invokable right) {
-			return new EqualityOperator(left, right);
+		override getParameterTypes() {
+			parameterTypes
+		}
+
+		override createOperator(Invokable left, Invokable right) {
+			new EqualityOperator(left, right)
 		}
 
 	}

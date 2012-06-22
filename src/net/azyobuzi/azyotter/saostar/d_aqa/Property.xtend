@@ -1,5 +1,5 @@
-package net.azyobuzi.azyotter.saostar.d_aqa;
+package net.azyobuzi.azyotter.saostar.d_aqa
 
-public abstract class Property implements Invokable {
+abstract class Property extends Invokable {
 
 }

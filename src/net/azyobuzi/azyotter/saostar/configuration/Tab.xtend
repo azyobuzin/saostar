@@ -1,69 +1,69 @@
-package net.azyobuzi.azyotter.saostar.configuration;
+package net.azyobuzi.azyotter.saostar.configuration
 
-import java.io.EOFException;
-import java.util.ArrayList;
+import java.io.EOFException
+import java.util.ArrayList
 
-import net.azyobuzi.azyotter.saostar.ContextAccess;
-import net.azyobuzi.azyotter.saostar.R;
-import net.azyobuzi.azyotter.saostar.d_aqa.Invokable;
-import net.azyobuzi.azyotter.saostar.d_aqa.Reader;
-import net.azyobuzi.azyotter.saostar.system.Action1;
-import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
+import net.azyobuzi.azyotter.saostar.ContextAccess
+import net.azyobuzi.azyotter.saostar.R
+import net.azyobuzi.azyotter.saostar.d_aqa.Invokable
+import net.azyobuzi.azyotter.saostar.d_aqa.Reader
+import net.azyobuzi.azyotter.saostar.system.Action1
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem
 
-public class Tab {
-	public Tab() {
+class Tab {
+	new() {
 		try {
-			filterExpr = Reader.read(filter);
+			filterExpr = Reader.read(filter)
 		} catch (Exception ex)
 		{
-			ex.printStackTrace();
+			ex.printStackTrace()
 		}
 	}
 
-	private String name = "NewTab";
-	public final ArrayList<Action1<Tab>> nameChangedHandler = new ArrayList<Action1<Tab>>();
+	private String _name = "NewTab"
+	val nameChangedHandler = new ArrayList<Action1<Tab>>()
 
-	public String getName() {
-		return name;
+	def getName() {
+		_name
 	}
 
-	public void setName(String value) {
-		name = value;
+	def setName(String value) {
+		_name = value
 
-		for (Action1<Tab> handler : nameChangedHandler) {
-			handler.invoke(this);
+		for (handler : nameChangedHandler) {
+			handler.invoke(this)
 		}
 
-		Tabs.save();
+		Tabs.save()
 	}
 
-	private String filter = "false";
-	private Invokable filterExpr;
-	public final ArrayList<Action1<Tab>> filterChangedHandler = new ArrayList<Action1<Tab>>();
+	private String _filter = "false"
+	private Invokable filterExpr
+	val filterChangedHandler = new ArrayList<Action1<Tab>>()
 
-	public String getFilter() {
-		return filter;
+	def getFilter() {
+		return _filter;
 	}
 
-	public void setFilter(String value) throws EOFException, IllegalArgumentException {
+	def setFilter(String value) {
 		//正しく動くかテスト
-		Invokable tmp = Reader.read(value);
+		val tmp = Reader.read(value)
 		if (tmp.getResultType() != Invokable.TYPE_BOOLEAN)
-			throw new IllegalArgumentException(ContextAccess.getString(R.string.return_type_is_not_boolean));
-		tmp.invoke(TimelineItem.getDummyTweet());
+			throw new IllegalArgumentException(ContextAccess.getString(R.string.return_type_is_not_boolean))
+		tmp.invoke(TimelineItem.getDummyTweet())
 
-		filterExpr = tmp;
-		filter = value;
+		filterExpr = tmp
+		_filter = value
 
-		for (Action1<Tab> handler : filterChangedHandler) {
-			handler.invoke(this);
+		for (handler : filterChangedHandler) {
+			handler.invoke(this)
 		}
 
-		Tabs.save();
+		Tabs.save()
 	}
 
-	public Invokable getFilterExpression() {
-		return filterExpr;
+	def getFilterExpression() {
+		filterExpr
 	}
 
 	//TODO:通知系

@@ -1,7 +1,7 @@
-package net.azyobuzi.azyotter.saostar.d_aqa;
+package net.azyobuzi.azyotter.saostar.d_aqa
 
-public interface PropertyFactory {
-	String getPropertyName();
-	int getType();
-	Property createProperty();
+abstract class PropertyFactory {
+	def String getPropertyName()
+	def int getType()
+	def Property createProperty()
 }

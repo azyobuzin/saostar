@@ -1,22 +1,22 @@
-package net.azyobuzi.azyotter.saostar.d_aqa;
+package net.azyobuzi.azyotter.saostar.d_aqa
 
-import java.io.EOFException;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import java.io.EOFException
+import java.util.ArrayList
+import java.util.GregorianCalendar
 
-import net.azyobuzi.azyotter.saostar.ContextAccess;
-import net.azyobuzi.azyotter.saostar.R;
-import net.azyobuzi.azyotter.saostar.d_aqa.operators.*;
-import net.azyobuzi.azyotter.saostar.d_aqa.properties.*;
-import net.azyobuzi.azyotter.saostar.linq.Enumerable;
-import net.azyobuzi.azyotter.saostar.system.Func2;
+import net.azyobuzi.azyotter.saostar.ContextAccess
+import net.azyobuzi.azyotter.saostar.R
+import net.azyobuzi.azyotter.saostar.d_aqa.operators.*
+import net.azyobuzi.azyotter.saostar.d_aqa.properties.*
+import net.azyobuzi.azyotter.saostar.linq.Enumerable
+import net.azyobuzi.azyotter.saostar.system.Func2
 
-public class Reader {
+class Reader {
 	//
 	// Public Static Members
 	//
 
-	public static final PropertyFactory[] properties = new PropertyFactory[] {
+	static val properties = new PropertyFactory[] {
 		new IdProperty.Factory(),
 		new CreatedAtProperty.Factory(),
 		new TextProperty.Factory(),
@@ -39,77 +39,69 @@ public class Reader {
 		new RetweetedUserVerifiedProperty.Factory(),
 		new InReplyToProperty.Factory(),
 		new IsHomeTweetProperty.Factory()
-	};
+	}
 
-	public static final OperatorFactory[] operators = new OperatorFactory[] {
+	static val operators = new OperatorFactory[] {
 		new EqualityOperator.Factory(),
 		new InequalityOperator.Factory(),
 		new GreaterThanOperator.Factory(),
 		new GreaterThanOrEqualOperator.Factory(),
 		new LessThanOperator.Factory(),
 		new LessThanOrEqualOperator.Factory()
-	};
+	}
 
-	public static final FunctionFactory[] functions = new FunctionFactory[] {
+	static val functions = new FunctionFactory[] {
 		//ファクトリー
-	};
+	}
 
-	public static Invokable read(String query) throws EOFException, IllegalArgumentException {
-		return read(new Reader(query));
+	def static read(String query) {
+		read(new Reader(query))
 	}
 
 	//
 	// Private Static Members
 	//
 
-	private static void endedInUnexpectedPosition() throws EOFException {
-		throw new EOFException(ContextAccess.getText(R.string.query_ended_in_unexpected_position).toString());
+	def private static endedInUnexpectedPosition() {
+		throw new EOFException(ContextAccess.getText(R.string.query_ended_in_unexpected_position).toString())
 	}
 
-	private static final String space = " 　\r\n\t";
+	private static val space = " 　\r\n\t"
 
-	private static Invokable read(Reader reader) throws EOFException, IllegalArgumentException {
-		char firstChar;
+	def private static Invokable read(Reader reader) {
+		val char firstChar
 
 		while (true) {
-			int i = reader.read();
-			if (i == -1) endedInUnexpectedPosition();
+			val i = reader.read()
+			if (i == -1) endedInUnexpectedPosition()
 
-			char c = (char)i;
+			val c = (char)i
 			if (!space.contains(String.valueOf(c))) {
-				firstChar = c;
-				break;
+				firstChar = c
+				break
 			}
 		}
 
-		StringBuilder sb = new StringBuilder();
+		val sb = new StringBuilder()
 		switch (firstChar) {
 			case '"':
 				while (true) {
-					int c = reader.read();
-					if (c == -1) endedInUnexpectedPosition();
-					if (c == '"') break;
+					int c = reader.read()
+					if (c == -1) endedInUnexpectedPosition()
+					if (c == '"') break
 					if (c == '\\') {
-						int c2 = reader.read();
-						if (c2 == -1) endedInUnexpectedPosition();
-						switch (c2) {
-							case 'r':
-								c = '\r';
-								break;
-							case 'n':
-								c = '\n';
-								break;
-							case 't':
-								c = '\t';
-								break;
-							default:
-								c = c2;
-								break;
+						int c2 = reader.read()
+						if (c2 == -1) endedInUnexpectedPosition()
+						c = switch (c2) {
+							case 'r': '\r'
+							case 'n': '\n'
+							case 't': '\t'
+							default: c2
 						}
 					}
-					sb.append((char)c);
+					sb.append((char)c)
 				}
-				return new Constant(Invokable.TYPE_STRING, sb.toString());
+				new Constant(Invokable.TYPE_STRING, sb.toString())
 
 			case '0':
 			case '1':
@@ -121,182 +113,179 @@ public class Reader {
 			case '7':
 			case '8':
 			case '9':
-				sb.append(firstChar);
+				sb.append(firstChar)
 				while (true) {
-					int i = reader.peek();
-					if (i == -1) break;
+					val i = reader.peek()
+					if (i == -1) break
 
-					char c = (char)i;
-					if (!"0123456789".contains(String.valueOf(c))) break;
+					val c = (char)i;
+					if (!"0123456789".contains(String.valueOf(c))) break
 
-					sb.append(c);
-					reader.read();
+					sb.append(c)
+					reader.read()
 				}
-				return new Constant(Invokable.TYPE_NUMBER, Long.valueOf(sb.toString()));
+				new Constant(Invokable.TYPE_NUMBER, Long.valueOf(sb.toString()))
 
 			case 't':
 			case 'f':
-				sb.append(firstChar);
+				sb.append(firstChar)
 				while (true) {
-					int i = reader.peek();
-					if (i == -1) break;
+					val i = reader.peek()
+					if (i == -1) break
 
-					char c = (char)i;
-					if ((space + ")").contains(String.valueOf(c))) break;
+					val c = (char)i
+					if ((space + ")").contains(String.valueOf(c))) break
 
-					sb.append(c);
-					reader.read();
+					sb.append(c)
+					reader.read()
 				}
-				return new Constant(Invokable.TYPE_BOOLEAN, Boolean.valueOf(sb.toString()));
+				new Constant(Invokable.TYPE_BOOLEAN, Boolean.valueOf(sb.toString()))
 
 			case 'd':
-				boolean timeFlag = false;
+				val timeFlag = false
 				while (true) {
-					int i = reader.peek();
-					if (i == -1) break;
+					int i = reader.peek()
+					if (i == -1) break
 
-					char c = (char)i;
-					if (!"/-0123456789".contains(String.valueOf(c))) break;
+					val c = (char)i
+					if (!"/-0123456789".contains(String.valueOf(c))) break
 					if (c == '-') {
-						timeFlag = true;
-						reader.read();
-						break;
+						timeFlag = true
+						reader.read()
+						break
 					}
 
-					sb.append(c);
-					reader.read();
+					sb.append(c)
+					reader.read()
 				}
 
-				String[] splittedDate = sb.toString().split("/");
-				int year = Integer.valueOf(splittedDate[0]);
-				int month = Integer.valueOf(splittedDate[1]);
-				int day = Integer.valueOf(splittedDate[2]);
+				val splittedDate = sb.toString().split("/")
+				val year = Integer.valueOf(splittedDate[0])
+				val month = Integer.valueOf(splittedDate[1])
+				val day = Integer.valueOf(splittedDate[2])
 
 				if (!timeFlag) {
-					return new Constant(Invokable.TYPE_DATETIME, new GregorianCalendar(year, month, day).getTime());
+					new Constant(Invokable.TYPE_DATETIME, new GregorianCalendar(year, month, day).getTime());
 				} else {
 					sb = new StringBuilder();
 					while (true) {
-						int i = reader.peek();
-						if (i == -1) break;
+						val i = reader.peek()
+						if (i == -1) break
 
-						char c = (char)i;
-						if (!":0123456789".contains(String.valueOf(c))) break;
+						val c = (char)i
+						if (!":0123456789".contains(String.valueOf(c))) break
 
-						sb.append(c);
-						reader.read();
+						sb.append(c)
+						reader.read()
 					}
 
-					String[] splittedTime = sb.toString().split(":");
-					int hour = Integer.valueOf(splittedTime[0]);
-					int minute = Integer.valueOf(splittedTime[1]);
+					val splittedTime = sb.toString().split(":")
+					val hour = Integer.valueOf(splittedTime[0])
+					val minute = Integer.valueOf(splittedTime[1])
 
 					if (splittedTime.length == 3) {
-						int second = Integer.valueOf(splittedTime[2]);
-						return new Constant(Invokable.TYPE_DATETIME, new GregorianCalendar(year, month, day, hour, minute, second).getTime());
+						val second = Integer.valueOf(splittedTime[2])
+						new Constant(Invokable.TYPE_DATETIME, new GregorianCalendar(year, month, day, hour, minute, second).getTime())
 					} else {
-						return new Constant(Invokable.TYPE_DATETIME, new GregorianCalendar(year, month, day, hour, minute).getTime());
+						new Constant(Invokable.TYPE_DATETIME, new GregorianCalendar(year, month, day, hour, minute).getTime())
 					}
 				}
 
 			case '(':
-				final Invokable left = read(reader);
+				val left = read(reader)
 
 				if (left instanceof Function) {
-					ArrayList<Invokable> args = new ArrayList<Invokable>();
+					val args = new ArrayList<Invokable>()
 					while (true) {
-						Invokable arg = read(reader);
-						if (arg != null) args.add(arg);
-						else break;
+						val arg = read(reader)
+						if (arg != null) args.add(arg)
+						else break
 					}
-					((Function)left).setArguments(args);
-					return left;
+					(left as Function).setArguments(args)
+					left
 				} else {
 					while (true) {
-						int i = reader.read();
-						if (i == -1) endedInUnexpectedPosition();
+						val i = reader.read()
+						if (i == -1) endedInUnexpectedPosition()
 
-						char c = (char)i;
+						val c = (char)i
 						if (!space.contains(String.valueOf(c))) {
-							sb.append(c);
+							sb.append(c)
 
 							while (true) {
-								i = reader.read();
-								if (i == -1) endedInUnexpectedPosition();
+								i = reader.read()
+								if (i == -1) endedInUnexpectedPosition()
 
-								c = (char)i;
-								if (space.contains(String.valueOf(c))) break;
-								sb.append(c);
+								c = (char)i
+								if (space.contains(String.valueOf(c))) break
+								sb.append(c)
 							}
 
-							final Invokable right = read(reader);
-							read(reader); // )まで読み取る
+							val right = read(reader)
+							read(reader) // )まで読み取る
 
-							final String opId = sb.toString();
+							val opId = sb.toString()
 
 							try {
-								return Enumerable.from(operators).where(new Func2<OperatorFactory, Integer, Boolean>() {
-									@Override
-									public Boolean invoke(OperatorFactory arg0, Integer arg1) {
-										return arg0.getOperatorIdentifier().equals(opId)
+								Enumerable.from(operators).where(new Func2<OperatorFactory, Integer, Boolean>() {
+									override invoke(OperatorFactory arg0, Integer arg1) {
+										arg0.getOperatorIdentifier().equals(opId)
 											&& arg0.getParameterTypes().get(left.getResultType()) == right.getResultType();
 									}
-								}).firstOrDefault(null).createOperator(left, right);
+								}).firstOrDefault(null).createOperator(left, right)
 							} catch (NullPointerException ex) {
-								ex.printStackTrace();
+								ex.printStackTrace()
 								throw new IllegalArgumentException(
 									ContextAccess.getText(R.string.not_found_operator_or_type_has_not_matched)
 										.toString().replace("$opId$", opId),
 									ex
-								);
+								)
 							}
 						}
 					}
 				}
 
 			case ')':
-				return null;
+				null
 
 			default:
-				sb.append(firstChar);
+				sb.append(firstChar)
 
 				while (true) {
-					int i = reader.read();
-					if (i == -1) endedInUnexpectedPosition();
-					if (i == ':') break;
-					sb.append((char)i);
+					val i = reader.read()
+					if (i == -1) endedInUnexpectedPosition()
+					if (i == ':') break
+					sb.append((char)i)
 				}
 
-				String type = sb.toString();
+				val type = sb.toString()
 
-				sb = new StringBuilder();
+				sb = new StringBuilder()
 				while (true) {
-					int i = reader.read();
-					if (i == -1) break;
+					int i = reader.read()
+					if (i == -1) break
 
-					char c = (char)i;
-					if (space.contains(String.valueOf(c))) break;
-					sb.append(c);
+					val c = (char)i
+					if (space.contains(String.valueOf(c))) break
+					sb.append(c)
 				}
 
-				final String id = sb.toString();
+				val id = sb.toString()
 
 				if (type.equals("prop")) {
-					return Enumerable.from(properties).where(new Func2<PropertyFactory, Integer, Boolean>() {
-						@Override
-						public Boolean invoke(PropertyFactory arg0, Integer arg1) {
-							return arg0.getPropertyName().equals(id);
+					Enumerable.from(properties).where(new Func2<PropertyFactory, Integer, Boolean>() {
+						override invoke(PropertyFactory arg0, Integer arg1) {
+							arg0.getPropertyName().equals(id)
 						}
-					}).firstOrDefault(null).createProperty();
+					}).firstOrDefault(null).createProperty()
 				} else if (type.equals("func")) {
-					return Enumerable.from(functions).where(new Func2<FunctionFactory, Integer, Boolean>() {
-						@Override
-						public Boolean invoke(FunctionFactory arg0, Integer arg1) {
-							return arg0.getFunctionName().equals(id);
+					Enumerable.from(functions).where(new Func2<FunctionFactory, Integer, Boolean>() {
+						override invoke(FunctionFactory arg0, Integer arg1) {
+							arg0.getFunctionName().equals(id)
 						}
-					}).firstOrDefault(null).createFunction();
+					}).firstOrDefault(null).createFunction()
 				} else {
-					throw new IllegalArgumentException(ContextAccess.getText(R.string.cannot_use_other_than_prop_and_func).toString());
+					throw new IllegalArgumentException(ContextAccess.getText(R.string.cannot_use_other_than_prop_and_func).toString())
 				}
 		}
 	}
@@ -305,26 +294,26 @@ public class Reader {
 	// Private Instance Members
 	//
 
-	private Reader(String s) {
+	private new(String s) {
 		this.s = s;
 	}
 
 	private String s;
 	private int position = 0;
 
-	private int peek() {
+	def private peek() {
 		if (s.length() > position)
-			return s.charAt(position);
+			s.charAt(position);
 		else
-			return -1;
+			-1;
 	}
 
-	private int read() {
+	def private read() {
 		if (s.length() > position)
 		{
-			return s.charAt(position++);
+			s.charAt(position++)
 		} else {
-			return -1;
+			-1
 		}
 	}
 }

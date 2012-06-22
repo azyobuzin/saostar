@@ -1,16 +1,15 @@
-package net.azyobuzi.azyotter.saostar.d_aqa;
+package net.azyobuzi.azyotter.saostar.d_aqa
 
-public abstract class Operator implements Invokable {
-	public Operator(Invokable left, Invokable right) {
-		this.left = left;
-		this.right = right;
+public abstract class Operator extends Invokable {
+	new(Invokable left, Invokable right) {
+		this.left = left
+		this.right = right
 	}
 
-	protected Invokable left;
-	protected Invokable right;
+	protected Invokable left
+	protected Invokable right
 
-	@Override
-	public int getResultType() {
-		return Invokable.TYPE_BOOLEAN;
+	override getResultType() {
+		TYPE_BOOLEAN
 	}
 }

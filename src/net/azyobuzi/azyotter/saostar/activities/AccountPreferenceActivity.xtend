@@ -1,36 +1,34 @@
-package net.azyobuzi.azyotter.saostar.activities;
+package net.azyobuzi.azyotter.saostar.activities
 
-import net.azyobuzi.azyotter.saostar.R;
-import net.azyobuzi.azyotter.saostar.configuration.Accounts;
-import android.app.ActionBar;
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.MenuItem;
+import net.azyobuzi.azyotter.saostar.R
+import net.azyobuzi.azyotter.saostar.configuration.Accounts
+import android.app.ActionBar
+import android.app.Activity
+import android.os.Bundle
+import android.view.MenuItem
 
-public class AccountPreferenceActivity extends Activity {
-	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.account_preference_page);
+class AccountPreferenceActivity extends Activity {
+    override onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.account_preference_page)
 
-        long id = getIntent().getLongExtra(AccountPreferenceFragment.ACCOUNT_ID, -1);
-        
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setSubtitle(Accounts.get(id).getScreenName());
+        val id = getIntent().getLongExtra(AccountPreferenceFragment.ACCOUNT_ID, -1)
+
+        val actionBar = getActionBar()
+        actionBar.setDisplayHomeAsUpEnabled(true)
+        actionBar.setSubtitle(Accounts.get(id).getScreenName())
 
         ((AccountPreferenceFragment)getFragmentManager().findFragmentById(R.id.fragment_account_preference))
-        	.setAccountId(id);
+        	.setAccountId(id)
     }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	override onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
-				finish();
-				return true;
+				finish()
+				true
 			default:
-				return super.onOptionsItemSelected(item);
+				super.onOptionsItemSelected(item)
 		}
 	}
 }

@@ -1,7 +1,7 @@
-package net.azyobuzi.azyotter.saostar.d_aqa;
+package net.azyobuzi.azyotter.saostar.d_aqa
 
-public interface FunctionFactory {
-	String getFunctionName();
-	int getResultType();
-	Function createFunction();
+abstract class FunctionFactory {
+	def String getFunctionName()
+	def int getResultType()
+	def Function createFunction()
 }

@@ -1,26 +1,24 @@
-package net.azyobuzi.azyotter.saostar.d_aqa;
+package net.azyobuzi.azyotter.saostar.d_aqa
 
-import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem
 
-public class Constant implements Invokable {
-	public Constant(int type, Object value) {
-		this.type = type;
-		this.value = value;
+class Constant extends Invokable {
+	new(int type, Object value) {
+		this.type = type
+		this._value = value
 	}
 
-	private int type;
-	@Override
-	public int getResultType() {
-		return type;
+	private int type
+	override getResultType() {
+		type
 	}
 
-	private Object value;
-	public Object getValue() {
-		return value;
+	private Object _value
+	def getValue() {
+		_value
 	}
 
-	@Override
-	public Object invoke(TimelineItem target) {
-		return getValue();
+	override invoke(TimelineItem target) {
+		getValue()
 	}
 }

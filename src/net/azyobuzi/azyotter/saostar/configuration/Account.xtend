@@ -1,84 +1,84 @@
-package net.azyobuzi.azyotter.saostar.configuration;
+package net.azyobuzi.azyotter.saostar.configuration
 
-import java.util.ArrayList;
+import java.util.ArrayList
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Context
+import android.content.SharedPreferences
 
-import twitter4j.auth.AccessToken;
+import twitter4j.auth.AccessToken
 
-import net.azyobuzi.azyotter.saostar.ContextAccess;
-import net.azyobuzi.azyotter.saostar.system.Action;
+import net.azyobuzi.azyotter.saostar.ContextAccess
+import net.azyobuzi.azyotter.saostar.system.Action
 
-public class Account {
-	public Account(long id) {
-		this.id = id;
-		sp = ContextAccess.getSharedPreferences("twitter_" + getId(), Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
-		screenName = sp.getString("screenName", "");
-		oauthToken = sp.getString("oauthToken", "");
-		oauthTokenSecret = sp.getString("oauthTokenSecret", "");
-		useUserStream = sp.getBoolean("useUserStream", true);
+class Account {
+	new(long id) {
+		this.id = id
+		sp = ContextAccess.getSharedPreferences("twitter_" + getId(), Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS)
+		screenName = sp.getString("screenName", "")
+		oauthToken = sp.getString("oauthToken", "")
+		oauthTokenSecret = sp.getString("oauthTokenSecret", "")
+		useUserStream = sp.getBoolean("useUserStream", true)
 	}
 
-	private SharedPreferences sp;
+	private SharedPreferences sp
 
-	private long id;
+	private long id
 
-	public long getId() {
-		return id;
+	def getId() {
+		id
 	}
 
-	private String screenName;
+	private String screenName
 
-	public String getScreenName() {
-		return screenName;
+	def getScreenName() {
+		screenName
 	}
 
-	public void setScreenName(String value) {
-		screenName = value;
-		sp.edit().putString("screenName", value).apply();
+	def setScreenName(String value) {
+		screenName = value
+		sp.edit().putString("screenName", value).apply()
 	}
 
-	private String oauthToken;
+	private String oauthToken
 
-	public String getOAuthToken() {
-		return oauthToken;
+	def getOAuthToken() {
+		oauthToken
 	}
 
-	public void setOAuthToken(String value) {
-		oauthToken = value;
-		sp.edit().putString("oauthToken", value).apply();
+	def setOAuthToken(String value) {
+		oauthToken = value
+		sp.edit().putString("oauthToken", value).apply()
 	}
 
-	private String oauthTokenSecret;
+	private String oauthTokenSecret
 
-	public String getOAuthTokenSecret() {
-		return oauthTokenSecret;
+	def getOAuthTokenSecret() {
+		oauthTokenSecret
 	}
 
-	public void setOAuthTokenSecret(String value) {
-		oauthTokenSecret = value;
-		sp.edit().putString("oauthTokenSecret", value).apply();
+	def setOAuthTokenSecret(String value) {
+		oauthTokenSecret = value
+		sp.edit().putString("oauthTokenSecret", value).apply()
 	}
 
-	private boolean useUserStream;
+	private boolean useUserStream
 
-	public boolean getUseUserStream() {
-		return useUserStream;
+	def getUseUserStream() {
+		useUserStream
 	}
 
-	public void setUseUserStream(boolean value) {
-		useUserStream = value;
-		sp.edit().putBoolean("useUserStream", value).apply();
+	def setUseUserStream(boolean value) {
+		useUserStream = value
+		sp.edit().putBoolean("useUserStream", value).apply()
 
 		for (Action handler : useUserStreamChangedHandler) {
-			handler.invoke();
+			handler.invoke()
 		}
 	}
 
-	public final ArrayList<Action> useUserStreamChangedHandler = new ArrayList<Action>();
+	val ArrayList<Action> useUserStreamChangedHandler = new ArrayList<Action>()
 
-	public AccessToken toAccessToken() {
-		return new AccessToken(getOAuthToken(), getOAuthTokenSecret());
+	def toAccessToken() {
+		new AccessToken(getOAuthToken(), getOAuthTokenSecret())
 	}
 }

@@ -1,357 +1,323 @@
-package net.azyobuzi.azyotter.saostar.activities;
+package net.azyobuzi.azyotter.saostar.activities
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.TreeSet;
+import java.util.ArrayList
+import java.util.Comparator
+import java.util.TreeSet
 
-import net.azyobuzi.azyotter.saostar.R;
-import net.azyobuzi.azyotter.saostar.configuration.Setting;
-import net.azyobuzi.azyotter.saostar.configuration.Tab;
-import net.azyobuzi.azyotter.saostar.configuration.Tabs;
-import net.azyobuzi.azyotter.saostar.system.Action1;
-import net.azyobuzi.azyotter.saostar.system.Func2;
-import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
-import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection;
-import net.azyobuzi.azyotter.saostar.widget.CustomizedUrlImageView;
-import android.app.ActionBar;
-import android.app.ListFragment;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.Display;
-import android.view.GestureDetector.OnDoubleTapListener;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.GestureDetector;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
+import net.azyobuzi.azyotter.saostar.R
+import net.azyobuzi.azyotter.saostar.configuration.Setting
+import net.azyobuzi.azyotter.saostar.configuration.Tab
+import net.azyobuzi.azyotter.saostar.configuration.Tabs
+import net.azyobuzi.azyotter.saostar.system.Action1
+import net.azyobuzi.azyotter.saostar.system.Func2
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection
+import net.azyobuzi.azyotter.saostar.widget.CustomizedUrlImageView
+import android.app.ActionBar
+import android.app.ListFragment
+import android.content.Context
+import android.os.AsyncTask
+import android.os.Bundle
+import android.os.Handler
+import android.view.Display
+import android.view.GestureDetector.OnDoubleTapListener
+import android.view.GestureDetector.OnGestureListener
+import android.view.GestureDetector
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnTouchListener
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.BaseAdapter
+import android.widget.TextView
 
-public class TimelineTabFragment extends ListFragment {
-	public TimelineTabFragment() {
+class TimelineTabFragment extends ListFragment {
+	new() {
 		//画面回転用
 	}
 
-	public TimelineTabFragment(Tab tab) {
-		this.tab = tab;
+	new(Tab tab) {
+		this.tab = tab
 	}
 
-	private static final String TAB_INDEX = "net.azyobuzi.azyotter.saostar.activities.TimelineTabFragment.TAB_INDEX";
+	private static val TAB_INDEX = "net.azyobuzi.azyotter.saostar.activities.TimelineTabFragment.TAB_INDEX"
 
-	private int windowWidth;
-	private int windowHeight;
+	private int windowWidth
+	private int windowHeight
 
-	private Tab tab;
-	private TimelineItemAdapter adapter = new TimelineItemAdapter();
+	private Tab tab
+	private TimelineItemAdapter adapter = new TimelineItemAdapter()
 
-	private boolean pausing = false;
-	private boolean haveToExecuteFilter = false;
+	private boolean pausing = false
+	private boolean haveToExecuteFilter = false
 
-	private ActionBar.Tab actionBarTab;
+	private ActionBar.Tab actionBarTab
 
-	private Handler h = new Handler();
+	private Handler h = new Handler()
 
-	private final TreeSet<TimelineItem> items = new TreeSet<TimelineItem>(new Comparator<TimelineItem>() {
-		@Override
-		public int compare(TimelineItem arg0, TimelineItem arg1) {
-			return -(arg0.createdAt.compareTo(arg1.createdAt));
+	private TreeSet<TimelineItem> items = new TreeSet<TimelineItem>(new Comparator<TimelineItem>() {
+		override compare(TimelineItem arg0, TimelineItem arg1) {
+			-(arg0.createdAt.compareTo(arg1.createdAt))
 		}
-	});
+	})
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	return inflater.inflate(R.layout.empty_list, null);
+    override onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    	inflater.inflate(R.layout.empty_list, null)
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-    	super.onActivityCreated(savedInstanceState);
+    override onActivityCreated(Bundle savedInstanceState) {
+    	super.onActivityCreated(savedInstanceState)
 
     	if (tab == null && savedInstanceState != null) {
-    		tab = Tabs.get(savedInstanceState.getInt(TAB_INDEX));
+    		tab = Tabs.get(savedInstanceState.getInt(TAB_INDEX))
     	}
 
-    	Display disp = ((WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-    	windowWidth = disp.getWidth();
-    	windowHeight = disp.getHeight();
+    	val disp = ((WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay()
+    	windowWidth = disp.getWidth()
+    	windowHeight = disp.getHeight()
 
-    	GestureListener listener = new GestureListener();
-    	final GestureDetector gestureDetector = new GestureDetector(listener);
-    	gestureDetector.setOnDoubleTapListener(listener);
+    	val listener = new GestureListener()
+    	val gestureDetector = new GestureDetector(listener)
+    	gestureDetector.setOnDoubleTapListener(listener)
     	getListView().setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View view, MotionEvent motionevent) {
-				gestureDetector.onTouchEvent(motionevent);
-				return false;
+			override onTouch(View view, MotionEvent motionevent) {
+				gestureDetector.onTouchEvent(motionevent)
+				false
 			}
-    	});
+    	})
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-    	super.onSaveInstanceState(outState);
-    	outState.putInt(TAB_INDEX, Tabs.indexOf(tab));
+    override onSaveInstanceState(Bundle outState) {
+    	super.onSaveInstanceState(outState)
+    	outState.putInt(TAB_INDEX, Tabs.indexOf(tab))
     }
 
-    @Override
-    public void onStart() {
-    	super.onStart();
+    override onStart() {
+    	super.onStart()
 
-    	setListAdapter(adapter);
+    	setListAdapter(adapter)
 
-    	TimelineItemCollection.addedHandler.add(addedItemHandler);
-    	TimelineItemCollection.removedHandler.add(removedItemHandler);
-    	tab.filterChangedHandler.add(filterChangedHandler);
-    	tab.nameChangedHandler.add(tabNameChangedHandler);
-    	filterChangedHandler.invoke(tab);
+    	TimelineItemCollection.addedHandler.add(addedItemHandler)
+    	TimelineItemCollection.removedHandler.add(removedItemHandler)
+    	tab.filterChangedHandler.add(filterChangedHandler)
+    	tab.nameChangedHandler.add(tabNameChangedHandler)
+    	filterChangedHandler.invoke(tab)
     }
 
-    @Override
-    public void onDestroy() {
-    	TimelineItemCollection.addedHandler.remove(addedItemHandler);
-    	TimelineItemCollection.removedHandler.remove(removedItemHandler);
-    	tab.filterChangedHandler.remove(filterChangedHandler);
-    	tab.nameChangedHandler.remove(tabNameChangedHandler);
+    override onDestroy() {
+    	TimelineItemCollection.addedHandler.remove(addedItemHandler)
+    	TimelineItemCollection.removedHandler.remove(removedItemHandler)
+    	tab.filterChangedHandler.remove(filterChangedHandler)
+    	tab.nameChangedHandler.remove(tabNameChangedHandler)
 
-    	super.onDestroy();
+    	super.onDestroy()
     }
 
-    public void setActionBarTab(ActionBar.Tab actionBarTab) {
+    def setActionBarTab(ActionBar.Tab actionBarTab) {
     	this.actionBarTab = actionBarTab;
     }
 
-    private void executeFilter() {
+    def private executeFilter() {
     	new AsyncTask<Void, Void, ArrayList<TimelineItem>>() {
-			@Override
-			protected void onPreExecute() {
-				items.clear();
-				adapter.notifyDataSetChanged();
+			override onPreExecute() {
+				items.clear()
+				adapter.notifyDataSetChanged()
 			}
 
-			@Override
-			protected ArrayList<TimelineItem> doInBackground(Void... params) {
-				return TimelineItemCollection.getEnumerable()
+			override doInBackground(Void... params) {
+				TimelineItemCollection.getEnumerable()
 					.where(new Func2<TimelineItem, Integer, Boolean>() {
-						@Override
-						public Boolean invoke(TimelineItem arg0, Integer arg1) {
-							return (Boolean)tab.getFilterExpression().invoke(arg0);
+						override invoke(TimelineItem arg0, Integer arg1) {
+							return (Boolean)tab.getFilterExpression().invoke(arg0)
 						}
 					})
-					.toArrayList();
+					.toArrayList()
 			}
 
-			@Override
-			protected void onPostExecute(ArrayList<TimelineItem> result) {
-				items.addAll(result);
-				adapter.notifyDataSetChanged();
+			override onPostExecute(ArrayList<TimelineItem> result) {
+				items.addAll(result)
+				adapter.notifyDataSetChanged()
 			}
 		}
-		.execute();
+		.execute()
     }
 
-    private final Action1<TimelineItem> addedItemHandler = new Action1<TimelineItem>() {
-		@Override
-		public void invoke(final TimelineItem arg) {
+    private val Action1<TimelineItem> addedItemHandler = new Action1<TimelineItem>() {
+		override invoke(final TimelineItem arg) {
 			if ((Boolean)tab.getFilterExpression().invoke(arg)) {
 				h.post(new Runnable() {
-					@Override
-					public void run() {
-						items.add(arg);
-						adapter.notifyDataSetChanged();
+					override run() {
+						items.add(arg)
+						adapter.notifyDataSetChanged()
 					}
-				});
+				})
 			}
 		}
-    };
+    }
 
-    private final Action1<TimelineItem> removedItemHandler = new Action1<TimelineItem>() {
-		@Override
-		public void invoke(final TimelineItem arg) {
+    private val Action1<TimelineItem> removedItemHandler = new Action1<TimelineItem>() {
+		override invoke(final TimelineItem arg) {
 			h.post(new Runnable() {
-				@Override
-				public void run() {
-					items.remove(arg);
-					adapter.notifyDataSetChanged();
+				override run() {
+					items.remove(arg)
+					adapter.notifyDataSetChanged()
 				}
 			});
 		}
-    };
-
-    private final Action1<Tab> filterChangedHandler = new Action1<Tab>() {
-		@Override
-		public void invoke(Tab arg) {
-			if (pausing)
-				haveToExecuteFilter = true;
-			else
-				executeFilter();
-		}
-    };
-
-    private final Action1<Tab> tabNameChangedHandler = new Action1<Tab>() {
-		@Override
-		public void invoke(Tab arg) {
-			if (actionBarTab != null)
-				actionBarTab.setText(tab.getName());
-		}
-    };
-
-    @Override
-    public void onPause() {
-    	super.onPause();
-    	pausing = true;
     }
 
-    @Override
-    public void onResume() {
-    	super.onResume();
-    	pausing = false;
-    	if (haveToExecuteFilter) executeFilter();
+    private val Action1<Tab> filterChangedHandler = new Action1<Tab>() {
+		override invoke(Tab arg) {
+			if (pausing)
+				haveToExecuteFilter = true
+			else
+				executeFilter()
+		}
+    }
+
+    private val Action1<Tab> tabNameChangedHandler = new Action1<Tab>() {
+		override invoke(Tab arg) {
+			if (actionBarTab != null)
+				actionBarTab.setText(tab.getName())
+		}
+    }
+
+    override onPause() {
+    	super.onPause()
+    	pausing = true
+    }
+
+    override onResume() {
+    	super.onResume()
+    	pausing = false
+    	if (haveToExecuteFilter) executeFilter()
     };
 
-    private void runCommand(TimelineItem item, int command) {
+    def private runCommand(TimelineItem item, int command) {
     	switch (command) {
     		case Setting.COMMAND_FAVORITE:
-    			item.favorite(getActivity());
-    			break;
+    			item.favorite(getActivity())
     		case Setting.COMMAND_RETWEET:
-    			item.retweet(getActivity());
-    			break;
+    			item.retweet(getActivity())
     	}
     }
 
 
     private class TimelineItemAdapter extends BaseAdapter {
-		@Override
-		public int getCount() {
-			return items.size();
+		override getCount() {
+			items.size()
 		}
 
-		@Override
-		public Object getItem(int arg0) {
-			return items.toArray()[arg0];
+		override getItem(int arg0) {
+			items.toArray()[arg0]
 		}
 
-		@Override
-		public long getItemId(int arg0) {
-			return arg0;
+		override getItemId(int arg0) {
+			arg0;
 		}
 
-		@Override
-		public View getView(int arg0, View arg1, ViewGroup arg2) {
-			TimelineItem item = (TimelineItem)getItem(arg0);
-			View re = arg1 == null
+		override getView(int arg0, View arg1, ViewGroup arg2) {
+			val item = (TimelineItem)getItem(arg0)
+			val re = arg1 == null
 				? getActivity().getLayoutInflater().inflate(R.layout.timeline_item, null)
-				: arg1;
+				: arg1
 
-			TimelineItemAdapterViewHolder viewHolder = (TimelineItemAdapterViewHolder)re.getTag();
+			val viewHolder = (TimelineItemAdapterViewHolder)re.getTag()
 
 			if (viewHolder == null) {
-				viewHolder = new TimelineItemAdapterViewHolder();
-				viewHolder.profileImage = (CustomizedUrlImageView)re.findViewById(R.id.iv_timeline_item_profile_image);
-				viewHolder.name = (TextView)re.findViewById(R.id.tv_timeline_item_name);
-				viewHolder.text = (TextView)re.findViewById(R.id.tv_timeline_item_text);
-				viewHolder.dateAndSource = (TextView)re.findViewById(R.id.tv_timeline_item_date_source);
-				re.setTag(viewHolder);
+				viewHolder = new TimelineItemAdapterViewHolder()
+				viewHolder.profileImage = (CustomizedUrlImageView)re.findViewById(R.id.iv_timeline_item_profile_image)
+				viewHolder.name = (TextView)re.findViewById(R.id.tv_timeline_item_name)
+				viewHolder.text = (TextView)re.findViewById(R.id.tv_timeline_item_text)
+				viewHolder.dateAndSource = (TextView)re.findViewById(R.id.tv_timeline_item_date_source)
+				re.setTag(viewHolder)
 			}
 
-			viewHolder.profileImage.setImageUrl(item.from.profileImageUrl);
-			viewHolder.name.setText(item.from.screenName + " / " + item.from.name);
-			viewHolder.text.setText(item.displayText);
-			viewHolder.dateAndSource.setText(item.createdAt.toLocaleString() + " / via " + item.sourceName);
+			viewHolder.profileImage.setImageUrl(item.from.profileImageUrl)
+			viewHolder.name.setText(item.from.screenName + " / " + item.from.name)
+			viewHolder.text.setText(item.displayText)
+			viewHolder.dateAndSource.setText(item.createdAt.toLocaleString() + " / via " + item.sourceName)
 
-			return re;
+			re
 		}
     }
 
     private static class TimelineItemAdapterViewHolder {
-    	public CustomizedUrlImageView profileImage;
-    	public TextView name;
-    	public TextView text;
-    	public TextView dateAndSource;
+    	public CustomizedUrlImageView profileImage
+    	public TextView name
+    	public TextView text
+    	public TextView dateAndSource
     }
 
     private class GestureListener implements OnGestureListener, OnDoubleTapListener {
-    	private TimelineItem getItemFromEvent(MotionEvent e) {
-    		return (TimelineItem)getListView().getItemAtPosition(
-    			getListView().pointToPosition((int)e.getX(), (int)e.getY()));
+    	def private getItemFromEvent(MotionEvent e) {
+    		getListView().getItemAtPosition(getListView().pointToPosition((int)e.getX(), (int)e.getY()))
+    			as TimelineItem
     	}
 
-    	private boolean gestured;
+    	private boolean gestured
 
-		@Override
-		public boolean onDoubleTap(MotionEvent e) {
+		override onDoubleTap(MotionEvent e) {
 			//Log.d("debug", getItemFromEvent(e).from.screenName + " double tap");
-			return false;
+			false
 		}
 
-		@Override
-		public boolean onDoubleTapEvent(MotionEvent e) {
+		override onDoubleTapEvent(MotionEvent e) {
 			//Log.d("debug", getItemFromEvent(e).from.screenName + " double tap event");
-			return false;
+			false
 		}
 
-		@Override
-		public boolean onSingleTapConfirmed(MotionEvent e) {
+		override onSingleTapConfirmed(MotionEvent e) {
 			//Log.d("debug", getItemFromEvent(e).from.screenName + " single tap confirmed");
-			return false;
+			false
 		}
 
-		@Override
-		public boolean onDown(MotionEvent arg0) {
+		override onDown(MotionEvent arg0) {
 			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " down");
-			gestured = false;
-			return false;
+			gestured = false
+			false
 		}
 
-		@Override
-		public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
+		override onFling(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
 			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " fling");
-			return false;
+			false
 		}
 
-		@Override
-		public void onLongPress(MotionEvent arg0) {
+		override onLongPress(MotionEvent arg0) {
 			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " long press");
 		}
 
-		@Override
-		public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
-			TimelineItem item = getItemFromEvent(arg0);
+		override onScroll(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
+			val item = getItemFromEvent(arg0);
 			if (!gestured && item != null) {
 				if (Math.abs(arg0.getY() - arg1.getY()) < windowHeight * 0.2) {
-					float subWidth = arg0.getX() - arg1.getX();
+					val subWidth = arg0.getX() - arg1.getX()
 					if (Math.abs(subWidth) > windowWidth * 0.4) {
-						gestured = true;
+						gestured = true
 
 						if (subWidth <= 0) {
 							//右へフリック
-							runCommand(item, Setting.getFlickToRightCommand());
+							runCommand(item, Setting.getFlickToRightCommand())
 						} else {
 							//左へフリック
-							runCommand(item, Setting.getFlickToLeftCommand());
+							runCommand(item, Setting.getFlickToLeftCommand())
 						}
 
-						return true;
+						true
 					}
 				}
 			}
-			return false;
+			false
 		}
 
-		@Override
-		public void onShowPress(MotionEvent arg0) {
+		override onShowPress(MotionEvent arg0) {
 			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " show press");
 		}
 
-		@Override
-		public boolean onSingleTapUp(MotionEvent arg0) {
+		override onSingleTapUp(MotionEvent arg0) {
 			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " single tap up");
-			return false;
+			false
 		}
 
     }
