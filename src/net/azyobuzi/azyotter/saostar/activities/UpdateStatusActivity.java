@@ -56,7 +56,7 @@ public class UpdateStatusActivity extends Activity {
         setContentView(R.layout.update_status_page);
 
         Intent intent = getIntent();
-        fromAzyotter = intent.getBooleanExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, false);
+        fromAzyotter = intent.getBooleanExtra(MainActivity.CALLED_FROM_AZYOTTER, false);
 
         setTitle(R.string.update_status);
         if (fromAzyotter)
@@ -273,8 +273,8 @@ public class UpdateStatusActivity extends Activity {
 		switch (item.getItemId()) {
 			case android.R.id.home:
 				if (!fromAzyotter) {
-					startActivity(new Intent(this, AzyotterActivity.class)
-						.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true)
+					startActivity(new Intent(this, MainActivity.class)
+						.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
 						.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 				}
 				finish();

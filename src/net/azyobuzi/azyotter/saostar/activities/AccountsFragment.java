@@ -61,7 +61,7 @@ public class AccountsFragment extends ListFragment {
         } else if (id != -1) {
         	startActivity(new Intent(getActivity(), AccountPreferenceActivity.class)
 				.putExtra(AccountPreferenceFragment.ACCOUNT_ID, id)
-				.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
+				.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true));
         }
 	}
 
@@ -114,7 +114,7 @@ public class AccountsFragment extends ListFragment {
 		} else {
 			startActivity(new Intent(getActivity(), AccountPreferenceActivity.class)
 				.putExtra(AccountPreferenceFragment.ACCOUNT_ID, adapter.getAccountItem(index).getId())
-				.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
+				.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true));
 		}
 	}
 

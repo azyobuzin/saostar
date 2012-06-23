@@ -2,7 +2,7 @@ package net.azyobuzi.azyotter.saostar;
 
 import java.util.Random;
 
-import net.azyobuzi.azyotter.saostar.activities.AzyotterActivity;
+import net.azyobuzi.azyotter.saostar.activities.MainActivity;
 import net.azyobuzi.azyotter.saostar.activities.RetryActivity;
 
 import twitter4j.StatusUpdate;
@@ -58,7 +58,7 @@ public class NotificationCenter {
 		Intent retryIntent = new Intent(ctx, RetryActivity.class)
 			.putExtra(RetryActivity.TYPE, RetryActivity.TYPE_FAVORITE)
 			.putExtra(RetryActivity.STATUSES, statuses)
-			.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true);
+			.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true);
 
 		Notification notif = new Notification(android.R.drawable.stat_notify_error, ctx.getText(R.string.favorite_failed), System.currentTimeMillis());
 		notif.setLatestEventInfo(
@@ -81,7 +81,7 @@ public class NotificationCenter {
 		Intent retryIntent = new Intent(ctx, RetryActivity.class)
 			.putExtra(RetryActivity.TYPE, RetryActivity.TYPE_RETWEET)
 			.putExtra(RetryActivity.STATUSES, statuses)
-			.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true);
+			.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true);
 
 		Notification notif = new Notification(android.R.drawable.stat_notify_error, ctx.getText(R.string.retweet_failed), System.currentTimeMillis());
 		notif.setLatestEventInfo(

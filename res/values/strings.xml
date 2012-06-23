@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, AzyotterActivity!</string>
-    <string name="app_name">Azyotter</string>
+    <string name="app_name">saostar</string>
     <string name="view_data">Nothing</string>
     <string name="id">ID : </string>
     <string name="use_user_stream">Use UserStream</string>
@@ -66,4 +65,5 @@
     <string name="favorite_failed">Favorite failed</string>
     <string name="retweeting">Retweeting…</string>
     <string name="retweet_failed">Retweet failed</string>
+
 </resources>

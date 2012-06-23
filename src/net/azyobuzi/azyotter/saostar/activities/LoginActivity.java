@@ -120,7 +120,7 @@ public class LoginActivity extends Activity {
 										Accounts.add(a);
 										startActivity(new Intent(LoginActivity.this, AccountsActivity.class)
 											.putExtra(AccountPreferenceFragment.ACCOUNT_ID, a.getId())
-											.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
+											.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true));
 										finish();
 									}
 								});

@@ -22,10 +22,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 
-public class AzyotterActivity extends Activity {
+public class MainActivity extends Activity {
     /** Called when the activity is first created. */
 
-	public static final String CALLED_FROM_AZYOTTER = "net.azyobuzi.azyotter.saostar.activities.AzyotterActivity.CALLED_FROM_AZYOTTER";
+	public static final String CALLED_FROM_AZYOTTER = "net.azyobuzi.azyotter.saostar.activities.MainActivity.CALLED_FROM_AZYOTTER";
 
     private boolean tabChanged = false;
 
@@ -35,7 +35,9 @@ public class AzyotterActivity extends Activity {
         setContentView(R.layout.main);
 
         if (Accounts.getAccountsCount() == 0) {
-        	startActivity(new Intent(this, AccountsActivity.class).putExtra("firstRun", true).putExtra(CALLED_FROM_AZYOTTER, true));
+        	startActivity(new Intent(this, AccountsActivity.class)
+        		.putExtra(AccountsActivity.FIRST_RUN, true)
+        		.putExtra(CALLED_FROM_AZYOTTER, true));
         	finish();
         	return;
         }
@@ -54,7 +56,7 @@ public class AzyotterActivity extends Activity {
 				String text = tweetBox.getText().toString();
 				if (StringUtil.isNullOrEmpty(text)) return;
 
-				startService(new Intent(AzyotterActivity.this, UpdateStatusService.class)
+				startService(new Intent(MainActivity.this, UpdateStatusService.class)
 					.putExtra(UpdateStatusService.TEXT, text));
 				tweetBox.setText("");
 			}

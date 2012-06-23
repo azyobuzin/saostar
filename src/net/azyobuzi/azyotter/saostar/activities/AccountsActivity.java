@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class AccountsActivity extends Activity {
+	public static final String FIRST_RUN = "net.azyobuzi.azyotter.saostar.activities.AccountsActivity.FIRST_RUN";
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +53,9 @@ public class AccountsActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
-				if (getIntent().getBooleanExtra("firstRun", false)) {
+				if (getIntent().getBooleanExtra(FIRST_RUN, false)) {
 					if (Accounts.getAccountsCount() > 0) {
-						startActivity(new Intent(this, AzyotterActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
+						startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra(MainActivity.CALLED_FROM_AZYOTTER, true));
 						finish();
 					}
 				} else {
@@ -61,7 +63,7 @@ public class AccountsActivity extends Activity {
 				}
 				return true;
 			case R.id.menu_accounts_add:
-				startActivity(new Intent(this, LoginActivity.class).putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
+				startActivity(new Intent(this, LoginActivity.class).putExtra(MainActivity.CALLED_FROM_AZYOTTER, true));
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);

@@ -6,8 +6,8 @@ import android.app.Application;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 
-public class AzyotterApplication extends Application {
-	public AzyotterApplication() {
+public class SaostarApplication extends Application {
+	public SaostarApplication() {
 		super();
 		ContextAccess.setContext(this);
 	}

@@ -16,7 +16,7 @@ public class RetryActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Intent intent = getIntent();
-		if (intent.getBooleanExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, false)) {
+		if (intent.getBooleanExtra(MainActivity.CALLED_FROM_AZYOTTER, false)) {
 			int type = intent.getIntExtra(TYPE, -1);
 			String statuses = intent.getStringExtra(STATUSES);
 

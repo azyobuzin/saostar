@@ -16,10 +16,10 @@ import net.azyobuzi.azyotter.saostar.widget.CustomizedUrlImageView;
 import android.app.ActionBar;
 import android.app.ListFragment;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Display;
 import android.view.GestureDetector.OnDoubleTapListener;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector;
@@ -43,8 +43,7 @@ public class TimelineTabFragment extends ListFragment {
 
 	private static final String TAB_INDEX = "net.azyobuzi.azyotter.saostar.activities.TimelineTabFragment.TAB_INDEX";
 
-	private int windowWidth;
-	private int windowHeight;
+	private Point windowSize = new Point();
 
 	private Tab tab;
 	private TimelineItemAdapter adapter = new TimelineItemAdapter();
@@ -76,9 +75,9 @@ public class TimelineTabFragment extends ListFragment {
     		tab = Tabs.get(savedInstanceState.getInt(TAB_INDEX));
     	}
 
-    	Display disp = ((WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-    	windowWidth = disp.getWidth();
-    	windowHeight = disp.getHeight();
+    	((WindowManager)getActivity().getSystemService(Context.WINDOW_SERVICE))
+    		.getDefaultDisplay()
+    		.getSize(windowSize);
 
     	GestureListener listener = new GestureListener();
     	final GestureDetector gestureDetector = new GestureDetector(listener);
@@ -323,9 +322,9 @@ public class TimelineTabFragment extends ListFragment {
 		public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
 			TimelineItem item = getItemFromEvent(arg0);
 			if (!gestured && item != null) {
-				if (Math.abs(arg0.getY() - arg1.getY()) < windowHeight * 0.2) {
+				if (Math.abs(arg0.getY() - arg1.getY()) < windowSize.y * 0.2) {
 					float subWidth = arg0.getX() - arg1.getX();
-					if (Math.abs(subWidth) > windowWidth * 0.4) {
+					if (Math.abs(subWidth) > windowSize.x * 0.4) {
 						gestured = true;
 
 						if (subWidth <= 0) {

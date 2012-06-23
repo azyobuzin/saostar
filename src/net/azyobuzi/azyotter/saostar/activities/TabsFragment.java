@@ -46,7 +46,7 @@ public class TabsFragment extends ListFragment {
         if (index != -1) {
         	startActivity(new Intent(getActivity(), TabPreferenceActivity.class)
 				.putExtra(TabPreferenceActivity.TAB_INDEX, index)
-				.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
+				.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true));
         }
 	}
 
@@ -64,7 +64,7 @@ public class TabsFragment extends ListFragment {
 
 		startActivity(new Intent(getActivity(), TabPreferenceActivity.class)
 			.putExtra(TabPreferenceActivity.TAB_INDEX, index)
-			.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));
+			.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true));
 	}
 
 	private class TabAdapter extends BaseAdapter {
