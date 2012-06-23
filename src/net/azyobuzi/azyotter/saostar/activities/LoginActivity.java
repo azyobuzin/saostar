@@ -114,10 +114,10 @@ public class LoginActivity extends Activity {
 								a.setScreenName(token.getScreenName());
 								a.setOAuthToken(token.getToken());
 								a.setOAuthTokenSecret(token.getTokenSecret());
-								Accounts.add(a);
 								h.post(new Runnable() {
 									@Override
 									public void run() {
+										Accounts.add(a);
 										startActivity(new Intent(LoginActivity.this, AccountsActivity.class)
 											.putExtra(AccountPreferenceFragment.ACCOUNT_ID, a.getId())
 											.putExtra(AzyotterActivity.CALLED_FROM_AZYOTTER, true));

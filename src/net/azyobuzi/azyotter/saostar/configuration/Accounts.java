@@ -10,12 +10,10 @@ import net.azyobuzi.azyotter.saostar.system.Action;
 import net.azyobuzi.azyotter.saostar.system.Func2;
 
 import android.content.SharedPreferences.Editor;
-import android.os.Handler;
 
 public class Accounts {
 	private static ArrayList<Account> list = null;
 	private static final Object lockObj = new Object();
-	private static final Handler h = new Handler();
 
 	private static void loadAccounts() { //synchronized内から呼ぶ
 		list = new ArrayList<Account>();
@@ -58,69 +56,48 @@ public class Accounts {
 	public static void add(final Account newAccount) {
 		synchronized (lockObj) {
 			if (list == null) loadAccounts();
-		}
 
-		h.post(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (lockObj) {
-					list.add(newAccount);
+			list.add(newAccount);
 
-					for (Action handler : accountsChangedHandler) {
-						handler.invoke();
-					}
-
-					save();
-
-					TimelineReceiveService.addAccount(newAccount);
-				}
+			for (Action handler : accountsChangedHandler) {
+				handler.invoke();
 			}
-		});
+
+			save();
+
+			TimelineReceiveService.addAccount(newAccount);
+		}
 	}
 
 	public static void remove(final Account account) {
 		synchronized (lockObj) {
 			if (list == null) loadAccounts();
-		}
 
-		h.post(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (lockObj) {
-					TimelineReceiveService.removeAccount(account);
+			TimelineReceiveService.removeAccount(account);
 
-					list.remove(account);
+			list.remove(account);
 
-					for (Action handler : accountsChangedHandler) {
-						handler.invoke();
-					}
-
-					save();
-				}
+			for (Action handler : accountsChangedHandler) {
+				handler.invoke();
 			}
-		});
+
+			save();
+		}
 	}
 
 	public static void move(final int from, final int to) {
 		synchronized (lockObj) {
 			if (list == null) loadAccounts();
-		}
 
-		h.post(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (lockObj) {
-					Account account = list.remove(from);
-					list.add(to, account);
+			Account account = list.remove(from);
+			list.add(to, account);
 
-					for (Action handler : accountsChangedHandler) {
-						handler.invoke();
-					}
-
-					save();
-				}
+			for (Action handler : accountsChangedHandler) {
+				handler.invoke();
 			}
-		});
+
+			save();
+		}
 	}
 
 	public static int indexOf(long id) {
