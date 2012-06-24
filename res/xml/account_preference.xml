@@ -3,7 +3,7 @@
 
     <PreferenceCategory android:title="@string/refresh_setting">
 
-        <CheckBoxPreference android:key="useUserStream" android:title="@string/use_user_stream" android:defaultValue="true"/>
+        <SwitchPreference android:key="useUserStream" android:title="@string/user_stream" android:defaultValue="true" android:summary="@string/realtime_update"/>
 
     </PreferenceCategory>
 

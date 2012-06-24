@@ -4,7 +4,8 @@
     <string name="app_name">saostar</string>
     <string name="view_data">Nothing</string>
     <string name="id">ID : </string>
-    <string name="use_user_stream">Use UserStream</string>
+    <string name="user_stream">UserStream</string>
+    <string name="realtime_update">Real-time update</string>
     <string name="edit_account">Edit Account</string>
     <string name="remove_account">Remove this account</string>
     <string name="edit_profile">Edit profile</string>

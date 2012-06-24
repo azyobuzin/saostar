@@ -60,7 +60,7 @@ public class Account {
 		oauthTokenSecret = value;
 		sp.edit().putString("oauthTokenSecret", value).apply();
 	}
-
+	
 	private boolean useUserStream;
 
 	public boolean getUseUserStream() {

@@ -3,9 +3,11 @@ package net.azyobuzi.azyotter.saostar.activities;
 import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.configuration.Account;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
+import net.azyobuzi.azyotter.saostar.system.Action;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 
@@ -37,6 +39,13 @@ public class AccountPreferenceFragment extends PreferenceFragment {
 					activity.finish();
 				}
 
+				return true;
+			}
+        });
+        findPreference("useUserStream").setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				account.setUseUserStream((Boolean)newValue);
 				return true;
 			}
         });
