@@ -49,6 +49,7 @@
     <string name="couldnt_open_picture_file">Couldn\'t open picture file.</string>
     <string name="cannot_attach_over_2_pictures">Cannot attach over 2 pictures.</string>
     <string name="upload_to_twitpic">Upload to Twitpic</string>
+    <string name="upload_to_yfrog">Upload to yfrog</string>
     <string name="upload_to_hatena_fotolife">Upload to Hatena Fotolife</string>
     <string name="remove">Remove</string>
     <string name="uploading_picture">Uploading picture…</string>

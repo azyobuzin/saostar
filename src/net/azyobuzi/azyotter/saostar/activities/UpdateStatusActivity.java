@@ -82,6 +82,9 @@ public class UpdateStatusActivity extends Activity {
 					case R.id.menu_attachment_picture_upload_twitpic:
 						new TwitpicUploadTask().execute();
 						break;
+					case R.id.menu_attachment_picture_upload_yfrog:
+						new YfrogUploadTask().execute();
+						break;
 					case R.id.menu_attachment_picture_upload_hatena_fotolife:
 						if (attachmentPictureMimeType.equals("image/jpeg")) {
 							try {
@@ -414,6 +417,64 @@ public class UpdateStatusActivity extends Activity {
 				Configuration conf = new ConfigurationBuilder()
 					.setMediaProvider(MediaProvider.TWITPIC.toString())
 					.setMediaProviderAPIKey("b466e89334557babab629bf7d9a92efd")
+					.setOAuthAccessToken(Accounts.getSelectedAccount().getOAuthToken())
+					.setOAuthAccessTokenSecret(Accounts.getSelectedAccount().getOAuthTokenSecret())
+					.build();
+				String d = MimeTypeMap.getSingleton().getExtensionFromMimeType(attachmentPictureMimeType);
+				return new ImageUploadFactory(conf).getInstance().upload(
+					"media." + MimeTypeMap.getSingleton().getExtensionFromMimeType(attachmentPictureMimeType),
+					getContentResolver().openInputStream(attachmentPictureUri),
+					message
+				);
+			} catch (FileNotFoundException ex) {
+				ex.printStackTrace();
+				return "";
+			} catch (TwitterException ex) {
+				ex.printStackTrace();
+				this.ex = ex;
+				return "";
+			}
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (ex == null) {
+				txtStatus.getText().append(" " + result);
+				removeAttachmentPicture();
+			} else {
+				new AlertDialog.Builder(UpdateStatusActivity.this)
+					.setTitle(R.string.couldnt_upload_picture)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setMessage(StringUtil.isNullOrEmpty(ex.getErrorMessage()) ? ex.getMessage() : ex.getErrorMessage())
+					.setPositiveButton(android.R.string.ok, ActivityUtil.emptyDialogOnClickListener)
+					.show();
+			}
+
+			dialog.dismiss();
+		}
+	}
+
+	private class YfrogUploadTask extends AsyncTask<Void, Void, String> {
+		private ProgressDialog dialog;
+		private String message;
+		private TwitterException ex;
+
+		@Override
+		protected void onPreExecute() {
+			message = txtStatus.getText().toString();
+			dialog = new ProgressDialog(UpdateStatusActivity.this);
+			dialog.setMessage(getText(R.string.uploading_picture));
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
+			dialog.show();
+		}
+
+		@Override
+		protected String doInBackground(Void... arg0) {
+			try {
+				Configuration conf = new ConfigurationBuilder()
+					.setMediaProvider(MediaProvider.YFROG.toString())
+					.setMediaProviderAPIKey("L3NXBRZS23a7774ec11acf5cda03a63d435ac390")
 					.setOAuthAccessToken(Accounts.getSelectedAccount().getOAuthToken())
 					.setOAuthAccessTokenSecret(Accounts.getSelectedAccount().getOAuthTokenSecret())
 					.build();

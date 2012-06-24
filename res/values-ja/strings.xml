@@ -49,6 +49,7 @@
     <string name="couldnt_open_picture_file">画像ファイルを開けませんでした。</string>
     <string name="cannot_attach_over_2_pictures">2つ以上の画像を添付することはできません。</string>
     <string name="upload_to_twitpic">Twitpicへアップロード</string>
+    <string name="upload_to_yfrog">yfrogへアップロード</string>
     <string name="upload_to_hatena_fotolife">はてなフォトライフへアップロード</string>
     <string name="remove">削除</string>
     <string name="uploading_picture">画像をアップロードしています…</string>
