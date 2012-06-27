@@ -420,7 +420,7 @@ public class UpdateStatusActivity extends Activity {
 					.setOAuthAccessToken(Accounts.getSelectedAccount().getOAuthToken())
 					.setOAuthAccessTokenSecret(Accounts.getSelectedAccount().getOAuthTokenSecret())
 					.build();
-				String d = MimeTypeMap.getSingleton().getExtensionFromMimeType(attachmentPictureMimeType);
+
 				return new ImageUploadFactory(conf).getInstance().upload(
 					"media." + MimeTypeMap.getSingleton().getExtensionFromMimeType(attachmentPictureMimeType),
 					getContentResolver().openInputStream(attachmentPictureUri),
