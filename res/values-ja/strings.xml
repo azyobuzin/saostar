@@ -67,5 +67,8 @@
     <string name="favorite_failed">お気に入り登録失敗</string>
     <string name="retweeting">リツイート中…</string>
     <string name="retweet_failed">リツイート失敗</string>
+    <string name="shown_upload_picture_services">表示する画像アップロードサービス</string>
+    <string name="preference">設定</string>
+    <string name="theme">テーマ</string>
 
 </resources>

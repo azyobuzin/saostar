@@ -1,10 +1,8 @@
 package net.azyobuzi.azyotter.saostar;
 
-import net.azyobuzi.azyotter.saostar.configuration.Setting;
 import net.azyobuzi.azyotter.saostar.services.TimelineReceiveService;
 import android.app.Application;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 
 public class SaostarApplication extends Application {
 	public SaostarApplication() {
@@ -21,7 +19,6 @@ public class SaostarApplication extends Application {
 		System.setProperty("twitter4j.oauth.consumerSecret", "e1OSvum01Hgh3sg6xKIKJGRWIUOAqIei73rbuDOFbxY");
 		System.setProperty("twitter4j.stream.user.repliesAll", "false");
 
-		Setting.sp = PreferenceManager.getDefaultSharedPreferences(this);
 		startService(new Intent(this, TimelineReceiveService.class));
 	}
 }

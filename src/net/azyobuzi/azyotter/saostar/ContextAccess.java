@@ -6,12 +6,17 @@ import java.io.FileOutputStream;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 public class ContextAccess {
 	private static Context context;
 	public static void setContext(Context ctx) {
 		context = ctx;
+	}
+
+	public static Resources getResources() {
+		return context.getResources();
 	}
 
 	public static CharSequence getText(int resId) {
@@ -36,5 +41,9 @@ public class ContextAccess {
 
 	public static SharedPreferences getSharedPreferences(String name, int mode) {
 		return context.getSharedPreferences(name, mode);
+	}
+
+	public static void setTheme(int resid) {
+		context.setTheme(resid);
 	}
 }

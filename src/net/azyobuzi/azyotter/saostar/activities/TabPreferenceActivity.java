@@ -1,6 +1,7 @@
 package net.azyobuzi.azyotter.saostar.activities;
 
 import net.azyobuzi.azyotter.saostar.R;
+import net.azyobuzi.azyotter.saostar.configuration.Setting;
 import net.azyobuzi.azyotter.saostar.configuration.Tabs;
 import android.app.ActionBar;
 import android.app.ActionBar.TabListener;
@@ -17,6 +18,7 @@ public class TabPreferenceActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		setTheme(Setting.getTheme());
         setContentView(R.layout.fragment_container);
 
         int index = getIntent().getIntExtra(TAB_INDEX, 0);

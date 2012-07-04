@@ -2,6 +2,7 @@ package net.azyobuzi.azyotter.saostar.activities;
 
 import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
+import net.azyobuzi.azyotter.saostar.configuration.Setting;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ public class AccountPreferenceActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		setTheme(Setting.getTheme());
         setContentView(R.layout.account_preference_page);
 
         long id = getIntent().getLongExtra(AccountPreferenceFragment.ACCOUNT_ID, -1);

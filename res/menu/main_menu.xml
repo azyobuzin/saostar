@@ -2,6 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/menu_main_update_status" android:title="@string/update_status"></item>
     <item android:id="@+id/menu_main_tabs" android:title="@string/tabs"></item>
-    <item android:id="@+id/menu_main_accounts" android:title="@string/accounts"></item>
+    <item android:id="@+id/menu_main_preference" android:title="@string/preference"></item>
 
 </menu>

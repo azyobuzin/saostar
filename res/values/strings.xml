@@ -67,5 +67,8 @@
     <string name="favorite_failed">Favorite failed</string>
     <string name="retweeting">Retweeting…</string>
     <string name="retweet_failed">Retweet failed</string>
+    <string name="shown_upload_picture_services">Shown upload picture services</string>
+    <string name="preference">Preference</string>
+    <string name="theme">Theme</string>
 
 </resources>

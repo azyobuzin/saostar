@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <ListPreference android:key="theme" android:entryValues="@array/theme_value" android:title="@string/theme" android:entries="@array/theme_list" android:defaultValue="16974120"/>
+    <PreferenceScreen android:title="@string/accounts">
+        <intent android:targetPackage="net.azyobuzi.azyotter.saostar"
+                android:targetClass="net.azyobuzi.azyotter.saostar.activities.AccountsActivity" />
+    </PreferenceScreen>
+    <MultiSelectListPreference android:entryValues="@array/upload_services_value" android:key="shownUploadServices" android:entries="@array/upload_services" android:title="@string/shown_upload_picture_services" android:defaultValue="@array/upload_services_value"/>
+
+</PreferenceScreen>

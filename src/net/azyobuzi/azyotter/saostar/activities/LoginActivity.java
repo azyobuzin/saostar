@@ -8,6 +8,7 @@ import net.azyobuzi.azyotter.saostar.Twitter4JFactories;
 import net.azyobuzi.azyotter.saostar.StringUtil;
 import net.azyobuzi.azyotter.saostar.configuration.Account;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
+import net.azyobuzi.azyotter.saostar.configuration.Setting;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,6 +30,7 @@ public class LoginActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		setTheme(Setting.getTheme());
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.login_waiting_page);
 

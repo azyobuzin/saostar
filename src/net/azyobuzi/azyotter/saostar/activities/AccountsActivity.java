@@ -2,6 +2,7 @@ package net.azyobuzi.azyotter.saostar.activities;
 
 import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
+import net.azyobuzi.azyotter.saostar.configuration.Setting;
 import net.azyobuzi.azyotter.saostar.system.Action;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +16,7 @@ public class AccountsActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		setTheme(Setting.getTheme());
 
         setContentView(R.layout.accounts_page);
 

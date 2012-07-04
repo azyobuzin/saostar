@@ -2,6 +2,7 @@ package net.azyobuzi.azyotter.saostar.activities;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Set;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.Status;
@@ -16,6 +17,7 @@ import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.StringUtil;
 import net.azyobuzi.azyotter.saostar.Twitter4JFactories;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
+import net.azyobuzi.azyotter.saostar.configuration.Setting;
 import net.azyobuzi.azyotter.saostar.services.UpdateStatusService;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection;
@@ -53,6 +55,7 @@ public class UpdateStatusActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		setTheme(Setting.getTheme());
         setContentView(R.layout.update_status_page);
 
         Intent intent = getIntent();
@@ -67,7 +70,15 @@ public class UpdateStatusActivity extends Activity {
         btnAttachmentLocation = (Button)findViewById(R.id.btn_update_status_attachment_location);
 
         final PopupMenu attachmentPicPopup = new PopupMenu(this, btnAttachmentPicture);
-        attachmentPicPopup.getMenuInflater().inflate(R.menu.attachment_picture_menu, attachmentPicPopup.getMenu());
+        Menu attachmentPicPopupMenu = attachmentPicPopup.getMenu();
+        attachmentPicPopup.getMenuInflater().inflate(R.menu.attachment_picture_menu, attachmentPicPopupMenu);
+        Set<String> shownServices = Setting.getShownUploadServices();
+        if (!shownServices.contains("twitpic"))
+        	attachmentPicPopupMenu.findItem(R.id.menu_attachment_picture_upload_twitpic).setVisible(false);
+        if (!shownServices.contains("yfrog"))
+        	attachmentPicPopupMenu.findItem(R.id.menu_attachment_picture_upload_yfrog).setVisible(false);
+        if (!shownServices.contains("hatena-fotolife"))
+        	attachmentPicPopupMenu.findItem(R.id.menu_attachment_picture_upload_hatena_fotolife).setVisible(false);
 
         btnAttachmentPicture.setOnClickListener(new OnClickListener() {
 			@Override

@@ -3,6 +3,7 @@ package net.azyobuzi.azyotter.saostar.activities;
 import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.StringUtil;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
+import net.azyobuzi.azyotter.saostar.configuration.Setting;
 import net.azyobuzi.azyotter.saostar.configuration.Tab;
 import net.azyobuzi.azyotter.saostar.configuration.Tabs;
 import net.azyobuzi.azyotter.saostar.services.UpdateStatusService;
@@ -32,6 +33,7 @@ public class MainActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		setTheme(Setting.getTheme());
         setContentView(R.layout.main);
 
         if (Accounts.getAccountsCount() == 0) {
@@ -126,8 +128,8 @@ public class MainActivity extends Activity {
 			case R.id.menu_main_tabs:
 				startActivity(new Intent(this, TabsActivity.class).putExtra(CALLED_FROM_AZYOTTER, true));
 				return true;
-			case R.id.menu_main_accounts:
-				startActivity(new Intent(this, AccountsActivity.class).putExtra(CALLED_FROM_AZYOTTER, true));
+			case R.id.menu_main_preference:
+				startActivity(new Intent(this, SettingActivity.class).putExtra(CALLED_FROM_AZYOTTER, true));
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);

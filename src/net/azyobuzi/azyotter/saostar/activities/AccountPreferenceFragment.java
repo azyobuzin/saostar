@@ -3,7 +3,6 @@ package net.azyobuzi.azyotter.saostar.activities;
 import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.configuration.Account;
 import net.azyobuzi.azyotter.saostar.configuration.Accounts;
-import net.azyobuzi.azyotter.saostar.system.Action;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.Preference;
