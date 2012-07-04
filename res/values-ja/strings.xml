@@ -70,5 +70,6 @@
     <string name="shown_upload_picture_services">表示する画像アップロードサービス</string>
     <string name="preference">設定</string>
     <string name="theme">テーマ</string>
+    <string name="will_not_apply_soon">すぐには適用されません。</string>
 
 </resources>

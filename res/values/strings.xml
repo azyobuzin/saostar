@@ -70,5 +70,6 @@
     <string name="shown_upload_picture_services">Shown upload picture services</string>
     <string name="preference">Preference</string>
     <string name="theme">Theme</string>
+    <string name="will_not_apply_soon">Will not apply soon.</string>
 
 </resources>
