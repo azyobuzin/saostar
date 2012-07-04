@@ -2,16 +2,16 @@ package net.azyobuzi.azyotter.saostar.activities;
 
 import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.configuration.Setting;
+import android.app.Activity;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
-public class SettingActivity extends PreferenceActivity {
+public class SettingActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTheme(Setting.getTheme());
-		addPreferencesFromResource(R.xml.preference);
+		setContentView(R.layout.setting_page);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
