@@ -32,7 +32,7 @@
     <string name="arguments_have_problem">$funcName$ function: Arguments have problem.</string>
     <string name="query_ended_in_unexpected_position">Query ended in unexpected position.</string>
     <string name="cannot_use_other_than_prop_and_func">Cannot use other than "prop:" and "func:"</string>
-    <string name="not_found_operator_or_type_has_not_matched">Not found $opId$ operator or type has not matched.</string>
+    <string name="operator_is_not_found_or_type_has_not_matched">$opId$ operator is not found or type has not matched.</string>
     <string name="tabs">Tabs</string>
     <string name="edit_tab">Edit tab</string>
     <string name="general_setting">General</string>
@@ -71,5 +71,11 @@
     <string name="preference">Preference</string>
     <string name="theme">Theme</string>
     <string name="will_not_apply_soon">Will not apply soon.</string>
+    <string name="detail">Detail</string>
+    <string name="the_userstream_event_is_not_found">The UserStream event is not found.</string>
+    <string name="getting_tweet">Getting tweet…</string>
+    <string name="getting_direct_message">Getting direct message…</string>
+    <string name="couldnt_get_tweet">Couldn\'t get tweet</string>
+    <string name="couldnt_get_direct_message">Couldn\'t get direct message</string>
 
 </resources>

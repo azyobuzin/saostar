@@ -59,7 +59,7 @@ public class UpdateStatusActivity extends Activity {
         setContentView(R.layout.update_status_page);
 
         Intent intent = getIntent();
-        fromAzyotter = intent.getBooleanExtra(MainActivity.CALLED_FROM_AZYOTTER, false);
+        boolean fromAzyotter = intent.getBooleanExtra(MainActivity.CALLED_FROM_AZYOTTER, false);
 
         setTitle(R.string.update_status);
         if (fromAzyotter)
@@ -224,8 +224,6 @@ public class UpdateStatusActivity extends Activity {
         }
 	}
 
-	private boolean fromAzyotter;
-
 	private EditText txtStatus;
 	private Button btnAttachmentPicture;
 	private Button btnAttachmentLocation;
@@ -286,11 +284,6 @@ public class UpdateStatusActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
-				if (!fromAzyotter) {
-					startActivity(new Intent(this, MainActivity.class)
-						.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
-						.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-				}
 				finish();
 				return true;
 			case R.id.menu_update_status_tweet:

@@ -32,7 +32,7 @@
     <string name="arguments_have_problem">$funcName$ function: 引数が不正です。</string>
     <string name="query_ended_in_unexpected_position">クエリが予期せぬ場所で終了しています。</string>
     <string name="cannot_use_other_than_prop_and_func">「prop:」、「func:」以外は使えません。</string>
-    <string name="not_found_operator_or_type_has_not_matched">$opId$演算子は存在しないか、型が一致しません。</string>
+    <string name="operator_is_not_found_or_type_has_not_matched">$opId$演算子は存在しないか、型が一致しません。</string>
     <string name="tabs">タブ</string>
     <string name="edit_tab">タブ設定</string>
     <string name="general_setting">一般</string>
@@ -71,5 +71,9 @@
     <string name="preference">設定</string>
     <string name="theme">テーマ</string>
     <string name="will_not_apply_soon">すぐには適用されません。</string>
+    <string name="detail">詳細</string>
+    <string name="the_userstream_event_is_not_found">そのUserStreamイベントは存在しません。</string>
+    <string name="getting_tweet">ツイートを取得中…</string>
+    <string name="getting_direct_message">ダイレクトメッセージを取得中…</string>
 
 </resources>

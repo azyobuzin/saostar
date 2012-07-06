@@ -1,9 +1,15 @@
 package net.azyobuzi.azyotter.saostar.timeline_data;
 
-public class TimelineItemId {
+import java.io.Serializable;
+
+public class TimelineItemId implements Serializable {
+	private static final long serialVersionUID = 806384774052492242L;
+	
 	public static final int TYPE_TWEET = 0;
 	public static final int TYPE_DIRECT_MESSAGE = 1;
 	public static final int TYPE_USER_STREAM_EVENT = 2;
+	
+	public TimelineItemId() { }
 	
 	public TimelineItemId(int type, long id) {
 		this.type = type;

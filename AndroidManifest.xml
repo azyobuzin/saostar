@@ -66,6 +66,7 @@
         <service android:name=".services.FavoriteService"></service>
         <service android:name=".services.RetweetService"></service>
         <activity android:name=".activities.SettingActivity" android:label="@string/preference"></activity>
+        <activity android:name=".activities.TweetDetailActivity" android:label="@string/detail"></activity>"
     </application>
 
 </manifest>

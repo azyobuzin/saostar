@@ -245,7 +245,7 @@ public class Reader {
 							} catch (NullPointerException ex) {
 								ex.printStackTrace();
 								throw new IllegalArgumentException(
-									ContextAccess.getText(R.string.not_found_operator_or_type_has_not_matched)
+									ContextAccess.getText(R.string.operator_is_not_found_or_type_has_not_matched)
 										.toString().replace("$opId$", opId),
 									ex
 								);
