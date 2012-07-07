@@ -48,7 +48,8 @@ public class TweetDetailActivity extends ListActivity {
         		ActivityUtil.showAlertDialog(this,
         			android.R.drawable.ic_dialog_alert,
         			android.R.string.dialog_alert_title,
-        			R.string.the_userstream_event_is_not_found);
+        			R.string.the_userstream_event_is_not_found,
+        			true);
         	} else {
         		final ProgressDialog dialog = new ProgressDialog(this);
         		dialog.setIndeterminate(true);
@@ -90,16 +91,23 @@ public class TweetDetailActivity extends ListActivity {
     				}
     				
     				@Override
-    				public void onException(TwitterException ex, TwitterMethod method) {
-    					dialog.dismiss();
-    					ActivityUtil.showAlertDialog(
-    						TweetDetailActivity.this,
-    						android.R.drawable.ic_dialog_alert,
-    						id.type == TimelineItemId.TYPE_DIRECT_MESSAGE
-	    		        		? R.string.couldnt_get_direct_message
-	    		                : R.string.couldnt_get_tweet,
-    		                StringUtil.isNullOrEmpty(ex.getErrorMessage()) ? ex.getMessage() : ex.getErrorMessage()
-    		            );
+    				public void onException(final TwitterException ex, TwitterMethod method) {
+    					ex.printStackTrace();
+    					h.post(new Runnable() {
+    						@Override
+    						public void run() {
+		    					dialog.dismiss();
+		    					ActivityUtil.showAlertDialog(
+		    						TweetDetailActivity.this,
+		    						android.R.drawable.ic_dialog_alert,
+		    						id.type == TimelineItemId.TYPE_DIRECT_MESSAGE
+			    		        		? R.string.couldnt_get_direct_message
+			    		                : R.string.couldnt_get_tweet,
+		    		                StringUtil.isNullOrEmpty(ex.getErrorMessage()) ? ex.getMessage() : ex.getErrorMessage(),
+		    		                true
+		    		            );
+    						}
+    					});
     				}
     			});
         		
