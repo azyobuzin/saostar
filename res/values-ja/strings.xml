@@ -75,5 +75,7 @@
     <string name="the_userstream_event_is_not_found">そのUserStreamイベントは存在しません。</string>
     <string name="getting_tweet">ツイートを取得中…</string>
     <string name="getting_direct_message">ダイレクトメッセージを取得中…</string>
+    <string name="expanding">展開しています…</string>
+    <string name="maybe_dangerous_site">危険なサイトの可能性があります</string>
 
 </resources>

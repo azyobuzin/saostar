@@ -66,7 +66,19 @@
         <service android:name=".services.FavoriteService"></service>
         <service android:name=".services.RetweetService"></service>
         <activity android:name=".activities.SettingActivity" android:label="@string/preference"></activity>
-        <activity android:name=".activities.TweetDetailActivity" android:label="@string/detail"></activity>"
+        <activity android:name=".activities.TweetDetailActivity" android:label="@string/detail"></activity>
+        <activity android:name=".activities.ExpandLinkActivity" android:theme="@android:style/Theme.Holo.Dialog">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="ux.nu" />
+                <data android:scheme="http" android:host="j.mp" />
+                <data android:scheme="http" android:host="bit.ly" />
+                <data android:scheme="http" android:host="t.co" />
+                <data android:scheme="https" android:host="t.co" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
