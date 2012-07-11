@@ -296,6 +296,7 @@ public class UpdateStatusActivity extends Activity {
 						.putExtra(UpdateStatusService.MEDIA, attachmentPictureUri != null ? attachmentPictureUri.toString() : null)
 						.putExtra(UpdateStatusService.LOCATION, currentLocation)
 					);
+					setResult(RESULT_OK);
 					finish();
 				}
 				return true;

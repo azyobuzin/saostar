@@ -29,7 +29,7 @@ public class NotificationCenter {
 		NotificationManager mng = (NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		Intent retryIntent = new Intent(Intent.ACTION_VIEW)
-			.setData(TwitterWebIntentUriGenerator.tweet(status.getStatus(), status.getInReplyToStatusId()));
+			.setData(TwitterUriGenerator.tweetWebIntent(status.getStatus(), status.getInReplyToStatusId()));
 		if (!StringUtil.isNullOrEmpty(mediaUri))
 			retryIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(mediaUri));
 		if (status.getLocation() != null)

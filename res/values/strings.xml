@@ -79,5 +79,7 @@
     <string name="couldnt_get_direct_message">Couldn\'t get direct message</string>
     <string name="expanding">Expanding…</string>
     <string name="maybe_dangerous_site">Maybe dangerous site!</string>
+    <string name="want_to_favorite">Want to favorite?</string>
+    <string name="want_to_retweet">Want to retweet?</string>
 
 </resources>

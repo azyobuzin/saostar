@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
 
+import net.azyobuzi.azyotter.saostar.ActivityUtil;
 import net.azyobuzi.azyotter.saostar.R;
+import net.azyobuzi.azyotter.saostar.TwitterUriGenerator;
+import net.azyobuzi.azyotter.saostar.configuration.Command;
 import net.azyobuzi.azyotter.saostar.configuration.Setting;
 import net.azyobuzi.azyotter.saostar.configuration.Tab;
 import net.azyobuzi.azyotter.saostar.configuration.Tabs;
@@ -12,17 +15,21 @@ import net.azyobuzi.azyotter.saostar.system.Action1;
 import net.azyobuzi.azyotter.saostar.system.Func2;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItem;
 import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemCollection;
+import net.azyobuzi.azyotter.saostar.timeline_data.TimelineItemId;
 import net.azyobuzi.azyotter.saostar.widget.CustomizedUrlImageView;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.GestureDetector.OnDoubleTapListener;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -212,13 +219,77 @@ public class TimelineTabFragment extends ListFragment {
     	if (haveToExecuteFilter) executeFilter();
     };
 
-    private void runCommand(TimelineItem item, int command) {
+    @SuppressWarnings("incomplete-switch")
+	private void runCommand(final TimelineItem item, Command command) {
     	switch (command) {
-    		case Setting.COMMAND_FAVORITE:
-    			item.favorite(getActivity());
+    		case SHOW_DETAIL:
+    			if (item.id.type == TimelineItemId.TYPE_TWEET)
+	    			startActivity(
+	    				new Intent(Intent.ACTION_VIEW)
+	    					.setData(TwitterUriGenerator.tweetPermalink(item.from.screenName, item.id.id))
+	    					.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+	    			);
+    			else
+    				startActivity(
+	    				new Intent(getActivity(), TweetDetailActivity.class)
+	    					.putExtra(TweetDetailActivity.ID, item.id)
+	    					.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+	    			);
     			break;
-    		case Setting.COMMAND_RETWEET:
-    			item.retweet(getActivity());
+    		case REPLY:
+    			if (item.canReply())
+    				item.reply(getActivity());
+    			break;
+    		case QUOTE:
+    			if (item.canQuote())
+    				item.quote(getActivity());
+    			break;
+    		case FAVORITE:
+    			if (item.canFavorite())
+    				item.favorite(getActivity());
+    			break;
+    		case FAVORITE_SHOW_DIALOG:
+    			if (item.canFavorite())
+    				new AlertDialog.Builder(getActivity())
+    					.setMessage(R.string.want_to_favorite)
+    					.setPositiveButton(android.R.string.ok, new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								item.favorite(getActivity());
+								if (Setting.getCloseTweetDetailViewAfterOperation())
+						    		getActivity().finish();
+							}
+    					})
+    					.setNegativeButton(android.R.string.cancel, ActivityUtil.emptyDialogOnClickListener)
+    					.show();
+    			break;
+    		case RETWEET:
+    			if (item.canRetweet())
+    				item.retweet(getActivity());
+    			break;
+    		case RETWEET_SHOW_DIALOG:
+    			if (item.canRetweet())
+    				new AlertDialog.Builder(getActivity())
+    					.setMessage(R.string.want_to_retweet)
+    					.setPositiveButton(android.R.string.ok, new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								item.retweet(getActivity());
+							}
+    					})
+    					.setNegativeButton(android.R.string.cancel, ActivityUtil.emptyDialogOnClickListener)
+    					.show();
+    			break;
+    		case COOK:
+    			if (item.canCook())
+    				item.cook(getActivity());
+    			break;
+    		case SHARE:
+    			if (item.canShare())
+    				item.share(getActivity());
+    			break;
+    		case SELECT:
+    			//TODO
     			break;
     	}
     }
@@ -274,7 +345,7 @@ public class TimelineTabFragment extends ListFragment {
     	public TextView dateAndSource;
     }
 
-    private class GestureListener implements OnGestureListener, OnDoubleTapListener {
+    private class GestureListener extends SimpleOnGestureListener {
     	private TimelineItem getItemFromEvent(MotionEvent e) {
     		return (TimelineItem)getListView().getItemAtPosition(
     			getListView().pointToPosition((int)e.getX(), (int)e.getY()));
@@ -284,38 +355,41 @@ public class TimelineTabFragment extends ListFragment {
 
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
-			//Log.d("debug", getItemFromEvent(e).from.screenName + " double tap");
-			return false;
-		}
-
-		@Override
-		public boolean onDoubleTapEvent(MotionEvent e) {
-			//Log.d("debug", getItemFromEvent(e).from.screenName + " double tap event");
+			TimelineItem item = getItemFromEvent(e);
+			if (!gestured && item != null) {
+				gestured = true;
+				runCommand(item, Setting.getDoubleTapCommand());
+				return true;
+			}
+			
 			return false;
 		}
 
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			//Log.d("debug", getItemFromEvent(e).from.screenName + " single tap confirmed");
+			TimelineItem item = getItemFromEvent(e);
+			if (!gestured && item != null) {
+				gestured = true;
+				runCommand(item, Setting.getTapCommand());
+				return true;
+			}
+			
 			return false;
 		}
 
 		@Override
 		public boolean onDown(MotionEvent arg0) {
-			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " down");
 			gestured = false;
 			return false;
 		}
 
 		@Override
-		public boolean onFling(MotionEvent arg0, MotionEvent arg1, float arg2, float arg3) {
-			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " fling");
-			return false;
-		}
-
-		@Override
 		public void onLongPress(MotionEvent arg0) {
-			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " long press");
+			TimelineItem item = getItemFromEvent(arg0);
+			if (!gestured && item != null) {
+				gestured = true;
+				runCommand(item, Setting.getLongPressCommand());
+			}
 		}
 
 		@Override
@@ -341,17 +415,5 @@ public class TimelineTabFragment extends ListFragment {
 			}
 			return false;
 		}
-
-		@Override
-		public void onShowPress(MotionEvent arg0) {
-			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " show press");
-		}
-
-		@Override
-		public boolean onSingleTapUp(MotionEvent arg0) {
-			//Log.d("debug", getItemFromEvent(arg0).from.screenName + " single tap up");
-			return false;
-		}
-
     }
 }

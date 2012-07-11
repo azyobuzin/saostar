@@ -23,7 +23,9 @@ public class TwitterUriHookActivity extends Activity {
         Matcher m = tweetPermalinkPattern.matcher(uri.toString());
         if (m.find()) {
         	startActivity(new Intent(this, TweetDetailActivity.class)
-        		.putExtra(TweetDetailActivity.ID, new TimelineItemId(TimelineItemId.TYPE_TWEET, Long.valueOf(m.group(1)))));
+        		.putExtras(intent)
+        		.putExtra(TweetDetailActivity.ID, new TimelineItemId(TimelineItemId.TYPE_TWEET, Long.valueOf(m.group(1))))
+        	);
         	finish();
         	return;
         }
@@ -31,7 +33,8 @@ public class TwitterUriHookActivity extends Activity {
         if (UpdateStatusActivity.isTweetIntentUri(uri)) {
         	startActivity(new Intent(this, UpdateStatusActivity.class)
         		.setData(uri)
-        		.putExtras(intent));
+        		.putExtras(intent)
+        	);
         	finish();
         	return;
         }

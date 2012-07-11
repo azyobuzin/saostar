@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.azyobuzi.azyotter.saostar.TwitterUriGenerator;
+import net.azyobuzi.azyotter.saostar.activities.MainActivity;
 import net.azyobuzi.azyotter.saostar.linq.Enumerable;
 import net.azyobuzi.azyotter.saostar.services.FavoriteService;
 import net.azyobuzi.azyotter.saostar.services.RetweetService;
@@ -20,6 +22,7 @@ import twitter4j.URLEntity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.format.DateFormat;
 
 public class TimelineItem {
 	public TimelineItemId id;
@@ -159,6 +162,33 @@ public class TimelineItem {
 		to = UserCollection.addOrMerge(source.getRecipient());
 		raiseMerged();
 	}
+	
+	public boolean canReply() {
+		return id.type == TimelineItemId.TYPE_TWEET; //TODO:DMをどうするか
+	}
+	
+	public void reply(Context ctx) {
+		ctx.startActivity(
+			new Intent(Intent.ACTION_VIEW)
+				.setData(TwitterUriGenerator.tweetWebIntent("@" + from.screenName + " ", id.id))
+				.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+		);
+	}
+	
+	public boolean canQuote() {
+		return id.type == TimelineItemId.TYPE_TWEET && !from.isProtected;
+	}
+	
+	public void quote(Context ctx) {
+		ctx.startActivity(
+			new Intent(Intent.ACTION_VIEW)
+				.setData(TwitterUriGenerator.tweetWebIntent(
+					" QT @" + from.screenName + ": " + originalText,
+					id.id
+				))
+				.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+		);
+	}
 
 	public boolean canFavorite() {
 		return id.type == TimelineItemId.TYPE_TWEET;
@@ -176,5 +206,40 @@ public class TimelineItem {
 	public void retweet(Context ctx) {
 		ctx.startService(new Intent(ctx, RetweetService.class)
 			.putExtra(RetweetService.STATUSES, String.valueOf(id.id)));
+	}
+	
+	public boolean canCook() {
+		return id.type == TimelineItemId.TYPE_TWEET && !from.isProtected;
+	}
+	
+	public void cook(Context ctx) {
+		ctx.startActivity(
+			new Intent(Intent.ACTION_VIEW)
+				.setData(TwitterUriGenerator.tweetWebIntent(originalText, inReplyToStatusId))
+				.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+		);
+	}
+	
+	public boolean canShare() {
+		return id.type == TimelineItemId.TYPE_TWEET && !from.isProtected;
+	}
+	
+	public void share(Context ctx) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(originalText);
+		sb.append("\n\n");
+		sb.append(from.name);
+		sb.append(" / @");
+		sb.append(from.screenName);
+		sb.append("\n\n");
+		sb.append(DateFormat.format("yyyy/MM/dd hh:mm:ss", createdAt));
+		sb.append("\n\n");
+		sb.append(TwitterUriGenerator.tweetPermalink(from.screenName, id.id));
+		
+		ctx.startActivity(new Intent(Intent.ACTION_SEND)
+			.setType("text/plain")
+			.putExtra(Intent.EXTRA_TEXT, sb.toString())
+			.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+		);
 	}
 }

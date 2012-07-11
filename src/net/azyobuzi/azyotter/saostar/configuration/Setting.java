@@ -11,24 +11,25 @@ import android.content.SharedPreferences;
 
 public class Setting {
 	public static SharedPreferences sp = ContextAccess.getDefaultSharedPreferences();
-
-	public static final int COMMAND_FAVORITE = 0;
-	public static final int COMMAND_RETWEET = 1;
-
-	public static int getFlickToRightCommand() {
-		return sp.getInt("flickToRightCommand", COMMAND_FAVORITE);
+	
+	public static Command getTapCommand() {
+		return Command.valueOf(sp.getString("tapCommand", Command.SHOW_DETAIL.toString()));
+	}
+	
+	public static Command getLongPressCommand() {
+		return Command.valueOf(sp.getString("longPressCommand", Command.SELECT.toString()));
 	}
 
-	public static void setFlickToRightCommand(int value) {
-		sp.edit().putInt("flickToRightCommand", value).apply();
+	public static Command getFlickToRightCommand() {
+		return Command.valueOf(sp.getString("flickToRightCommand", Command.FAVORITE_SHOW_DIALOG.toString()));
 	}
 
-	public static int getFlickToLeftCommand() {
-		return sp.getInt("flickToLeftCommand", COMMAND_RETWEET);
+	public static Command getFlickToLeftCommand() {
+		return Command.valueOf(sp.getString("flickToLeftCommand", Command.RETWEET_SHOW_DIALOG.toString()));
 	}
-
-	public static void setFlickToLeftCommand(int value) {
-		sp.edit().putInt("flickToLeftCommand", value).apply();
+	
+	public static Command getDoubleTapCommand() {
+		return Command.valueOf(sp.getString("doubleTapCommand", Command.REPLY.toString()));
 	}
 
 	public static final Set<String> defaultShownUploadServices =
@@ -40,5 +41,9 @@ public class Setting {
 
 	public static int getTheme() {
 		return Integer.valueOf(sp.getString("theme", String.valueOf(android.R.style.Theme_DeviceDefault)));
+	}
+	
+	public static boolean getCloseTweetDetailViewAfterOperation() {
+		return sp.getBoolean("closeTweetDetailViewAfterOperation", true);
 	}
 }
