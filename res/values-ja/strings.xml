@@ -79,5 +79,11 @@
     <string name="maybe_dangerous_site">危険なサイトの可能性があります</string>
     <string name="want_to_favorite">お気に入りに追加しますか？</string>
     <string name="want_to_retweet">リツイートしますか？</string>
+    <string name="reply">返信</string>
+    <string name="quote">QT</string>
+    <string name="favorite">お気に入り</string>
+    <string name="retweet">RT</string>
+    <string name="cook">美味しくいただく</string>
+    <string name="share">共有</string>
 
 </resources>

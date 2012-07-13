@@ -1,6 +1,7 @@
 package net.azyobuzi.azyotter.saostar.linq;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import net.azyobuzi.azyotter.saostar.system.Action2;
@@ -40,61 +41,72 @@ public abstract class Enumerable<T> {
 	public static <T> Enumerable<T> from(final Iterable<T> source) {
 		if (source == null) return empty();
 		
-		return new Enumerable<T>() {
+		return from(new Enumerator<T>() {
+			private Iterator<T> itr = source.iterator();
+			private T current;
+
 			@Override
-			public Enumerator<T> getEnumerator() {
-				return new Enumerator<T>() {
-					private Iterator<T> itr = source.iterator();
-					private T current;
-
-					@Override
-					public boolean moveNext() {
-						if (itr.hasNext()) {
-							current = itr.next();
-							return true;
-						} else {
-							return false;
-						}
-					}
-
-					@Override
-					public T getCurrent() {
-						return current;
-					}
-				};
+			public boolean moveNext() {
+				if (itr.hasNext()) {
+					current = itr.next();
+					return true;
+				} else {
+					return false;
+				}
 			}
-		};
+
+			@Override
+			public T getCurrent() {
+				return current;
+			}
+		});
 	}
 
 	public static <T> Enumerable<T> from(final T[] source) {
 		if (source == null) return empty();
 		
-		return new Enumerable<T>() {
+		return from(new Enumerator<T>() {
+			private int index = -1;
+			private T current;
+
 			@Override
-			public Enumerator<T> getEnumerator() {
-				return new Enumerator<T>() {
-					private int index = -1;
-					private T current;
+			public boolean moveNext() {
+				index++;
 
-					@Override
-					public boolean moveNext() {
-						index++;
-
-						if (source.length > index) {
-							current = source[index];
-							return true;
-						} else {
-							return false;
-						}
-					}
-
-					@Override
-					public T getCurrent() {
-						return current;
-					}
-				};
+				if (source.length > index) {
+					current = source[index];
+					return true;
+				} else {
+					return false;
+				}
 			}
-		};
+
+			@Override
+			public T getCurrent() {
+				return current;
+			}
+		});
+	}
+	
+	public static <T> Enumerable<T> oneElement(final T value) {
+		return from(new Enumerator<T>() {
+			private boolean returned = false;
+
+			@Override
+			public boolean moveNext() {
+				if (!returned) {
+					returned = true;
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			@Override
+			public T getCurrent() {
+				return value;
+			}
+		});
 	}
 
 	public abstract Enumerator<T> getEnumerator();
@@ -235,5 +247,92 @@ public abstract class Enumerable<T> {
 		}
 
 		return defaultValue;
+	}
+	
+	public Enumerable<T> union(final Enumerable<? extends T> second) {
+		return from(new Enumerator<T>() {
+			private T current;
+			private HashSet<T> returned = new HashSet<T>();
+			
+			private Enumerator<T> firstEnumerator = getEnumerator();
+			private Enumerator<? extends T> secondEnumerator = second.getEnumerator();
+
+			@Override
+			public boolean moveNext() {
+				if (firstEnumerator.moveNext()) {
+					current = firstEnumerator.getCurrent();
+					return returned.add(current) ? true : moveNext();
+				} else if (secondEnumerator.moveNext()) {
+					current = secondEnumerator.getCurrent();
+					return returned.add(current) ? true : moveNext();
+				}
+
+				return false;
+			}
+
+			@Override
+			public T getCurrent() {
+				return current;
+			}
+		});
+	}
+	
+	public Enumerable<T> distinct() {
+		return from(new Enumerator<T>() {
+			private T current;
+			private HashSet<T> returned = new HashSet<T>();
+			
+			private Enumerator<T> source = getEnumerator();
+
+			@Override
+			public boolean moveNext() {
+				if (source.moveNext()) {
+					current = source.getCurrent();
+					return returned.add(current) ? true : moveNext();
+				} else {
+					return false;
+				}
+			}
+
+			@Override
+			public T getCurrent() {
+				return current;
+			}
+		});
+	}
+	
+	public Enumerable<T> distinct(final Func2<T, T, Boolean> compareEquality) {
+		return from(new Enumerator<T>() {
+			private T current;
+			private HashSet<T> returned = new HashSet<T>();
+			
+			private Enumerator<T> source = getEnumerator();
+
+			@Override
+			public boolean moveNext() {
+				if (source.moveNext()) {
+					current = source.getCurrent();
+					Enumerable<T> equal = from(returned).where(new Func2<T, Integer, Boolean>() {
+						@Override
+						public Boolean invoke(T arg0, Integer arg1) {
+							return compareEquality.invoke(current, arg0);
+						}
+					});
+					if (equal.firstOrDefault(null) == null) {
+						returned.add(current);
+						return true;
+					} else {
+						return moveNext();
+					}
+				} else {
+					return false;
+				}
+			}
+
+			@Override
+			public T getCurrent() {
+				return current;
+			}
+		});
 	}
 }

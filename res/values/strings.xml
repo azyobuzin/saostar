@@ -81,5 +81,11 @@
     <string name="maybe_dangerous_site">Maybe dangerous site!</string>
     <string name="want_to_favorite">Want to favorite?</string>
     <string name="want_to_retweet">Want to retweet?</string>
+    <string name="reply">Reply</string>
+    <string name="quote">Quote</string>
+    <string name="favorite">Favorite</string>
+    <string name="retweet">Retweet</string>
+    <string name="cook">Cook</string>
+    <string name="share">Share</string>
 
 </resources>

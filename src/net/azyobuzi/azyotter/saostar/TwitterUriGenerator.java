@@ -18,4 +18,12 @@ public class TwitterUriGenerator {
 	public static Uri tweetPermalink(String screenName, long id) {
 		return Uri.parse("https://twitter.com/" + screenName + "/status/" + id);
 	}
+	
+	public static Uri search(String query) {
+		return Uri.parse("https://twitter.com/search/" + Uri.encode(query).replace("#", "%23"));
+	}
+	
+	public static Uri userPermalink(String screenName) {
+		return Uri.parse("https://twitter.com/" + screenName);
+	}
 }
