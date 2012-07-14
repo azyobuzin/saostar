@@ -229,6 +229,7 @@ public class TimelineTabFragment extends ListFragment {
 	    				new Intent(Intent.ACTION_VIEW)
 	    					.setData(TwitterUriGenerator.tweetPermalink(item.from.screenName, item.id.id))
 	    					.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+	    					.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 	    			);
     			else
     				startActivity(

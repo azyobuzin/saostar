@@ -241,7 +241,8 @@ public class TimelineItem {
 			new Intent(Intent.ACTION_SEND)
 				.setType("text/plain")
 				.putExtra(Intent.EXTRA_TEXT, sb.toString())
-				.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true),
+				.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+				.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
 			ctx.getText(R.string.share)
 		));
 	}

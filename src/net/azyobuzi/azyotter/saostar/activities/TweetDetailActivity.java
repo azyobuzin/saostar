@@ -175,6 +175,7 @@ public class TweetDetailActivity extends ListActivity {
 								startActivity(new Intent(Intent.ACTION_VIEW)
 									.setData(arg0)
 									.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+									.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 								);
 							}
 							
@@ -197,6 +198,7 @@ public class TweetDetailActivity extends ListActivity {
 								startActivity(new Intent(Intent.ACTION_VIEW)
 									.setData(TwitterUriGenerator.search("#" + arg0))
 									.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+									.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 								);
 							}
 							
@@ -227,6 +229,7 @@ public class TweetDetailActivity extends ListActivity {
 								startActivity(new Intent(Intent.ACTION_VIEW)
 									.setData(TwitterUriGenerator.userPermalink(arg0))
 									.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
+									.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 								);
 							}
 							
