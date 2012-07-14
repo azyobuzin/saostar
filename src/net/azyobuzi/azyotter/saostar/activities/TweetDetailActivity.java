@@ -1,5 +1,6 @@
 package net.azyobuzi.azyotter.saostar.activities;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 import twitter4j.AsyncTwitter;
@@ -31,8 +32,6 @@ import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -136,7 +135,7 @@ public class TweetDetailActivity extends ListActivity {
 		((CustomizedUrlImageView)findViewById(R.id.iv_tweet_detail_profile_image)).setImageUrl(item.from.profileImageUrl);
 		((TextView)findViewById(R.id.tv_tweet_detail_name)).setText(item.from.screenName + " / " + item.from.name);
 		((TextView)findViewById(R.id.tv_tweet_detail_text)).setText(item.displayText);
-		((TextView)findViewById(R.id.tv_tweet_detail_date)).setText(item.createdAt.toLocaleString());
+		((TextView)findViewById(R.id.tv_tweet_detail_date)).setText(DateFormat.getDateTimeInstance().format(item.createdAt));
 		setListAdapter(new OperationAdapter(item));
 	}
 	

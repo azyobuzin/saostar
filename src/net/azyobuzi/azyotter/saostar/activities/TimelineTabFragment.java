@@ -1,5 +1,6 @@
 package net.azyobuzi.azyotter.saostar.activities;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
@@ -330,7 +331,7 @@ public class TimelineTabFragment extends ListFragment {
 			viewHolder.profileImage.setImageUrl(item.from.profileImageUrl);
 			viewHolder.name.setText(item.from.screenName + " / " + item.from.name);
 			viewHolder.text.setText(item.displayText);
-			viewHolder.dateAndSource.setText(item.createdAt.toLocaleString() + " / via " + item.sourceName);
+			viewHolder.dateAndSource.setText(DateFormat.getDateTimeInstance().format(item.createdAt) + " / via " + item.sourceName);
 
 			return re;
 		}

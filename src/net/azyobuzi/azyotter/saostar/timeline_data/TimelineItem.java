@@ -1,5 +1,6 @@
 package net.azyobuzi.azyotter.saostar.timeline_data;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,6 +8,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.azyobuzi.azyotter.saostar.R;
 import net.azyobuzi.azyotter.saostar.TwitterUriGenerator;
 import net.azyobuzi.azyotter.saostar.activities.MainActivity;
 import net.azyobuzi.azyotter.saostar.linq.Enumerable;
@@ -22,7 +24,6 @@ import twitter4j.URLEntity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.text.format.DateFormat;
 
 public class TimelineItem {
 	public TimelineItemId id;
@@ -232,14 +233,16 @@ public class TimelineItem {
 		sb.append(" / @");
 		sb.append(from.screenName);
 		sb.append("\n\n");
-		sb.append(DateFormat.format("yyyy/MM/dd hh:mm:ss", createdAt));
+		sb.append(DateFormat.getDateTimeInstance().format(createdAt));
 		sb.append("\n\n");
 		sb.append(TwitterUriGenerator.tweetPermalink(from.screenName, id.id));
 		
-		ctx.startActivity(new Intent(Intent.ACTION_SEND)
-			.setType("text/plain")
-			.putExtra(Intent.EXTRA_TEXT, sb.toString())
-			.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true)
-		);
+		ctx.startActivity(Intent.createChooser(
+			new Intent(Intent.ACTION_SEND)
+				.setType("text/plain")
+				.putExtra(Intent.EXTRA_TEXT, sb.toString())
+				.putExtra(MainActivity.CALLED_FROM_AZYOTTER, true),
+			ctx.getText(R.string.share)
+		));
 	}
 }
