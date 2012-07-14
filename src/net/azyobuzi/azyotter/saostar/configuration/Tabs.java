@@ -36,9 +36,10 @@ public class Tabs {
 			NodeList tabs = root.getElementsByTagName("tab");
 			for (int i = 0; i < tabs.getLength(); i++) {
 				Element elm = (Element)tabs.item(i);
-				Tab re = new Tab();
-				re.setName(elm.getElementsByTagName("name").item(0).getTextContent());
-				re.setFilter(elm.getElementsByTagName("filter").item(0).getTextContent());
+				Tab re = new Tab(
+					elm.getElementsByTagName("name").item(0).getTextContent(),
+					elm.getElementsByTagName("filter").item(0).getTextContent()
+				);
 				list.add(re);
 			}
 		} catch (Exception ex) {
@@ -117,35 +118,37 @@ public class Tabs {
 	public static final ArrayList<Action3<Tab, Integer, Integer>> movedHandler = new ArrayList<Action3<Tab, Integer, Integer>>();
 
 	public static void save() {
+		if (list == null) return;
+		
 		try {
 			final Document doc = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder()
 					.newDocument();
 
-				final Element root = doc.createElement("tabs");
+			final Element root = doc.createElement("tabs");
 
-				getAllTabs().forEach(new Action2<Tab, Integer>() {
-					@Override
-					public void invoke(Tab arg0, Integer arg1) {
-						Element elm = doc.createElement("tab");
+			getAllTabs().forEach(new Action2<Tab, Integer>() {
+				@Override
+				public void invoke(Tab arg0, Integer arg1) {
+					Element elm = doc.createElement("tab");
 
-						Element child = doc.createElement("name");
-						child.appendChild(doc.createTextNode(arg0.getName()));
-						elm.appendChild(child);
+					Element child = doc.createElement("name");
+					child.appendChild(doc.createTextNode(arg0.getName()));
+					elm.appendChild(child);
 
-						child = doc.createElement("filter");
-						child.appendChild(doc.createTextNode(arg0.getFilter()));
-						elm.appendChild(child);
+					child = doc.createElement("filter");
+					child.appendChild(doc.createTextNode(arg0.getFilter()));
+					elm.appendChild(child);
 
-						root.appendChild(elm);
-					}
-				});
+					root.appendChild(elm);
+				}
+			});
 
-				doc.appendChild(root);
+			doc.appendChild(root);
 
-				TransformerFactory.newInstance()
-					.newTransformer()
-					.transform(new DOMSource(doc), new StreamResult(ContextAccess.openFileOutput(fileName, Context.MODE_PRIVATE)));
+			TransformerFactory.newInstance()
+				.newTransformer()
+				.transform(new DOMSource(doc), new StreamResult(ContextAccess.openFileOutput(fileName, Context.MODE_PRIVATE)));
 		} catch (Exception ex) {
 			ex.printStackTrace(); //エラー起きたらスイマセーンｗｗｗｗｗ
 		}

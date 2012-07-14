@@ -14,8 +14,18 @@ public class Tab {
 	public Tab() {
 		try {
 			filterExpr = Reader.read(filter);
-		} catch (Exception ex)
-		{
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public Tab(String name, String filter) {
+		this.name = name;
+		this.filter = filter;
+		
+		try {
+			filterExpr = Reader.read(filter);
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
