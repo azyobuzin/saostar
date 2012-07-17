@@ -59,7 +59,7 @@ public class TimelineTabFragment extends ListFragment {
 	private boolean pausing = false;
 	private boolean haveToExecuteFilter = false;
 
-	private ActionBar.Tab actionBarTab;
+	public ActionBar.Tab actionBarTab;
 
 	private Handler h = new Handler();
 
@@ -126,10 +126,6 @@ public class TimelineTabFragment extends ListFragment {
     	tab.nameChangedHandler.remove(tabNameChangedHandler);
 
     	super.onDestroy();
-    }
-
-    public void setActionBarTab(ActionBar.Tab actionBarTab) {
-    	this.actionBarTab = actionBarTab;
     }
 
     private void executeFilter() {

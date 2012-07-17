@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
     /** Called when the activity is first created. */
 
 	public static final String CALLED_FROM_AZYOTTER = "net.azyobuzi.azyotter.saostar.activities.MainActivity.CALLED_FROM_AZYOTTER";
+	public static final String TAB_INDEX = "net.azyobuzi.azyotter.saostar.activities.MainActivity.TAB_INDEX";
 
     private boolean tabChanged = false;
 
@@ -50,6 +51,12 @@ public class MainActivity extends Activity {
         Tabs.addedHandler.add(tabChangedHandler);
         Tabs.removedHandler.add(tabChangedHandler);
         Tabs.movedHandler.add(movedTabHandler);
+        
+        if (savedInstanceState != null) {
+        	int index = savedInstanceState.getInt(TAB_INDEX, -1);
+        	if (index != -1)
+        		actionBar.selectTab(actionBar.getTabAt(index));
+        }
 
         findViewById(R.id.btn_main_update_status).setOnClickListener(new OnClickListener() {
 			@Override
@@ -64,6 +71,15 @@ public class MainActivity extends Activity {
 			}
         });
     }
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		ActionBar.Tab selectedTab = getActionBar().getSelectedTab();
+		if (selectedTab != null)
+			outState.putInt(TAB_INDEX, Tabs.indexOf((Tab)selectedTab.getTag()));
+	}
 
     @Override
     public void onDestroy() {
@@ -144,18 +160,20 @@ public class MainActivity extends Activity {
     	private TimelineTabFragment mFragment;
 
 		@Override
-		public void onTabReselected(ActionBar.Tab arg0, FragmentTransaction arg1) {
-		}
+		public void onTabReselected(ActionBar.Tab arg0, FragmentTransaction arg1) { }
 
 		@Override
 		public void onTabSelected(ActionBar.Tab arg0, FragmentTransaction arg1) {
-			arg1.add(R.id.fragment_content, mFragment, null);
-			mFragment.setActionBarTab(arg0);
+			if (mFragment.isAdded())
+				arg1.show(mFragment);
+			else
+				arg1.add(R.id.fragment_content, mFragment, null);
+			mFragment.actionBarTab = arg0;
 		}
 
 		@Override
 		public void onTabUnselected(ActionBar.Tab arg0, FragmentTransaction arg1) {
-			arg1.remove(mFragment);
+			arg1.hide(mFragment);
 		}
     }
 }
