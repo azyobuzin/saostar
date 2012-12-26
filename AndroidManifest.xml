@@ -1,83 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.azyobuzi.azyotter.saostar"
+    package="net.azyobuzi.saostar"
+    android:installLocation="auto"
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="14" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".SaostarApplication"
+        android:name="net.azyobuzi.saostar.App"
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:installLocation="auto">
+        android:theme="@style/AppTheme" >
         <activity
-            android:name=".activities.MainActivity"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:name="net.azyobuzi.saostar.MainActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginActivity" android:launchMode="singleTask" android:label="@string/login">
+        <activity
+            android:name="net.azyobuzi.saostar.AccountsActivity"
+            android:label="@string/title_activity_accounts"
+            android:parentActivityName="net.azyobuzi.saostar.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.azyobuzi.saostar.MainActivity" />
+        </activity>
+        <activity
+            android:name="net.azyobuzi.saostar.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:launchMode="singleTask"
+            android:parentActivityName="net.azyobuzi.saostar.AccountsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.azyobuzi.saostar.AccountsActivity" />
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="net.azyobuzi.azyotter.saostar" android:host="callback" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="net.azyobuzi.azyotter.saostar" android:host="callback"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AccountsActivity" android:launchMode="singleTask" android:label="@string/registered_accounts"></activity>
-        <activity android:name=".activities.AccountPreferenceActivity" android:label="@string/edit_account"></activity>
-        <service android:name=".services.UpdateStatusService"></service>
-        <activity android:name=".activities.UpdateStatusActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-                <data android:mimeType="image/*" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.shootingstar067.EXP" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.TwitterUriHookActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="twitter.com" />
-                <data android:scheme="https" android:host="twitter.com" />
-                <data android:scheme="http" android:host="www.twitter.com" />
-                <data android:scheme="https" android:host="www.twitter.com" />
-                <data android:scheme="http" android:host="mobile.twitter.com" />
-                <data android:scheme="https" android:host="mobile.twitter.com" />
-            </intent-filter>
-        </activity>
-        <service android:name=".services.TimelineReceiveService"></service>
-        <activity android:name=".activities.TabsActivity" android:label="@string/tabs"></activity>
-        <activity android:name=".activities.TabPreferenceActivity" android:label="@string/edit_tab"></activity>
-        <activity android:name=".activities.RetryActivity"></activity>
-        <service android:name=".services.FavoriteService"></service>
-        <service android:name=".services.RetweetService"></service>
-        <activity android:name=".activities.SettingActivity" android:label="@string/preference"></activity>
-        <activity android:name=".activities.TweetDetailActivity" android:label="@string/detail"></activity>
-        <activity android:name=".activities.ExpandLinkActivity" android:theme="@android:style/Theme.Holo.Dialog">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="ux.nu" />
-                <data android:scheme="http" android:host="j.mp" />
-                <data android:scheme="http" android:host="bit.ly" />
-                <data android:scheme="http" android:host="t.co" />
-                <data android:scheme="https" android:host="t.co" />
-            </intent-filter>
+        <activity
+            android:name="net.azyobuzi.saostar.AccountActivity"
+            android:label="@string/title_activity_account"
+            android:parentActivityName="net.azyobuzi.saostar.AccountsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.azyobuzi.saostar.AccountsActivity" />
         </activity>
     </application>
 

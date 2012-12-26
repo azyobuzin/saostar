@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="upload_services">
-        <item >Twitpic</item>
-        <item >yfrog</item>
-        <item >はてなフォトライフ</item>
-    </string-array>
-</resources>

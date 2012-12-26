@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/menu_attachment_location_show_the_location" android:title="@string/show_the_location_in_map"></item>
-    <item android:id="@+id/menu_attachment_location_remove" android:title="@string/remove"></item>
-</menu>
