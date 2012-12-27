@@ -1,14 +1,13 @@
 package net.azyobuzi.saostar.model.configuration;
 
-import java.util.ArrayList;
-
 import net.azyobuzi.saostar.App;
-import net.azyobuzi.saostar.util.Action;
+import net.azyobuzi.saostar.util.EventArgs;
+import net.azyobuzi.saostar.util.Notificator;
 import twitter4j.auth.AccessToken;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class Account
+public class Account // TODO:アカウント削除時に SharedPreference をクリア
 {
     public Account(final long id)
     {
@@ -17,7 +16,9 @@ public class Account
         screenName = sp.getString("screenName", "");
         oauthToken = sp.getString("oauthToken", "");
         oauthTokenSecret = sp.getString("oauthTokenSecret", "");
-        useUserStream = sp.getBoolean("useUserStream", true);
+        useUserStreams = sp.getBoolean("useUserStreams", true);
+
+        useUserStreamsChangedEvent.scheduler = App.instance.h;
     }
 
     private final SharedPreferences sp;
@@ -68,25 +69,20 @@ public class Account
         sp.edit().putString("oauthTokenSecret", value).apply();
     }
 
-    private boolean useUserStream;
+    private boolean useUserStreams;
+    public final Notificator<EventArgs> useUserStreamsChangedEvent = new Notificator<EventArgs>();
 
-    public boolean getUseUserStream()
+    public boolean getUseUserStreams()
     {
-        return useUserStream;
+        return useUserStreams;
     }
 
-    public void setUseUserStream(final boolean value)
+    public void setUseUserStreams(final boolean value)
     {
-        useUserStream = value;
-        sp.edit().putBoolean("useUserStream", value).apply();
-
-        for (final Action handler : useUserStreamChangedHandler)
-        {
-            handler.invoke();
-        }
+        useUserStreams = value;
+        sp.edit().putBoolean("useUserStreams", value).apply();
+        useUserStreamsChangedEvent.raise(this, EventArgs.empty);
     }
-
-    public final ArrayList<Action> useUserStreamChangedHandler = new ArrayList<Action>();
 
     public AccessToken toAccessToken()
     {

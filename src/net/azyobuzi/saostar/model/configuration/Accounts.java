@@ -22,7 +22,7 @@ public class Accounts
 
     public static ObservableList<Account> getList()
     {
-        list.setScheduler(App.instance.h); //App インスタンスが作成されてないといけない
+        list.setScheduler(App.instance.h); // App インスタンスが作成されてないといけない
         return list;
     }
 
@@ -30,18 +30,12 @@ public class Accounts
     {
         list = new ObservableList<Account>();
 
-        Enumerable.from(PreferenceManager.getDefaultSharedPreferences(App.instance).getString("twitterAccounts", "").split(",")).where(new Func2<String, Integer, Boolean>()
-        {
-            @Override
-            public Boolean invoke(final String s, final Integer i)
-            {
-                return !Strings.isNullOrEmpty(s);
-            }
-        }).forEach(new Action2<String, Integer>()
+        Enumerable.from(PreferenceManager.getDefaultSharedPreferences(App.instance).getString("twitterAccounts", "").split(",")).forEach(new Action2<String, Integer>()
         {
             @Override
             public void invoke(final String s, final Integer i)
             {
+                if (!Strings.isNullOrEmpty(s))
                 list.add(new Account(Long.valueOf(s)));
             }
         });
@@ -60,7 +54,8 @@ public class Accounts
                             {
                                 return String.valueOf(a.getId());
                             }
-                        })));
+                        })))
+                        .apply();
             }
         });
     }

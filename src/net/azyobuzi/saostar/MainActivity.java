@@ -13,12 +13,12 @@ public class MainActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
-        
+
         if (Accounts.getList().isEmpty())
         {
             startActivity(new Intent(this, AccountsActivity.class));
             // 必要なし？
-            //finish();
+            // finish();
             return;
         }
     }

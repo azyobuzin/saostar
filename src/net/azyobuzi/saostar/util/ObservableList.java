@@ -151,7 +151,8 @@ public class ObservableList<E> extends AbstractList<E>
         }
     }
 
-    public void setScheduler(final Handler scheduler){
+    public void setScheduler(final Handler scheduler)
+    {
         listChangedEvent.scheduler = scheduler;
     }
 }

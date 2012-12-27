@@ -10,28 +10,30 @@ import twitter4j.auth.RequestToken;
 public class Authorization
 {
     public RequestToken requestToken;
-    
-    public Uri beginAuthorization() throws TwitterException {
+
+    public Uri beginAuthorization() throws TwitterException
+    {
         requestToken = Twitter4JFactories.twitterFactory.getInstance().getOAuthRequestToken();
         return Uri.parse(requestToken.getAuthorizationURL());
     }
-        
-    public Account endAuthorization(String verifier) throws TwitterException {
+
+    public Account endAuthorization(String verifier) throws TwitterException
+    {
         AccessToken token = Twitter4JFactories.twitterFactory.getInstance().getOAuthAccessToken(requestToken, verifier);
-        
+
         long id = token.getUserId();
         boolean newAccount = false;
         Account a = Accounts.fromId(id);
-        if (a == null) {
+        if (a == null)
+        {
             a = new Account(id);
             newAccount = true;
         }
         a.setScreenName(token.getScreenName());
         a.setOAuthToken(token.getToken());
         a.setOAuthTokenSecret(token.getTokenSecret());
-        if (newAccount)
-            Accounts.getList().add(a);
-        
+        if (newAccount) Accounts.getList().add(a);
+
         return a;
     }
 }

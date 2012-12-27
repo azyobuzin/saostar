@@ -29,7 +29,8 @@ public class AccountsActivity extends ListActivity
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         setListAdapter(adapter);
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
@@ -37,17 +38,18 @@ public class AccountsActivity extends ListActivity
                         .putExtra(AccountActivity.ACCOUNT_ID, adapter.getAccountItem(position).getId()));
             }
         });
-        
+
         Accounts.getList().listChangedEvent.add(accountsChangedHandler);
     }
-    
+
     @Override
-    public void onDestroy() {
+    public void onDestroy()
+    {
         Accounts.getList().listChangedEvent.remove(accountsChangedHandler);
         super.onDestroy();
     }
-    
-    private final Action2<Object, ListChangedEventArgs<Account>> accountsChangedHandler = new Action2<Object, ListChangedEventArgs<Account>>() 
+
+    private final Action2<Object, ListChangedEventArgs<Account>> accountsChangedHandler = new Action2<Object, ListChangedEventArgs<Account>>()
     {
         @Override
         public void invoke(Object sender, ListChangedEventArgs<Account> e)

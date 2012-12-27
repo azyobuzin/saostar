@@ -73,8 +73,8 @@ public class AccountActivity extends Activity
         {
             super.onCreate(savedInstanceState);
             if (id == -1) id = savedInstanceState.getLong(ACCOUNT_ID, -1);
-            
-            //TODO: 設定表示
+
+            // TODO: 設定表示
         }
 
         @Override
